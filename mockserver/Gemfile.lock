@@ -1,0 +1,14 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    innate (2011.01)
+      rack (>= 1.1.0)
+    rack (1.2.1)
+    ramaze (2011.01.30)
+      innate (>= 2010.03)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ramaze
