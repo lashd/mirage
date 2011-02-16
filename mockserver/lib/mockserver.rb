@@ -10,6 +10,8 @@ class SstpMockserverController < Ramaze::Controller
   map '/sstp'
 
 
+
+
   def index
 
     @responses = {}
