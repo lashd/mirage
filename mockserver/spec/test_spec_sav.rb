@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'spec'
+require 'rspec'
 require 'rack/test'
 require 'ramaze'
 require 'test'

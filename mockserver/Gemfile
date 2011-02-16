@@ -2,13 +2,16 @@ source :rubygems
 
 gem 'ramaze'
 
-gem 'rake', :group => [:development, :test]
+group :test, :development do
+  gem 'rspec'
+  gem 'thin'
+  gem 'rake'
+end
 
 group :test do
-  gem 'rspec'
-  gem 'ruby-debug19'
-  gem 'thin'
+  gem 'rack-test'
 end
+
 
 
 

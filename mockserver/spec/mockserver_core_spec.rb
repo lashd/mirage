@@ -1,15 +1,19 @@
-require 'rubygems'
-require 'ramaze/spec/bacon'
-require 'open-uri'
+$LOAD_PATH.unshift('../lib')
+require 'rspec'
 require 'mockserver_core'
 require 'rack/test'
 
 describe 'mockserver' do
-  behaves_like :rack_test
+  include Rack::Test::Methods
+
+  def app
+    Ramaze.middleware
+  end
 
   before do
     get('/mockserver/clear')
   end
+
 
   it 'should return a 404 when response not found' do
     response = get('mockserver/get/something')
@@ -102,7 +106,7 @@ describe 'mockserver' do
     first_id.should == second_id
 
     third_id = get('/mockserver/set/hitbox?response=pattern&pattern=pattern').body
-    third_id.should.not == first_id
+    third_id.should_not == first_id
 
     fourth_id = get('/mockserver/set/hitbox?response=pattern&pattern=pattern').body
     third_id.should == fourth_id

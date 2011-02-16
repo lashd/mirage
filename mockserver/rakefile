@@ -1,4 +1,5 @@
 require 'rake'
+require 'rspec/core/rake_task'
 require 'open-uri'
 
 def wait_until times=30
@@ -29,8 +30,10 @@ task :stop_mockserver do |task|
   task.reenable
 end
 
-task :test do
-  puts "running tests"
+desc "Run all examples"
+RSpec::Core::RakeTask.new('specs') do |t|
+  t.pattern = 'spec/**/*_spec.rb'
 end
 
-task :default => [:start_mockserver, :test, :stop_mockserver]
+
+task :default => [:start_mockserver, :specs, :stop_mockserver]
