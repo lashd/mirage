@@ -2,33 +2,60 @@ $LOAD_PATH.unshift('../lib')
 require 'rspec'
 require 'mockserver_core'
 require 'rack/test'
+require 'mechanize'
+require 'open-uri'
+require 'net/http'
+class Mechanize::Page
+  def code
+    @code.to_i
+  end
+
+  alias_method :status, :code
+end
+
 
 describe 'mockserver' do
-  include Rack::Test::Methods
+
+  def get url, body = nil
+    response = Net::HTTP.start("localhost", 7000) do |http|
+      request = Net::HTTP::Get.new(url)
+      request.body=body if body
+      http.request(request)
+    end
+
+    def response.code
+      @code.to_i
+    end
+
+    response
+
+  end
 
   def app
     Ramaze.middleware
   end
 
   before do
-    get('/mockserver/clear')
+#    get('/mockserver/clear')
   end
 
 
   it 'should return a 404 when response not found' do
-    response = get('mockserver/get/something')
-    response.status.should == 404
+    response = get('/mockserver/get/something')
+    response.code.should == 404
+
+
   end
 
   it 'should look in the url for the pattern' do
-    get('mockserver/set/logs?response=logs')
-    get('mockserver/set/logs/choicpaapp71.bskyb.com?response=node')
-    get('mockserver/set/logs/chiocpaapp71.bskyb.com/sstp_tomcat-eservice?response=tomcat_logs')
+    get('/mockserver/set/logs?response=logs')
+    get('/mockserver/set/logs/choicpaapp71.bskyb.com?response=node')
+    get('/mockserver/set/logs/chiocpaapp71.bskyb.com/sstp_tomcat-eservice?response=tomcat_logs')
 
 
-    get('mockserver/get/logs').body.should == 'logs'
-    get('mockserver/get/logs/choicpaapp71.bskyb.com').body.should == 'node'
-    get('mockserver/get/logs/chiocpaapp71.bskyb.com/sstp_tomcat-eservice').body.should == 'tomcat_logs'
+    get('/mockserver/get/logs').body.should == 'logs'
+    get('/mockserver/get/logs/choicpaapp71.bskyb.com').body.should == 'node'
+    get('/mockserver/get/logs/chiocpaapp71.bskyb.com/sstp_tomcat-eservice').body.should == 'tomcat_logs'
 
   end
 
@@ -46,23 +73,23 @@ describe 'mockserver' do
     get('/mockserver/set/message/world')
 
     get('/mockserver/clear')
-    get('/mockserver/get/greeting').status.should == 404
-    get('/mockserver/get/message').status.should == 404
+    get('/mockserver/get/greeting').code.should == 404
+    get('/mockserver/get/message').code.should == 404
   end
 
   it 'should clear responses for key' do
     get('/mockserver/set/message/default?response=hello')
     get('/mockserver/clear/message')
-    get('/mockserver/get/message').status.should == 404
+    get('/mockserver/get/message').code.should == 404
 
     get('/mockserver/set/message/world')
     get('/mockserver/clear/message')
-    get('/mockserver/get/message').status.should == 404
+    get('/mockserver/get/message').code.should == 404
 
     get('/mockserver/set/message/default?response=hello')
     get('/mockserver/set/message/world')
     get('/mockserver/clear/message')
-    get('/mockserver/get/message').status.should == 404
+    get('/mockserver/get/message').code.should == 404
   end
 
   it 'should return a set response based on a pattern found in request url params' do
@@ -78,12 +105,12 @@ describe 'mockserver' do
     response1 ='<message><id>1</id><value>hello</value></message>'
 
     get("/mockserver/set/greeting?response=#{CGI::escape(response1)}")
-    get('/mockserver/get/greeting', {}, {:input => CGI::escape('<id>123</id>')}).body.should == response1
-    get('/mockserver/get/greeting', {}, {:input => CGI::escape('<id>123</id>')}).body.should == response1
+    get('/mockserver/get/greeting', '<id>123</id>').body.should == response1
+    get('/mockserver/get/greeting', '<id>123</id>').body.should == response1
   end
 
   it 'should return a 500 if a response is not supplied' do
-    get("/mockserver/set/greeting").status.should == 500
+    get("/mockserver/set/greeting").code.should == 500
   end
 
   it 'should not overide default response when pattern is default' do
@@ -112,16 +139,16 @@ describe 'mockserver' do
     third_id.should == fourth_id
   end
 
-#
-#  it 'should return request when sent in body' do
-#    get('/mockserver/get/hitbox', {}, {:input => 'whatever'})
-#    get('/mockserver/check/hitbox/body').body.should == 'whatever'
-#  end
 
+  it 'should return request when sent in body' do
+    response_id = get('/mockserver/set/hitbox?response=hitbox').body
+    get('/mockserver/get/hitbox','whatever')
+    get("/mockserver/check/#{response_id}/body").body.should == 'whatever'
+  end
 
 
   it 'should return a 404 if when check for something that is not being tracked' do
-    get('/mockserver/check/something').status.should == 404
+    get('/mockserver/check/something/query').code.should == 404
   end
 
   it 'should pattern match url to access responses' do
@@ -131,12 +158,12 @@ describe 'mockserver' do
 
   end
 
-it 'should clear tracked responses' do
+  it 'should clear tracked responses' do
     get('/mockserver/set/hitbox?response=hitbox')
     get('/mockserver/set/greeting?response=hitbox')
     get('/mockserver/clear/responses')
-    get("/mockserver/get/hitbox").status.should==404
-    get("/mockserver/get/greeting").status.should==404
+    get("/mockserver/get/hitbox").code.should==404
+    get("/mockserver/get/greeting").code.should==404
   end
 
   it 'should clear tracked requests' do
@@ -147,8 +174,8 @@ it 'should clear tracked responses' do
     get('/mockserver/get/greeting?request=blah')
     get('/mockserver/clear/requests')
 
-    get("/mockserver/check/#{hitbox_response_id}/query").status.should == 404
-    get("/mockserver/check/#{greeting_response_id}/query").status.should == 404
+    get("/mockserver/check/#{hitbox_response_id}/query").code.should == 404
+    get("/mockserver/check/#{greeting_response_id}/query").code.should == 404
   end
 
 
@@ -158,8 +185,8 @@ it 'should clear tracked responses' do
 
     get('/mockserver/clear/requests/greeting')
 
-    get('/mockserver/check/greeting/query').status.should == 404
-    get('/mockserver/get/greeting').status.should == 200
+    get('/mockserver/check/greeting/query').code.should == 404
+    get('/mockserver/get/greeting').code.should == 200
   end
 
   it 'should clear responses for a stack' do
@@ -169,8 +196,8 @@ it 'should clear tracked responses' do
 
     get('/mockserver/clear/responses/greeting')
 
-    get('/mockserver/get/greeting').status.should == 404
-    get('/mockserver/get/hitbox').status.should == 200
+    get('/mockserver/get/greeting').code.should == 404
+    get('/mockserver/get/hitbox').code.should == 200
   end
 
 
@@ -180,8 +207,8 @@ it 'should clear tracked responses' do
 
     get('/mockserver/clear')
 
-    get("/mockserver/check/#{hitbox_response_id}/query").status.should == 404
-    get('/mockserver/get/hitbox').status.should == 404
+    get("/mockserver/check/#{hitbox_response_id}/query").code.should == 404
+    get('/mockserver/get/hitbox').code.should == 404
   end
 
   it 'should allow a delay to be set before a response is returned' do
@@ -212,9 +239,8 @@ it 'should clear tracked responses' do
   end
 
   it 'should return a 404 when trying to peek for a request that does not exist' do
-    get("/mockserver/peek/100").status.should == 404
+    get("/mockserver/peek/100").code.should == 404
   end
-
 
 
   it 'should replace pattern with value found in request body when pattern is matched' do
@@ -227,13 +253,13 @@ BODY
 
     response = "<message>$id>(.*)?<$</message>"
     get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
-    get('/mockserver/get/greeting', {}, {:input => CGI::escape(body)}).body.should == "<message>body_value</message>"
+    get('/mockserver/get/greeting', body).body.should == "<message>body_value</message>"
   end
 
   it 'should leave pattern alone when there is neither a default replacement or a match in the query string' do
     response = "<message>$id>(.*)?<$</message>"
     get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
-    get('/mockserver/get/greeting', {}, {:input => CGI::escape('<message>hello</message>')}).body.should == response
+    get('/mockserver/get/greeting', '<message>hello</message>').body.should == response
   end
 
   it 'should reset mocks back to snapshot' do

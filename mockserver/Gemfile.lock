@@ -6,6 +6,9 @@ GEM
     eventmachine (0.12.10)
     innate (2011.01)
       rack (>= 1.1.0)
+    mechanize (1.0.0)
+      nokogiri (>= 1.2.1)
+    nokogiri (1.4.4)
     rack (1.2.1)
     rack-test (0.5.7)
       rack (>= 1.0)
@@ -29,6 +32,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  mechanize
   rack-test
   rake
   ramaze

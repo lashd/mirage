@@ -12,10 +12,10 @@ end
 
 task :start_mockserver => :stop_mockserver do
   puts "Starting mockserver"
-  `thin -d -R lib/config.ru start`
+  `thin -p 7000 -d -R lib/config.ru start`
   wait_until do
     begin
-      open('http://localhost:3000/sstp')
+      open('http://localhost:7000/sstp')
     rescue
     end
   end
