@@ -1,0 +1,36 @@
+require 'rake'
+require 'open-uri'
+
+def wait_until times=30
+  until (times-=1) == 0
+    sleep 1
+    return if yield
+  end
+  raise 'timeout waiting'
+end
+
+task :start_mockserver => :stop_mockserver do
+  puts "Starting mockserver"
+  `thin -d -R lib/config.ru start`
+  wait_until do
+    begin
+      open('http://localhost:3000/sstp')
+    rescue
+    end
+  end
+end
+
+task :stop_mockserver do |task|
+  puts "Stoping mockserver"
+  `thin stop`
+  wait_until do
+    FileList.new('tmp/pids/*.pid').size == 0
+  end
+  task.reenable
+end
+
+task :test do
+  puts "running tests"
+end
+
+task :default => [:start_mockserver, :test, :stop_mockserver]
