@@ -61,7 +61,7 @@ class MockServerCore < Ramaze::Controller
   end
 
   def get name, * args
-    body, query_string, record = Rack::Utils.unescape(request.body.read), request.env['QUERY_STRING'], nil
+    body, query_string, record = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING'], nil
 
 
     response = stored_responses(name)
@@ -78,7 +78,7 @@ class MockServerCore < Ramaze::Controller
 
     respond('Response not found', 404) unless record
     sleep record.delay
-    REQUESTS[record.response_id]={'body'=>body, 'query'=> query_string} and return record.value(body)
+    REQUESTS[record.response_id]={'body'=>body, 'query'=> query_string} and return record.value(body.empty? ? query_string : body)
   end
 
   def clear datatype=nil, name=nil

@@ -1,21 +1,8 @@
-$LOAD_PATH.unshift('../lib')
 require 'rspec'
-require 'mockserver_core'
-require 'rack/test'
-require 'mechanize'
-require 'open-uri'
+require 'cgi'
 require 'net/http'
-class Mechanize::Page
-  def code
-    @code.to_i
-  end
 
-  alias_method :status, :code
-end
-
-
-describe 'mockserver' do
-
+module Web
   def get url, body = nil
     response = Net::HTTP.start("localhost", 7000) do |http|
       request = Net::HTTP::Get.new(url)
@@ -28,23 +15,19 @@ describe 'mockserver' do
     end
 
     response
-
   end
+end
 
-  def app
-    Ramaze.middleware
-  end
+describe 'mockserver' do
+  include Web
 
   before do
-#    get('/mockserver/clear')
+    get('/mockserver/clear')
   end
-
 
   it 'should return a 404 when response not found' do
     response = get('/mockserver/get/something')
     response.code.should == 404
-
-
   end
 
   it 'should look in the url for the pattern' do
@@ -142,7 +125,7 @@ describe 'mockserver' do
 
   it 'should return request when sent in body' do
     response_id = get('/mockserver/set/hitbox?response=hitbox').body
-    get('/mockserver/get/hitbox','whatever')
+    get('/mockserver/get/hitbox', 'whatever')
     get("/mockserver/check/#{response_id}/body").body.should == 'whatever'
   end
 
@@ -272,25 +255,16 @@ BODY
   end
 
 
-#TODO these tests will be implemented when we need to match request string
-#    it 'should replace pattern from response with value in the query string' do
-#    response = "<message>@value@</message>"
-#    get("/mockserver/set/greeting?response=#{CGI::escape(response)}&replacements=#{CGI::escape("{'value'=>'default'}")}")
-#    get('/mockserver/get/greeting?value=replaced').body.should == "<message>replaced</message>"
-#  end
+  it 'should replace pattern from response with value in the query string' do
+    response = "<message>$value=_(.*?)_$</message>"
+    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
+    get('/mockserver/get/greeting?value=_replaced_').body.should == "<message>replaced</message>"
+  end
 
-#  it 'should replace pattern in response with default replacement when match not found in query string' do
-#    response = "<message>@value@</message>"
-#    get("/mockserver/set/greeting?response=#{CGI::escape(response)}&replacements=#{CGI::escape("{'value'=>'default'}")}")
-#    get('/mockserver/get/greeting').body.should == "<message>default</message>"
-#  end
-#
-#  it 'should leave pattern alone when there is neither a default replacement or a match in the query string' do
-#    response = "<message>@value@</message>"
-#    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
-#    get('/mockserver/get/greeting').body.should == "<message>@value@</message>"
-#  end
-#
-
+  it 'should leave pattern alone when there in not a match in the query string' do
+    response = "<message>$value$</message>"
+    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
+    get('/mockserver/get/greeting').body.should == "<message>$value$</message>"
+  end
 
 end
