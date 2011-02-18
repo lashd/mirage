@@ -1,10 +1,12 @@
 require 'ramaze'
+require 'ramaze/helper/send_file'
 
 class MockResponse
   @@id_count = 0
   attr_reader :response_id, :delay, :name, :pattern
   attr_accessor :response_id
-  def initialize name, value, pattern=nil,delay=0
+
+  def initialize name, value, pattern=nil, delay=0
     @name, @value, @pattern, @response_id, @delay = name, value, pattern, @@id_count+=1, delay
   end
 
@@ -19,13 +21,23 @@ class MockResponse
   end
 
   def clone
-    return MockResponse.new(@name,'blah')
+    return MockResponse.new(@name, 'blah')
+  end
+end
+
+class MockFileResponse < MockResponse
+  attr_accessor :file
+
+  def initialize name, file, pattern=nil, delay=0
+    super(name, '', pattern, delay)
+    @file = file
   end
 end
 
 class MockServerCore < Ramaze::Controller
+  include Ramaze::Helper::SendFile
   map '/mockserver'
-  RESPONSES, REQUESTS, SNAPSHOT= {}, {},{}
+  RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
 
   def peek response_id
     peeked_response = nil
@@ -45,7 +57,12 @@ class MockServerCore < Ramaze::Controller
 
     stored_response = stored_responses(name)
 
-    response = MockResponse.new(name, response_value, pattern, delay.to_f )
+    if request[:file]
+      response = MockFileResponse.new(name, request[:file], pattern, delay.to_f)
+    else
+      response = MockResponse.new(name, response_value, pattern, delay.to_f)
+    end
+
     case pattern
       when nil then
         old_response = stored_response.default
@@ -64,28 +81,38 @@ class MockServerCore < Ramaze::Controller
     body, query_string, record = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING'], nil
 
 
-    response = stored_responses(name)
+    stored_response = stored_responses(name)
 
     unless (args.empty?)
       other_response = stored_responses("#{name}/#{args.join('/')}")
       if other_response.default || !other_response.empty?
-        response = other_response
+        stored_response = other_response
       end
     end
 
-    response.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
-    record = response.default unless record
+    stored_response.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
+    record = stored_response.default unless record
 
     respond('Response not found', 404) unless record
     sleep record.delay
-    REQUESTS[record.response_id]={'body'=>body, 'query'=> query_string} and return record.value(body.empty? ? query_string : body)
+    REQUESTS[record.response_id]={'body'=>body, 'query'=> query_string}
+
+    if record.is_a? MockFileResponse
+      tempfile, filename, type = record.file.values_at(:tempfile, :filename, :type)
+      send_file(tempfile.path, type, "Content-Disposition: attachment; filename=#{filename}")
+    else
+      return record.value(body.empty? ? query_string : body)
+    end
   end
 
   def clear datatype=nil, name=nil
     case datatype
-      when 'requests' then REQUESTS.delete(name) if name or REQUESTS.clear
-      when 'responses' then RESPONSES.delete(name) if name or RESPONSES.clear
-      else [REQUESTS, RESPONSES].each { |map| map.delete(name) if name or map.clear }
+      when 'requests' then
+        REQUESTS.delete(name) if name or REQUESTS.clear
+      when 'responses' then
+        RESPONSES.delete(name) if name or RESPONSES.clear
+      else
+        [REQUESTS, RESPONSES].each { |map| map.delete(name) if name or map.clear }
     end
   end
 
@@ -94,11 +121,11 @@ class MockServerCore < Ramaze::Controller
   end
 
   def snapshot
-    SNAPSHOT.clear and SNAPSHOT.replace(Marshal.load( Marshal.dump(RESPONSES) ))
+    SNAPSHOT.clear and SNAPSHOT.replace(Marshal.load(Marshal.dump(RESPONSES)))
   end
 
   def rollback
-    RESPONSES.clear and RESPONSES.replace(Marshal.load( Marshal.dump(SNAPSHOT) ))
+    RESPONSES.clear and RESPONSES.replace(Marshal.load(Marshal.dump(SNAPSHOT)))
   end
 
   private

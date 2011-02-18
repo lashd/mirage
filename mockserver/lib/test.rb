@@ -3,8 +3,9 @@ require 'ramaze'
 
 class WebApp < Ramaze::Controller
   def index
-    tempfile, filename, @type =
-      request[:file].values_at(:tempfile, :filename, :type)
+#    tempfile, filename, @type =
+#      request[:file].values_at(:tempfile, :filename, :type)
+    the_request = request
 #    send_file('/home/user/dev/eservice/mock-server/mockserver.rb', nil, 'Content-Disposition: attachment; filename=mockserver.rb')
     send_file(tempfile.path, @type,  "Content-Disposition: attachment; filename=#{filename}")
 #    puts "hello"

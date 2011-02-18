@@ -4,13 +4,13 @@ gem 'ramaze'
 
 group :test, :development do
   gem 'rspec'
-  gem 'thin'
   gem 'rake'
 end
 
 group :test do
   gem 'rack-test'
   gem 'mechanize'
+  gem 'thin'
 end
 
 
