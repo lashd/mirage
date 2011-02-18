@@ -30,16 +30,16 @@ describe 'mockserver' do
   end
 
   it 'should store a default response' do
-    get('/mockserver/set/message?response=hello')
+    get('/mockserver/set/message', :response=>'hello')
 
     get('/mockserver/get/message').body.should == 'hello'
     get('/mockserver/get/message').body.should == 'hello'
   end
 
   it 'should clear all responses' do
-    get('/mockserver/set/greeting/default?response=hello')
-    get('/mockserver/set/greeting?response=hello')
-    get('/mockserver/set/message/default?response=world')
+    get('/mockserver/set/greeting/default', :response=>'hello')
+    get('/mockserver/set/greeting', :response =>'hello')
+    get('/mockserver/set/message/default', :response=> 'world')
     get('/mockserver/set/message/world')
 
     get('/mockserver/clear')
@@ -48,7 +48,7 @@ describe 'mockserver' do
   end
 
   it 'should clear responses for key' do
-    get('/mockserver/set/message/default?response=hello')
+    get('/mockserver/set/message', :response=> 'hello')
     get('/mockserver/clear/message')
     get('/mockserver/get/message').code.should == 404
 
@@ -56,8 +56,7 @@ describe 'mockserver' do
     get('/mockserver/clear/message')
     get('/mockserver/get/message').code.should == 404
 
-    get('/mockserver/set/message/default?response=hello')
-    get('/mockserver/set/message/world')
+    get('/mockserver/set/message/', :response=>'hello')
     get('/mockserver/clear/message')
     get('/mockserver/get/message').code.should == 404
   end
@@ -66,9 +65,9 @@ describe 'mockserver' do
     response ='<message><id>1</id><value>hello</value></message>'
     get("/mockserver/set/greeting?response=default")
 
-    get("/mockserver/set/greeting?response=#{CGI::escape(response)}&pattern=123")
+    get("/mockserver/set/greeting", :response=> response, :pattern=>"123")
     get("/mockserver/get/greeting").body.should == "default"
-    get("/mockserver/get/greeting?ever=#{CGI::escape('<id>123</id>')}").body.should == response
+    get("/mockserver/get/greeting",:ever=>'<id>123</id>').body.should == response
   end
 
   it 'should return a set response based on a pattern found in request body' do
@@ -84,7 +83,7 @@ describe 'mockserver' do
   end
 
   it 'should not overide default response when pattern is default' do
-    get('/mockserver/set/greeting?response=hello')
+    get('/mockserver/set/greeting', :response=>'hello')
     get('/mockserver/set/greeting?response=pattern_hello&pattern=default')
 
     get('/mockserver/get/greeting?request=something').body.should == 'hello'
