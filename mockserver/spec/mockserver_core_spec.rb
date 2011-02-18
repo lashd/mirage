@@ -52,33 +52,10 @@ describe 'mockserver' do
     get('/mockserver/get/message').code.should == 404
   end
 
-  it 'should return a set response based on a pattern found in request url params' do
-    response ='<message><id>1</id><value>hello</value></message>'
-    get("/mockserver/set/greeting", :response=> "default")
-
-    get("/mockserver/set/greeting", :response=> response, :pattern=>"123")
-    get("/mockserver/get/greeting").body.should == "default"
-    get("/mockserver/get/greeting",:ever=>'<id>123</id>').body.should == response
-  end
-
-  it 'should return a set response based on a pattern found in request body' do
-    response1 ='<message><id>1</id><value>hello</value></message>'
-
-    get("/mockserver/set/greeting", :response => response1)
-    get('/mockserver/get/greeting', :body => '<id>123</id>').body.should == response1
-    get('/mockserver/get/greeting', :body => '<id>123</id>').body.should == response1
-  end
-
   it 'should return a 500 if a response is not supplied' do
     get("/mockserver/set/greeting").code.should == 500
   end
 
-  it 'should not overide default response when pattern is default' do
-    get('/mockserver/set/greeting', :response=>'hello')
-    get('/mockserver/set/greeting', :response=>'pattern_hello', :pattern=>'default')
-
-    get('/mockserver/get/greeting', :request=>'something').body.should == 'hello'
-  end
 
   it 'should return request params sent in url' do
     response_id = get('/mockserver/set/hitbox', :response=>'hitbox').body

@@ -55,4 +55,15 @@ Feature: The MockServer can be configured to return particular responses conditi
       | name      | leon  |
     Then the response should be 'Hello Leon, how are you?'
 
-
+  Scenario: Pattern not matched
+    Given a response for 'greeting' with pattern '.*?leon<\/name>'
+    """
+    Hello Leon, how are you?
+    """
+    When getting 'greeting' with request body:
+    """
+     <greetingRequest>
+      <name>jim</name>
+     </greetingRequest>
+    """
+    Then the response should be 'Hello Stranger.'

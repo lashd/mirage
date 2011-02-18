@@ -1,3 +1,7 @@
+Before do
+  get('/mockserver/clear')
+end
+
 Given /^the response for '(.*?)'$/ do |endpoint, text|
   @expected_response = text
   get("/mockserver/set/#{endpoint}", :response => @expected_response)
@@ -22,7 +26,7 @@ end
 Then /^the response should be '(.*?)'$/ do |expected_response|
   expected_response.should == @response
 end
-When /^getting '(.*?)' with query string:$/ do |endpoint,table|
+When /^getting '(.*?)' with query string:$/ do |endpoint, table|
   parameters = {}
   table.hashes.each do |hash|
     parameters[hash['parameter'].to_sym] = hash['value']
