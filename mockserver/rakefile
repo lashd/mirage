@@ -1,6 +1,8 @@
 require 'rake'
 require 'rspec/core/rake_task'
 require 'open-uri'
+require 'cucumber'
+require 'cucumber/rake/task'
 
 def wait_until times=30
   until (times-=1) == 0
@@ -36,5 +38,9 @@ RSpec::Core::RakeTask.new('specs') do |t|
   t.pattern = 'spec/**/*_spec.rb'
 end
 
+Cucumber::Rake::Task.new(:features) do |t|
+  t.cucumber_opts = "features --format pretty"
+end
 
-task :default => [:start_mockserver, :specs, :stop_mockserver]
+
+task :default => [:start_mockserver, :specs, :features, :stop_mockserver]

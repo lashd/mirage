@@ -27,13 +27,6 @@ describe 'mockserver' do
 
   end
 
-  it 'should store a default response' do
-    get('/mockserver/set/message', :response=>'hello')
-
-    get('/mockserver/get/message').body.should == 'hello'
-    get('/mockserver/get/message').body.should == 'hello'
-  end
-
   it 'should clear all responses' do
     get('/mockserver/set/greeting/default', :response=>'hello')
     get('/mockserver/set/greeting', :response =>'hello')

@@ -1,3 +1,7 @@
+require 'cucumber'
+require 'open-uri'
+require 'rspec'
+
 require 'mechanize'
 MOCKSERVER_URL = "http://localhost:7000"
 
@@ -18,6 +22,7 @@ module Web
       response = using_mechanize do |browser|
         browser.get("#{MOCKSERVER_URL}#{url}", params)
       end
+
     end
 
     response
@@ -48,3 +53,5 @@ module Web
   end
 
 end
+
+World(Web)
