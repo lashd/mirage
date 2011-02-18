@@ -180,25 +180,6 @@ describe 'mockserver' do
   end
 
 
-  it 'should replace pattern with value found in request body when pattern is matched' do
-
-    body =<<BODY
-<greeting>
-  <id>body_value</id>
-</greeting>
-BODY
-
-    response = "<message>$id>(.*)?<$</message>"
-    get("/mockserver/set/greeting", :response=>response)
-    get('/mockserver/get/greeting', :body => body).body.should == "<message>body_value</message>"
-  end
-
-  it 'should leave pattern alone when there is neither a default replacement or a match in the query string' do
-    response = "<message>$id>(.*)?<$</message>"
-    get("/mockserver/set/greeting", :response=>response)
-    get('/mockserver/get/greeting', :body => '<message>hello</message>').body.should == response
-  end
-
   it 'should reset mocks back to snapshot' do
     get("/mockserver/set/greeting", :response=>"hello")
     get("/mockserver/snapshot")
@@ -206,19 +187,6 @@ BODY
     get("/mockserver/get/greeting").body.should == 'yo'
     get("/mockserver/rollback")
     get("/mockserver/get/greeting").body.should == 'hello'
-  end
-
-
-  it 'should replace pattern from response with value in the query string' do
-    response = "<message>$value=_(.*?)_$</message>"
-    get("/mockserver/set/greeting", :response=>response)
-    get('/mockserver/get/greeting?value=_replaced_').body.should == "<message>replaced</message>"
-  end
-
-  it 'should leave pattern alone when there in not a match in the query string' do
-    response = "<message>$value$</message>"
-    get("/mockserver/set/greeting", :response=>response)
-    get('/mockserver/get/greeting').body.should == "<message>$value$</message>"
   end
 
 end
