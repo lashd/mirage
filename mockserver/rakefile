@@ -12,10 +12,10 @@ end
 
 task :start_mockserver => :stop_mockserver do
   puts "Starting mockserver"
-  `thin -p 7000 -d -R lib/config.ru start`
+  `thin -p 7000 -l thin.log -D -V -d -R lib/config.ru start`
   wait_until do
     begin
-      open('http://localhost:7000/sstp')
+      open('http://localhost:7000/mockserver/clear')
     rescue
     end
   end
@@ -27,6 +27,7 @@ task :stop_mockserver do |task|
   wait_until do
     FileList.new('tmp/pids/*.pid').size == 0
   end
+  FileUtils.rm_rf('tmp')
   task.reenable
 end
 

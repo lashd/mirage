@@ -74,13 +74,5 @@ class SstpMockserverController < Ramaze::Controller
 
 end
 
-OptionParser.new do |opts|
-  opts.on("-l", "--log FILE", "log to: file_name") do |log|
-    Ramaze::Log.loggers = [Logger.new(log)]
-  end
-end.parse!
-
-Ramaze.start
-
 
 

@@ -15,19 +15,8 @@ module Web
       end
 
     else
-
-      begin
-        response = Mechanize.new.get("#{MOCKSERVER_URL}#{url}", params)
-
-        def response.code
-          @code.to_i
-        end
-      rescue Exception => e
-        response = e
-
-        def response.code
-          self.response_code.to_i
-        end
+      response = using_mechanize do |browser|
+        browser.get("#{MOCKSERVER_URL}#{url}", params)
       end
 
     end
@@ -36,8 +25,15 @@ module Web
   end
 
   def post url, params
+    using_mechanize do |browser|
+      browser.post("#{MOCKSERVER_URL}#{url}",params)
+    end
+  end
+
+  private
+  def using_mechanize
     begin
-      response = Mechanize.new.post("#{MOCKSERVER_URL}#{url}", params)
+      response = yield Mechanize.new
 
       def response.code
         @code.to_i
@@ -50,6 +46,6 @@ module Web
       end
     end
     response
-
   end
+
 end

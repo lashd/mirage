@@ -16,14 +16,15 @@ describe 'hosting files on the mockserver' do
   end
 
   it 'should host a file' do
-    file = File.new("#{@spec_dir}/test.zip")
+    test_file_path = "#{@spec_dir}/test.zip"
+    test_file = File.new(test_file_path)
 
-    post("/mockserver/set/file_response", :file=>file)
+    post("/mockserver/set/file_response", :file=>test_file)
 
     download = get("/mockserver/get/file_response")
-    download.filename.should == File.basename(file.path)
+    download.filename.should == File.basename(test_file.path)
     download.save_as(@download_path)
 
-    FileUtils.cmp(file, File.new(@download_path)).should == true
+    FileUtils.cmp(test_file_path, @download_path).should == true
   end
 end
