@@ -1,46 +1,28 @@
 require 'rspec'
-require 'net/http'
+require 'spec_helper'
 require 'mechanize'
 require 'fileutils'
 
-
-module Web
-  def get url, body = nil
-    response = Net::HTTP.start("localhost", 7000) do |http|
-      request = Net::HTTP::Get.new(url)
-      request.body=body if body
-      http.request(request)
-    end
-
-    def response.code
-      @code.to_i
-    end
-
-    response
-  end
-end
-
 describe 'hosting files on the mockserver' do
-  include Web
 
   before do
-    get('/mockserver/clear')
-    FileUtils.rm_f("#{File.dirname(__FILE__)}/download.zip")
+    @spec_dir = File.dirname(__FILE__)
+    @download_path = "#{@spec_dir}/download.zip"
+    FileUtils.rm_f(@download_path)
+
+    @browser = Mechanize.new
+    @browser.get("#{MOCKSERVER_URL}/clear")
   end
 
   it 'should host a file' do
-    browser = Mechanize.new
-    spec_dir = File.dirname(__FILE__)
-    file = File.new("#{spec_dir}/test.zip")
-    browser.post("http://localhost:7000/mockserver/set/file_response", :file=>file)
+    file = File.new("#{@spec_dir}/test.zip")
 
-    download = browser.get("http://localhost:7000/mockserver/get/file_response")
-    Mechanize::File
+    @browser.post("#{MOCKSERVER_URL}/set/file_response", :file=>file)
+
+    download = @browser.get("#{MOCKSERVER_URL}/get/file_response")
     download.filename.should == File.basename(file.path)
-    ::File
-    download.save_as("#{spec_dir}/download.zip")
+    download.save_as(@download_path)
 
-
-    FileUtils.cmp(file, File.new("#{spec_dir}/download.zip")).should == true
+    FileUtils.cmp(file, File.new(@download_path)).should == true
   end
 end

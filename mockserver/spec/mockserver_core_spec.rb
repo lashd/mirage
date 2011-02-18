@@ -1,22 +1,9 @@
 require 'rspec'
+require 'spec_helper'
 require 'cgi'
 require 'net/http'
 
-module Web
-  def get url, body = nil
-    response = Net::HTTP.start("localhost", 7000) do |http|
-      request = Net::HTTP::Get.new(url)
-      request.body=body if body
-      http.request(request)
-    end
 
-    def response.code
-      @code.to_i
-    end
-
-    response
-  end
-end
 
 describe 'mockserver' do
   include Web
@@ -31,9 +18,9 @@ describe 'mockserver' do
   end
 
   it 'should look in the url for the pattern' do
-    get('/mockserver/set/logs?response=logs')
-    get('/mockserver/set/logs/choicpaapp71.bskyb.com?response=node')
-    get('/mockserver/set/logs/chiocpaapp71.bskyb.com/sstp_tomcat-eservice?response=tomcat_logs')
+    get('/mockserver/set/logs', :response=>'logs')
+    get('/mockserver/set/logs/choicpaapp71.bskyb.com', :response=>'node')
+    get('/mockserver/set/logs/chiocpaapp71.bskyb.com/sstp_tomcat-eservice', :response=>'tomcat_logs')
 
 
     get('/mockserver/get/logs').body.should == 'logs'
@@ -87,9 +74,9 @@ describe 'mockserver' do
   it 'should return a set response based on a pattern found in request body' do
     response1 ='<message><id>1</id><value>hello</value></message>'
 
-    get("/mockserver/set/greeting?response=#{CGI::escape(response1)}")
-    get('/mockserver/get/greeting', '<id>123</id>').body.should == response1
-    get('/mockserver/get/greeting', '<id>123</id>').body.should == response1
+    get("/mockserver/set/greeting", :response => response1)
+    get('/mockserver/get/greeting', :body => '<id>123</id>').body.should == response1
+    get('/mockserver/get/greeting', :body => '<id>123</id>').body.should == response1
   end
 
   it 'should return a 500 if a response is not supplied' do
@@ -124,8 +111,8 @@ describe 'mockserver' do
 
 
   it 'should return request when sent in body' do
-    response_id = get('/mockserver/set/hitbox?response=hitbox').body
-    get('/mockserver/get/hitbox', 'whatever')
+    response_id = get('/mockserver/set/hitbox', :response=>'hitbox').body
+    get('/mockserver/get/hitbox', :body => 'whatever')
     get("/mockserver/check/#{response_id}/body").body.should == 'whatever'
   end
 
@@ -163,8 +150,8 @@ describe 'mockserver' do
 
 
   it 'should clear requests for a stack' do
-    get('/mockserver/set/greeting?response=hallo')
-    get('/mockserver/get/greeting?query=value')
+    get('/mockserver/set/greeting', :response=>'hallo')
+    get('/mockserver/get/greeting', :query=>'value')
 
     get('/mockserver/clear/requests/greeting')
 
@@ -235,14 +222,14 @@ describe 'mockserver' do
 BODY
 
     response = "<message>$id>(.*)?<$</message>"
-    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
-    get('/mockserver/get/greeting', body).body.should == "<message>body_value</message>"
+    get("/mockserver/set/greeting", :response=>response)
+    get('/mockserver/get/greeting', :body => body).body.should == "<message>body_value</message>"
   end
 
   it 'should leave pattern alone when there is neither a default replacement or a match in the query string' do
     response = "<message>$id>(.*)?<$</message>"
-    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
-    get('/mockserver/get/greeting', '<message>hello</message>').body.should == response
+    get("/mockserver/set/greeting", :response=>response)
+    get('/mockserver/get/greeting', :body => '<message>hello</message>').body.should == response
   end
 
   it 'should reset mocks back to snapshot' do
