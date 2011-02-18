@@ -16,18 +16,14 @@ class MockResponse
     value = @value
     value.scan(/\${(.*)?\}/).flatten.each do |target|
 
-
-      if (body_value = find_match(body, target))
-        value = value.gsub("${#{target}}", body_value)
-      end
-
       if (parameter_match = request_parameters[target])
         value = value.gsub("${#{target}}", parameter_match)
       end
 
-
-      if (query_string_match = find_match(query_string, target))
-        value = value.gsub("${#{target}}", query_string_match)
+      [body, query_string].each do |string|
+        if (string_match = find_match(string, target))
+          value = value.gsub("${#{target}}", string_match)
+        end
       end
 
     end
