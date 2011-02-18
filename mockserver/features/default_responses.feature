@@ -6,6 +6,6 @@ Feature: The mockserver can be configured to return a default response every tim
       Hello, how are you?
       """
     When getting 'greeting'
-    Then the response should be returned
+    Then the response should be 'Hello, how are you?'
 
 

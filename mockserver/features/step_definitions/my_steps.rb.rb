@@ -11,10 +11,6 @@ When /^getting '(.*?)'$/ do |endpoint|
   @response = get("/mockserver/get/#{endpoint}").body
 end
 
-Then /^the response should be returned$/ do
-  @expected_response.should == @response
-end
-
 When /^a response for '(.*?)' with pattern '(.*?)'$/ do |endpoint, pattern, text|
   @expected_response = text
   get("/mockserver/set/#{endpoint}", :response => @expected_response, :pattern=> pattern)
