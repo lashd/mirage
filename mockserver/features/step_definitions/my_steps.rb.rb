@@ -20,7 +20,7 @@ When /^getting '(.*?)' with request body:$/ do |endpoint, request_body|
   @response = get("/mockserver/get/#{endpoint}", :body => request_body).body
 end
 Then /^the response should be '(.*?)'$/ do |expected_response|
-  expected_response.should == @response
+   @response.should == expected_response
 end
 When /^getting '(.*?)' with query string:$/ do |endpoint, table|
   parameters = {}

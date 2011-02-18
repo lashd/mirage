@@ -12,10 +12,10 @@ class MockResponse
 
   def value body=''
     value = @value
-    value.scan(/\$(.*)?\$/).flatten.each do |target|
+    value.scan(/\${(.*)?\}/).flatten.each do |target|
       body_value = body.scan(/#{target}/).flatten.first
       next unless body_value
-      value = value.gsub("$#{target}$", body_value)
+      value = value.gsub("${#{target}}", body_value)
     end
     value
   end
