@@ -4,7 +4,6 @@ Before do
 end
 
 Given /^the response for '(.*?)' is:$/ do |endpoint, text|
-
   @response_ids[endpoint]||=[]
   response_id = get("/mockserver/set/#{endpoint}", :response => text).body
   @response_ids[endpoint]<< response_id
@@ -21,9 +20,11 @@ end
 When /^getting '(.*?)' with request body:$/ do |endpoint, request_body|
   @response = get("/mockserver/get/#{endpoint}", :body => request_body)
 end
+
 Then /^'(.*?)' should be returned$/ do |expected_response|
   @response.body.should == expected_response
 end
+
 When /^getting '(.*?)' with request parameters:$/ do |endpoint, table|
   parameters = {}
   table.hashes.each do |hash|
