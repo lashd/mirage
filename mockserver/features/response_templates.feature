@@ -18,7 +18,7 @@ Feature: Parts of a response can be substitued for values found in the request b
   Scenario: Response template populated from match found in the query string
     Given the response for 'greeting'
     """
-    Hello ${name=([L|l]eon)}, how are you?
+    Hello ${name}, how are you?
     """
     When  getting 'greeting' with query string:
       | parameter | value |

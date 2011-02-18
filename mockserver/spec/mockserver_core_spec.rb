@@ -159,6 +159,7 @@ describe 'mockserver' do
 
   it 'should let you peek a default response' do
     response_id = get("/mockserver/set/greeting", :response=>"hello").body
+    puts "response id is: #{response_id}"
     get("/mockserver/peek/#{response_id}").body.should == 'hello'
   end
 

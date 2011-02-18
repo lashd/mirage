@@ -10,12 +10,18 @@ class MockResponse
     @name, @value, @pattern, @response_id, @delay = name, value, pattern, @@id_count+=1, delay
   end
 
-  def value body=''
+  def value(request={}, body='')
     value = @value
     value.scan(/\${(.*)?\}/).flatten.each do |target|
-      body_value = body.scan(/#{target}/).flatten.first
-      next unless body_value
-      value = value.gsub("${#{target}}", body_value)
+
+      if (body_value = body.scan(/#{target}/).flatten.first)
+        value = value.gsub("${#{target}}", body_value)
+      end
+
+      if (parameter_match = request[target])
+        value = value.gsub("${#{target}}", parameter_match)
+      end
+
     end
     value
   end
@@ -101,7 +107,7 @@ class MockServerCore < Ramaze::Controller
       tempfile, filename, type = record.file.values_at(:tempfile, :filename, :type)
       send_file(tempfile.path, type, "Content-Disposition: attachment; filename=#{filename}")
     else
-      return record.value(body.empty? ? query_string : body)
+      return record.value(request,body)
     end
   end
 
