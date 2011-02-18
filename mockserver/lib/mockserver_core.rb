@@ -14,24 +14,20 @@ class MockResponse
 
   def value(body='', request_parameters={},query_string='')
     value = @value
-    value.scan(/\${(.*)?\}/).flatten.each do |target|
+    value.scan(/\${(.*)?\}/).flatten.each do |pattern|
 
-      if (parameter_match = request_parameters[target])
-        value = value.gsub("${#{target}}", parameter_match)
+      if (parameter_match = request_parameters[pattern])
+        value = value.gsub("${#{pattern}}", parameter_match)
       end
 
       [body, query_string].each do |string|
-        if (string_match = find_match(string, target))
-          value = value.gsub("${#{target}}", string_match)
+        if (string_match = find_match(string, pattern))
+          value = value.gsub("${#{pattern}}", string_match)
         end
       end
 
     end
     value
-  end
-
-  def clone
-    return MockResponse.new(@name, 'blah')
   end
 
   private
