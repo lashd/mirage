@@ -2,7 +2,7 @@ Feature: The MockServer can be configured to return particular responses conditi
   querystring or the body of a request.
 
   Background: There is already a default response for 'greeting'
-    Given the response for 'greeting'
+    Given the response for 'greeting' is:
     """
     Hello Stranger.
     """
@@ -39,7 +39,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     """
     Hello Leon, how are you?
     """
-    When getting 'greeting' with query string:
+    When getting 'greeting' with request parameters:
       | parameter | value |
       | name      | leon  |
     Then 'Hello Leon, how are you?' should be returned
@@ -50,7 +50,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     """
     Hello Leon, how are you?
     """
-    When getting 'greeting' with query string:
+    When getting 'greeting' with request parameters:
       | parameter | value |
       | name      | leon  |
     Then 'Hello Leon, how are you?' should be returned

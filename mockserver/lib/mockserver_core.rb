@@ -106,7 +106,7 @@ class MockServerCore < Ramaze::Controller
 
     respond('Response not found', 404) unless record
     sleep record.delay
-    REQUESTS[record.response_id]={'body'=>body, 'query'=> query_string}
+    REQUESTS[record.response_id] = body.empty? ? query_string : body
 
     if record.is_a? MockFileResponse
       tempfile, filename, type = record.file.values_at(:tempfile, :filename, :type)
@@ -127,8 +127,8 @@ class MockServerCore < Ramaze::Controller
     end
   end
 
-  def check id, part
-    (REQUESTS[id.to_i] && REQUESTS[id.to_i][part]) || respond("Nothing stored for: #{id}", 404)
+  def check id
+    REQUESTS[id.to_i] || respond("Nothing stored for: #{id}", 404)
   end
 
   def snapshot
