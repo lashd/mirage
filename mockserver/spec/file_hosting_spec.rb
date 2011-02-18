@@ -4,6 +4,7 @@ require 'mechanize'
 require 'fileutils'
 
 describe 'hosting files on the mockserver' do
+  include Web
 
   before do
     @spec_dir = File.dirname(__FILE__)
@@ -11,15 +12,15 @@ describe 'hosting files on the mockserver' do
     FileUtils.rm_f(@download_path)
 
     @browser = Mechanize.new
-    @browser.get("#{MOCKSERVER_URL}/clear")
+    get("/mockserver/clear")
   end
 
   it 'should host a file' do
     file = File.new("#{@spec_dir}/test.zip")
 
-    @browser.post("#{MOCKSERVER_URL}/set/file_response", :file=>file)
+    post("/mockserver/set/file_response", :file=>file)
 
-    download = @browser.get("#{MOCKSERVER_URL}/get/file_response")
+    download = get("/mockserver/get/file_response")
     download.filename.should == File.basename(file.path)
     download.save_as(@download_path)
 

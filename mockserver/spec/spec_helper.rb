@@ -18,11 +18,13 @@ module Web
 
       begin
         response = Mechanize.new.get("#{MOCKSERVER_URL}#{url}", params)
+
         def response.code
           @code.to_i
         end
       rescue Exception => e
         response = e
+
         def response.code
           self.response_code.to_i
         end
@@ -31,5 +33,23 @@ module Web
     end
 
     response
+  end
+
+  def post url, params
+    begin
+      response = Mechanize.new.post("#{MOCKSERVER_URL}#{url}", params)
+
+      def response.code
+        @code.to_i
+      end
+    rescue Exception => e
+      response = e
+
+      def response.code
+        self.response_code.to_i
+      end
+    end
+    response
+
   end
 end
