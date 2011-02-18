@@ -63,7 +63,7 @@ describe 'mockserver' do
 
   it 'should return a set response based on a pattern found in request url params' do
     response ='<message><id>1</id><value>hello</value></message>'
-    get("/mockserver/set/greeting?response=default")
+    get("/mockserver/set/greeting", :response=> "default")
 
     get("/mockserver/set/greeting", :response=> response, :pattern=>"123")
     get("/mockserver/get/greeting").body.should == "default"
@@ -84,27 +84,27 @@ describe 'mockserver' do
 
   it 'should not overide default response when pattern is default' do
     get('/mockserver/set/greeting', :response=>'hello')
-    get('/mockserver/set/greeting?response=pattern_hello&pattern=default')
+    get('/mockserver/set/greeting', :response=>'pattern_hello', :pattern=>'default')
 
-    get('/mockserver/get/greeting?request=something').body.should == 'hello'
+    get('/mockserver/get/greeting', :request=>'something').body.should == 'hello'
   end
 
   it 'should return request params sent in url' do
-    response_id = get('/mockserver/set/hitbox?response=hitbox').body
-    get('/mockserver/get/hitbox?hitbox_id=link1').body
+    response_id = get('/mockserver/set/hitbox', :response=>'hitbox').body
+    get('/mockserver/get/hitbox', :hitbox_id=>'link1').body
     get("/mockserver/check/#{response_id}/query").body.should == "hitbox_id=link1"
   end
 
   it 'should keep the same response id for a response that is set more than once' do
-    first_id = get('/mockserver/set/hitbox?response=default').body
-    second_id = get('/mockserver/set/hitbox?response=default').body
+    first_id = get('/mockserver/set/hitbox', :response=>'default').body
+    second_id = get('/mockserver/set/hitbox', :response=>'default').body
 
     first_id.should == second_id
 
-    third_id = get('/mockserver/set/hitbox?response=pattern&pattern=pattern').body
+    third_id = get('/mockserver/set/hitbox', :response=>'pattern', :pattern=>'pattern').body
     third_id.should_not == first_id
 
-    fourth_id = get('/mockserver/set/hitbox?response=pattern&pattern=pattern').body
+    fourth_id = get('/mockserver/set/hitbox', :response=>'pattern', :pattern=>'pattern').body
     third_id.should == fourth_id
   end
 
@@ -122,25 +122,25 @@ describe 'mockserver' do
 
   it 'should pattern match url to access responses' do
 
-    get('/mockserver/set/greeting?response=hello')
+    get('/mockserver/set/greeting', :response=>'hello')
     get('/mockserver/get/greeting/with/more/stuff/in/url').body.should == 'hello'
 
   end
 
   it 'should clear tracked responses' do
-    get('/mockserver/set/hitbox?response=hitbox')
-    get('/mockserver/set/greeting?response=hitbox')
+    get('/mockserver/set/hitbox', :response=>'hitbox')
+    get('/mockserver/set/greeting', :response=>'hitbox')
     get('/mockserver/clear/responses')
     get("/mockserver/get/hitbox").code.should==404
     get("/mockserver/get/greeting").code.should==404
   end
 
   it 'should clear tracked requests' do
-    hitbox_response_id = get('/mockserver/set/hitbox?response=hitbox').body
-    greeting_response_id = get('/mockserver/set/greeting?response=hitbox').body
+    hitbox_response_id = get('/mockserver/set/hitbox', :response=>'hitbox').body
+    greeting_response_id = get('/mockserver/set/greeting', :response=>'hitbox').body
 
-    get('/mockserver/get/hitbox?request=blah')
-    get('/mockserver/get/greeting?request=blah')
+    get('/mockserver/get/hitbox', :request=>'blah')
+    get('/mockserver/get/greeting', :request=>'blah')
     get('/mockserver/clear/requests')
 
     get("/mockserver/check/#{hitbox_response_id}/query").code.should == 404
@@ -171,8 +171,8 @@ describe 'mockserver' do
 
 
   it 'should clear everything' do
-    hitbox_response_id = get('/mockserver/set/hitbox?response=hitbox').body
-    get('/mockserver/get/hitbox?request=blah').body
+    hitbox_response_id = get('/mockserver/set/hitbox', :response=>'hitbox').body
+    get('/mockserver/get/hitbox', :request=>'blah').body
 
     get('/mockserver/clear')
 
@@ -182,7 +182,7 @@ describe 'mockserver' do
 
   it 'should allow a delay to be set before a response is returned' do
     delay = 1
-    get("/mockserver/set/greeting?response=hello&delay=#{delay}")
+    get("/mockserver/set/greeting", :response=>'hello', :delay=>delay)
     test_start_time = Time.now
     get('/mockserver/get/greeting')
     test_finish_time = Time.now
@@ -190,19 +190,19 @@ describe 'mockserver' do
   end
 
   it 'should let you peek a default response' do
-    response_id = get("/mockserver/set/greeting?response=hello").body
+    response_id = get("/mockserver/set/greeting", :response=>"hello").body
     get("/mockserver/peek/#{response_id}").body.should == 'hello'
   end
 
   it 'should let you peek a patterned response' do
     expected_response = 'patterned_response'
-    response_id = get("/mockserver/set/greeting?response=#{expected_response}&pattern=pattern").body
+    response_id = get("/mockserver/set/greeting", :response=>expected_response, :pattern=>'pattern').body
     get("/mockserver/peek/#{response_id}").body.should == expected_response
   end
 
   it 'should not remove stored request on peek' do
-    response_id = get('/mockserver/set/hitbox?response=hitbox').body
-    get('/mockserver/get/hitbox?hitbox_id=link1')
+    response_id = get('/mockserver/set/hitbox', :response=>'hitbox').body
+    get('/mockserver/get/hitbox', :hitbox_id=>'link1')
     get("/mockserver/peek/#{response_id}")
     get("/mockserver/check/#{response_id}/query").body.should == "hitbox_id=link1"
   end
@@ -232,9 +232,9 @@ BODY
   end
 
   it 'should reset mocks back to snapshot' do
-    get("/mockserver/set/greeting?response=hello")
+    get("/mockserver/set/greeting", :response=>"hello")
     get("/mockserver/snapshot")
-    get("/mockserver/set/greeting?response=yo")
+    get("/mockserver/set/greeting", :response=>"yo")
     get("/mockserver/get/greeting").body.should == 'yo'
     get("/mockserver/rollback")
     get("/mockserver/get/greeting").body.should == 'hello'
@@ -243,13 +243,13 @@ BODY
 
   it 'should replace pattern from response with value in the query string' do
     response = "<message>$value=_(.*?)_$</message>"
-    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
+    get("/mockserver/set/greeting", :response=>response)
     get('/mockserver/get/greeting?value=_replaced_').body.should == "<message>replaced</message>"
   end
 
   it 'should leave pattern alone when there in not a match in the query string' do
     response = "<message>$value$</message>"
-    get("/mockserver/set/greeting?response=#{CGI::escape(response)}")
+    get("/mockserver/set/greeting", :response=>response)
     get('/mockserver/get/greeting').body.should == "<message>$value$</message>"
   end
 
