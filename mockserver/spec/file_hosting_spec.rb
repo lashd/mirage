@@ -35,10 +35,12 @@ describe 'hosting files on the mockserver' do
     browser.post("http://localhost:7000/mockserver/set/file_response", :file=>file)
 
     download = browser.get("http://localhost:7000/mockserver/get/file_response")
+    Mechanize::File
+    download.filename.should == File.basename(file.path)
+    ::File
     download.save_as("#{spec_dir}/download.zip")
 
-    FileUtils.cmp(file, File.new("#{spec_dir}/download.zip")).should == true
 
-#    file.should == File.new("#{spec_dir}/download.zip")
+    FileUtils.cmp(file, File.new("#{spec_dir}/download.zip")).should == true
   end
 end
