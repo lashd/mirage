@@ -51,12 +51,12 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello
     """
-    Then the response id for should be '1'
+    Then the response id should be '1'
     Given the response for 'greeting' is:
     """
     Hi
     """
-    Then the response id for should be '1'
+    Then the response id should be '1'
 
 
 
@@ -65,10 +65,12 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello who ever you are
     """
+    And the response id should be '1'
     And the response for 'greeting' with pattern 'Leon' is:
     """
     Hello Leon
     """
+    And the response id should be '2'
     When getting 'greeting' with request body:
     """
     My name is Joel

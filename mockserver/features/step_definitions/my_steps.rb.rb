@@ -7,7 +7,7 @@ Given /^the response for '([^']*)' is:$/ do |endpoint, text|
 end
 
 When /^the response for '([^']*)' with pattern '([^']*)' is:$/ do |endpoint, pattern, text|
-  get("/mockserver/set/#{endpoint}", :response => text, :pattern=> pattern)
+  @response_id = get("/mockserver/set/#{endpoint}", :response => text, :pattern=> pattern).body
 end
 
 When /^getting '(.*?)'$/ do |endpoint|
@@ -50,7 +50,7 @@ Then /^tracking the request should return a 404$/ do
   get("/mockserver/check/#{@response_id}").code.should == 404
 end
 
-Then /^the response id for should be '(\d+)'$/ do |response_id|
+Then /^the response id should be '(\d+)'$/ do |response_id|
   @response_id.should == response_id
 end
 Then /^'(.*?)' should have been tracked$/ do |text|
