@@ -18,7 +18,7 @@ Feature: The MockServer can be configured to return particular responses conditi
       <name>leon</name>
      </greetingRequest>
     """
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
   Scenario: A regex based pattern found in the request body
     Given a response for 'greeting' with pattern '.*?leon<\/name>'
@@ -31,7 +31,7 @@ Feature: The MockServer can be configured to return particular responses conditi
       <name>leon</name>
      </greetingRequest>
     """
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
 
   Scenario: A plain text pattern found in the query string
@@ -42,7 +42,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     When getting 'greeting' with query string:
       | parameter | value |
       | name      | leon  |
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
 
   Scenario:  A regex based pattern found in the query string
@@ -53,7 +53,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     When getting 'greeting' with query string:
       | parameter | value |
       | name      | leon  |
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
   Scenario: Pattern not matched
     Given a response for 'greeting' with pattern '.*?leon<\/name>'
@@ -66,4 +66,4 @@ Feature: The MockServer can be configured to return particular responses conditi
       <name>jim</name>
      </greetingRequest>
     """
-    Then the response should be 'Hello Stranger.'
+    Then 'Hello Stranger.' should be returned

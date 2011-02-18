@@ -12,7 +12,7 @@ Feature: Parts of a response can be substitued for values found in the request b
       <name>Leon</name>
     </greetingRequest>
     """
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
 
   Scenario: Response template populated from match found in the query string using a request parameter name
@@ -23,7 +23,7 @@ Feature: Parts of a response can be substitued for values found in the request b
     When  getting 'greeting' with query string:
       | parameter | value |
       | name      | Leon  |
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
   Scenario: Response template populated from match found in the query string using a regex
     Given the response for 'greeting'
@@ -33,7 +33,7 @@ Feature: Parts of a response can be substitued for values found in the request b
     When  getting 'greeting' with query string:
       | parameter | value |
       | name      | Leon  |
-    Then the response should be 'Hello Leon, how are you?'
+    Then 'Hello Leon, how are you?' should be returned
 
 
   Scenario: No match is found in either the request body or query string
@@ -41,5 +41,5 @@ Feature: Parts of a response can be substitued for values found in the request b
     """
     Hello ${<name>(.*?)</name>}, how are you?
     """
-    When  getting 'greeting'
-    Then the response should be 'Hello ${<name>(.*?)</name>}, how are you?'
+    When  get 'greeting'
+    Then 'Hello ${<name>(.*?)</name>}, how are you?' should be returned

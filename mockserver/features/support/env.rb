@@ -96,5 +96,5 @@ World(Web)
 
 
 at_exit do
-  stop_mockserver
+#  stop_mockserver
 end
