@@ -1,7 +1,5 @@
 require 'rspec'
 require 'spec_helper'
-require 'cgi'
-require 'net/http'
 
 
 
