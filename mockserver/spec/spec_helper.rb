@@ -18,6 +18,7 @@ module Web
       response = using_mechanize do |browser|
         browser.get("#{MOCKSERVER_URL}#{url}", params)
       end
+
     end
 
     response
@@ -32,7 +33,9 @@ module Web
   private
   def using_mechanize
     begin
-      response = yield Mechanize.new
+      browser = Mechanize.new
+      browser.keep_alive = false
+      response = yield browser
 
       def response.code
         @code.to_i
