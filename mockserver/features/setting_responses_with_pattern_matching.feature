@@ -8,7 +8,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     """
 
   Scenario: A plain text pattern found in the request body
-    Given a response for 'greeting' with pattern '<name>leon</name>'
+    Given the response for 'greeting' with pattern '<name>leon</name>' is:
     """
     Hello Leon, how are you?
     """
@@ -21,7 +21,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     Then 'Hello Leon, how are you?' should be returned
 
   Scenario: A regex based pattern found in the request body
-    Given a response for 'greeting' with pattern '.*?leon<\/name>'
+    Given the response for 'greeting' with pattern '.*?leon<\/name>' is:
     """
     Hello Leon, how are you?
     """
@@ -35,7 +35,7 @@ Feature: The MockServer can be configured to return particular responses conditi
 
 
   Scenario: A plain text pattern found in the query string
-    Given a response for 'greeting' with pattern 'leon'
+    Given the response for 'greeting' with pattern 'leon' is:
     """
     Hello Leon, how are you?
     """
@@ -46,7 +46,7 @@ Feature: The MockServer can be configured to return particular responses conditi
 
 
   Scenario:  A regex based pattern found in the query string
-    Given a response for 'greeting' with pattern 'name=[L|l]eon'
+    Given the response for 'greeting' with pattern 'name=[L|l]eon' is:
     """
     Hello Leon, how are you?
     """
@@ -56,7 +56,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     Then 'Hello Leon, how are you?' should be returned
 
   Scenario: Pattern not matched
-    Given a response for 'greeting' with pattern '.*?leon<\/name>'
+    Given the response for 'greeting' with pattern '.*?leon<\/name>' is:
     """
     Hello Leon, how are you?
     """

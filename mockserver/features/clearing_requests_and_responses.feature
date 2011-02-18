@@ -34,8 +34,8 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     Say 'Goodbye' to me
     """
     When I clear 'all' requests from the MockServer
-    Then tracking the last request for 'greeting' should return a 404
-    Then tracking the last request for 'leaving' should return a 404
+    Then tracking the request for response id '1' should return a 404
+    Then tracking the request for response id '2' should return a 404
 
 
   Scenario: clearing a particular a request set
@@ -44,4 +44,4 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     See you later
     """
     When I clear 'greeting' requests from the MockServer
-    Then 'See you later' should have been tracked for 'leaving'
+    Then 'See you later' should have been tracked for response id '2'

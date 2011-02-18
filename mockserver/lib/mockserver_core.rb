@@ -10,6 +10,10 @@ class MockResponse
     @name, @value, @pattern, @response_id, @delay = name, value, pattern, @@id_count+=1, delay
   end
 
+  def self.reset_count
+    @@id_count = 0
+  end
+
 
 
   def value(body='', request_parameters={},query_string='')
@@ -121,9 +125,10 @@ class MockServerCore < Ramaze::Controller
       when 'requests' then
         REQUESTS.delete(name) if name or REQUESTS.clear
       when 'responses' then
-        RESPONSES.delete(name) if name or RESPONSES.clear
+        RESPONSES.delete(name) if name or RESPONSES.clear and MockResponse.reset_count
       else
         [REQUESTS, RESPONSES].each { |map| map.delete(name) if name or map.clear }
+        MockResponse.reset_count
     end
   end
 

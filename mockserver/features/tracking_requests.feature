@@ -16,13 +16,13 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello MockServer
     """
-    Then 'Hello MockServer' should have been tracked for 'greeting'
+    Then 'Hello MockServer' should have been tracked
 
     When getting 'greeting' with request parameters:
       | parameter | value |
       | firstname | Leon  |
       | surname   | Davis |
-    Then 'firstname=Leon&surname=Davis' should have been tracked for 'greeting'
+    Then 'firstname=Leon&surname=Davis' should have been tracked
 
 
   Scenario: The MockServer has not responsed
@@ -30,7 +30,7 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello
     """
-    Then tracking the last request for 'greeting' should return a 404
+    Then tracking the request should return a 404
 
 
   Scenario: A response is peeked at
@@ -42,8 +42,8 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello MockServer
     """
-    And peeking at the response for 'greeting'
-    Then 'Hello MockServer' should have been tracked for 'greeting'
+    And peeking at the response for '(.*?)'
+    Then 'Hello MockServer' should have been tracked
 
 
   Scenario: The same endpoint is set more than once
@@ -51,12 +51,33 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello
     """
-
-    When the response for 'greeting' is:
+    Then the response id for should be '1'
+    Given the response for 'greeting' is:
     """
     Hi
     """
-    Then the response ids for 'greeting' should be the same
+    Then the response id for should be '1'
 
+
+
+  Scenario: A default response and one for the same endpoint with but with a pattern is added to the MockServer
+    Given the response for 'greeting' is:
+    """
+    Hello who ever you are
+    """
+    And the response for 'greeting' with pattern 'Leon' is:
+    """
+    Hello Leon
+    """
+    When getting 'greeting' with request body:
+    """
+    My name is Joel
+    """
+    And getting 'greeting' with request body:
+    """
+    My name is Leon
+    """
+    Then 'My name is Joel' should have been tracked for response id '1'
+    Then 'My name is Leon' should have been tracked for response id '2'
 
 
