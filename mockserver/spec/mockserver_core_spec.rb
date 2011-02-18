@@ -159,8 +159,8 @@ describe 'mockserver' do
   end
 
   it 'should clear responses for a stack' do
-    get('/mockserver/set/greeting?response=hallo').body
-    get('/mockserver/set/hitbox?response=sitecat').body
+    get('/mockserver/set/greeting', :response=>'hallo').body
+    get('/mockserver/set/hitbox', :response=>'sitecat').body
 
 
     get('/mockserver/clear/responses/greeting')
