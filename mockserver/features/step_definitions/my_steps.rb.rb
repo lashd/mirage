@@ -84,6 +84,15 @@ end
 When /^I snapshot the MockServer$/ do
   get('/mockserver/snapshot')
 end
+
 When /^I rollback the MockServer$/ do
   get('/mockserver/rollback')
+end
+Given /^the response for '([^']*)' is file '([^']*)'$/ do |endpoint, file_path|
+  post("/mockserver/set/#{endpoint}", :file=>File.new(file_path))
+end
+
+Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
+  @response.save_as("temp.download")
+  FileUtils.cmp("temp.download", file_path).should == true
 end
