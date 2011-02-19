@@ -81,3 +81,9 @@ end
 Then /^it should take at least '(.*)' seconds$/ do |time|
  (@response_time).should >= time.to_f
 end
+When /^I snapshot the MockServer$/ do
+  get('/mockserver/snapshot')
+end
+When /^I rollback the MockServer$/ do
+  get('/mockserver/rollback')
+end
