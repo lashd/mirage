@@ -88,6 +88,7 @@ end
 When /^I rollback the MockServer$/ do
   get('/mockserver/rollback')
 end
+
 Given /^the response for '([^']*)' is file '([^']*)'$/ do |endpoint, file_path|
   post("/mockserver/set/#{endpoint}", :file=>File.new(file_path))
 end
