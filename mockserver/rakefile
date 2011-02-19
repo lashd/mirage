@@ -1,4 +1,7 @@
 require 'rubygems'
+require 'bundler/setup'
+Bundler.setup(:test)
+ENV['RUBYOPT']=''
 require 'rake'
 require 'open-uri'
 require 'cucumber'
@@ -76,7 +79,6 @@ end
 
 task :install => :gem do
   `gem install mirage`
-  ENV['BUNDLE_GEMFILE']=nil
 end
 
 Cucumber::Rake::Task.new(:features) do |t|
@@ -84,11 +86,11 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 task :start_mirage => :stop_mirage do
-  `mirage start`
+  %x[mirage start]
 end
 
 task :stop_mirage do |task|
-  `mirage stop`
+  %x[mirage stop]
   task.reenable
 end
 
