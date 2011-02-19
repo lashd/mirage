@@ -10,15 +10,6 @@ describe 'mockserver' do
     get('/mockserver/clear')
   end
 
-
-  it 'should pattern match url to access responses' do
-
-    get('/mockserver/set/greeting', :response=>'hello')
-    get('/mockserver/get/greeting/with/more/stuff/in/url').body.should == 'hello'
-
-  end
-
-
   it 'should let you peek a default response' do
     response_id = get("/mockserver/set/greeting", :response=>"hello").body
     puts "response id is: #{response_id}"

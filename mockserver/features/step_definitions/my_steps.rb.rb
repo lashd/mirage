@@ -52,8 +52,8 @@ When /^I clear '(.*?)' (responses|requests) from the MockServer$/ do |endpoint, 
   endpoint.downcase == 'all' ? get("/mockserver/clear/#{thing}/").code.should == 200 : get("/mockserver/clear/#{thing}/#{endpoint}").code.should == 200
 end
 
-When /^peeking at the response for '(.*?)'$/ do |endpoint|
-  get("/mockserver/peek/#{@response_id}")
+When /^peeking at the response for response id '(.*?)'$/ do |response_id|
+  @response = get("/mockserver/peek/#{response_id}")
 end
 
 Given /^an attempt is made to set '(.*?)' without a response$/ do |endpoint|

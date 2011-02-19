@@ -45,7 +45,7 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello MockServer
     """
-    And peeking at the response for '(.*?)'
+    And peeking at the response for response id '(.*?)'
     Then 'Hello MockServer' should have been tracked
 
 
