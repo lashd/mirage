@@ -28,5 +28,6 @@ Thanks you for installing mirage-#{s.version}.
   s.rubygems_version   = "1.3.7"
   s.files            = `git ls-files`.split("\n")
   s.test_files       = `git ls-files -- features/*`.split("\n")
+  s.executables      = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_path     = "lib"
 end

@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
-Bundler.setup(:test)
+Bundler.setup(:test,:self)
 require 'rake'
 require 'rspec/core/rake_task'
 require 'open-uri'
@@ -73,6 +73,16 @@ def wait_until time=30
   raise 'timeout waiting'
 end
 
+task :gem do
+  `gem build mirage.gemspec`
+end
+
+task :install => :gem do
+  `gem install mirage`
+#  require 'mirage'
+end
+
+
 task :start_mockserver => :stop_mockserver do
   puts "Starting mockserver"
   `thin -p 7000 -l thin.log -D -V -d -R lib/config.ru start`
@@ -99,4 +109,4 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 
-task :default => [:features]
+task :default => [:install, :features]

@@ -18,6 +18,9 @@ GEM
     json (1.4.6)
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
+    mirage (1.0)
+      ramaze
+      thin
     nokogiri (1.4.4)
     rack (1.2.1)
     rake (0.8.7)
@@ -43,6 +46,7 @@ PLATFORMS
 DEPENDENCIES
   cucumber
   mechanize
+  mirage
   rake
   ramaze
   rspec

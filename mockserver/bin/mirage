@@ -1,12 +1,9 @@
+#!/usr/bin/env ruby
 require 'rubygems'
-require 'bundler/setup'
-Bundler.setup(:test)
-
-require 'cucumber'
 require 'open-uri'
-require 'rspec'
-
+require 'optparse'
 require 'mechanize'
+$LOAD_PATH.unshift(File.dirname(__FILE__))
 MOCKSERVER_URL = "http://localhost:7000"
 
 module Web
@@ -62,46 +59,61 @@ module Web
   end
 
 end
-include Web
 
+
+include Web
 
 def wait_until time=30
   start_time = Time.now
   until Time.now >= start_time + time
+    puts "waiting"
     sleep 0.1
     return if yield
   end
   raise 'timeout waiting'
 end
 
-def stop_mockserver
-  puts "Stoping mockserver"
-  `mirage stop`
-  wait_until do
-    get('/mockserver/clear').is_a?(Errno::ECONNREFUSED)
-  end
-  FileUtils.rm_rf('tmp')
-end
 
-def start_mockserver
-  stop_mockserver
-  puts "Starting mockserver"
-  `mirage start`
+if ARGV.include?('start')
+  begin
+    if open('http://localhost:7000/mockserver/clear')
+      puts "Mirage already running"
+      exit 1
+    end
+  rescue
+  end
+
+
+  puts "Starting the Mirage"
+  `thin -p 7000 -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
+
   wait_until do
     begin
-      open('http://localhost:7000/mockserver/clear')
+      get('/mockserver/clear')
     rescue
     end
   end
+
+
+elsif ARGV.include?('stop')
+  puts "Stoping Mirage"
+  `thin stop`
+  wait_until 45 do
+    get('/mockserver/clear').is_a?(Errno::ECONNREFUSED)
+  end
+#  FileUtils.rm_rf('tmp')
+
+else
+  puts "You must choose to: Start or Stop the mirage"
+  exit 1
+
 end
 
-start_mockserver
 
+#ARGV.each { |arg| puts arg }
 
-
-World(Web)
-
-
-at_exit do
-  stop_mockserver
-end
+#OptionParser.new do |opts|
+#  opts.on("-s", "--start") do |log|
+#    puts "starting"
+#  end
+#end.parse!
