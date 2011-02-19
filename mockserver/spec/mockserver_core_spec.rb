@@ -11,10 +11,6 @@ describe 'mockserver' do
   end
 
 
-  it 'should return a 404 when trying to peek for a request that does not exist' do
-    get("/mockserver/peek/100").code.should == 404
-  end
-
 
   it 'should reset mocks back to snapshot' do
     get("/mockserver/set/greeting", :response=>"hello")
