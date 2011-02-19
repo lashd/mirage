@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 require 'rubygems'
-require "#{File.dirname(__FILE__)}/mockserver_core"
-require "#{File.dirname(__FILE__)}/mockserver_client"
+require "#{File.dirname(__FILE__)}/core"
 require 'rake'
 require 'optparse'
 
