@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
+$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'rubygems'
 require 'mirage'
 require 'open-uri'
 require 'optparse'
 require 'mechanize'
-$LOAD_PATH.unshift(File.dirname(__FILE__))
+
 
 include Mirage::Util
 
