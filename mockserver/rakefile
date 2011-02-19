@@ -72,8 +72,7 @@ def wait_until time=30
   raise 'timeout waiting'
 end
 
-task :gem do
-  `gem uninstall -x mirage `
+task :gem => :clean do
   `gem build mirage.gemspec`
 end
 
@@ -95,6 +94,12 @@ task :stop_mirage do |task|
 end
 
 
+task :clean do |task|
+  puts "cleaning"
+  `gem uninstall -x mirage`
+  task.reenable
+end
 
 
-task :default => [:install, :start_mirage, :features, :stop_mirage]
+
+task :default => [:install, :start_mirage, :features, :stop_mirage, :clean]
