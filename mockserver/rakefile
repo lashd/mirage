@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
 Bundler.setup(:test)
-ENV['RUBYOPT']=''
 require 'rake'
 require 'open-uri'
 require 'cucumber'
@@ -85,11 +84,11 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 task :start_mirage => :stop_mirage do
-  %x[mirage start]
+  %x[export RUBYOPT="" && mirage start]
 end
 
 task :stop_mirage do |task|
-  %x[mirage stop]
+  %x[export RUBYOPT="" mirage stop]
   task.reenable
 end
 
