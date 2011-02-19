@@ -61,7 +61,7 @@ class MockServerCore < Ramaze::Controller
   def peek response_id
     peeked_response = nil
     RESPONSES.values.each do |responses|
-      peeked_response = responses.default if responses.default && responses.default.response_id == response_id.to_i
+      peeked_response = responses[:default] if responses[:default] && responses[:default].response_id == response_id.to_i
       peeked_response = responses.values.find { |response| response.response_id == response_id.to_i } if peeked_response.nil?
       break unless peeked_response.nil?
     end
@@ -90,8 +90,8 @@ class MockServerCore < Ramaze::Controller
 
     case pattern
       when nil then
-        old_response = stored_response.default
-        stored_response.default = response
+        old_response = stored_response[:default]
+        stored_response[:default] = response
       else
         old_response = stored_response[/#{pattern}/] unless stored_response.empty?
         stored_response[/#{pattern}/] = response
@@ -110,13 +110,13 @@ class MockServerCore < Ramaze::Controller
 
     unless (args.empty?)
       other_response = stored_responses("#{name}/#{args.join('/')}")
-      if other_response.default || !other_response.empty?
+      if other_response[:default] || !other_response.empty?
         stored_response = other_response
       end
     end
 
-    stored_response.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
-    record = stored_response.default unless record
+    stored_response.find_all{|pattern, mock_resoonse| pattern != :default }.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
+    record = stored_response[:default] unless record
 
     respond('Response not found', 404) unless record
     sleep record.delay
@@ -136,10 +136,7 @@ class MockServerCore < Ramaze::Controller
         REQUESTS.delete(name) if name or REQUESTS.clear
       when 'responses' then
         if name
-
-          stored_responses = RESPONSES.delete(name)
-          REQUESTS.delete(stored_responses.default.response_id)
-          stored_responses.each{|pattern, response| REQUESTS.delete(response.response_id)}
+          RESPONSES.delete(name).each{|pattern, response| REQUESTS.delete(response.response_id)}
         else
          RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
         end
