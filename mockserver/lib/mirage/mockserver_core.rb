@@ -135,8 +135,15 @@ class MockServerCore < Ramaze::Controller
       when 'requests' then
         REQUESTS.delete(name) if name or REQUESTS.clear
       when 'responses' then
-        RESPONSES.delete(name) if name or RESPONSES.clear and MockResponse.reset_count
-      else
+        if name
+
+          stored_responses = RESPONSES.delete(name)
+          REQUESTS.delete(stored_responses.default.response_id)
+          stored_responses.each{|pattern, response| REQUESTS.delete(response.response_id)}
+        else
+         RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
+        end
+      when nil
         [REQUESTS, RESPONSES].each { |map| map.delete(name) if name or map.clear }
         MockResponse.reset_count
     end
@@ -164,3 +171,4 @@ class MockServerCore < Ramaze::Controller
     RESPONSES[name]||={}
   end
 end
+

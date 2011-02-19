@@ -22,16 +22,26 @@ class Mirage
       http_get("/peek/#{response_id}")
     end
 
-    def clear thing=nil, endpoint='all'
-      if endpoint == 'all'
+    def clear thing=nil, endpoint=nil
+      if endpoint.nil?
         http_get("/clear")
       else
-        if thing.nil?
+          if thing.nil?
           http_get("/clear/#{endpoint}")
         else
           http_get("/clear/#{thing}/#{endpoint}")
         end
+
       end
+#      if endpoint == 'all'
+#        http_get("/clear/#{thing ? "/#{thing}" : ''}/#{endpoint}")
+#      else
+#        if thing.nil?
+#          http_get("/clear/#{endpoint}")
+#        else
+#          http_get("/clear/#{thing}/#{endpoint}")
+#        end
+#      end
     end
 
     def check response_id

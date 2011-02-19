@@ -1,6 +1,7 @@
 Feature: Once responses and requests are on the MockServer they can be cleared.
+  Clearing a response clears its requests
 
-  Background: The MockServer has already got a response for greeting and leaving on it
+  Background: The MockServer has already got a response for greeting and leaving on it.
     Given the response for 'greeting' is:
     """
     Hello
@@ -21,8 +22,19 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     When I clear 'greeting' responses from the MockServer
     And getting 'greeting'
     Then a 404 should be returned
+    And tracking the request for response id '1' should return a 404
     And getting 'leaving'
     Then 'Goodbye' should be returned
+
+
+  Scenario: Check request for a response that has been cleared
+    When getting 'greeting' with request body:
+    """
+    greet me :)
+    """
+    And I clear 'greeting' responses from the MockServer
+    Then tracking the request for response id '1' should return a 404
+
 
   Scenario: clearing requests
     And getting 'greeting' with request body:

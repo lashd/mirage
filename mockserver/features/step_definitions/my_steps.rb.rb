@@ -53,7 +53,12 @@ Then /^a (404|500) should be returned$/ do |error_code|
 end
 
 When /^I clear '(.*?)' (responses|requests) from the MockServer$/ do |endpoint, thing|
-   $mirage.clear(thing,endpoint).code.should == 200
+
+  if endpoint == 'all'
+    $mirage.clear
+  else
+    $mirage.clear(thing,endpoint).code.should == 200
+  end
 end
 
 When /^peeking at the response for response id '(.*?)'$/ do |response_id|
