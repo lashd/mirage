@@ -62,7 +62,13 @@ class MockServerCore < Ramaze::Controller
       break unless peeked_response.nil?
     end
     respond("Can not peek reponse, id:#{response_id} does not exist}", 404) unless peeked_response
-    peeked_response.value
+    if peeked_response.is_a? MockFileResponse
+      tempfile, filename, type = peeked_response.file.values_at(:tempfile, :filename, :type)
+      send_file(tempfile.path, type, "Content-Disposition: attachment; filename=#{filename}")
+    else
+      peeked_response.value
+    end
+
   end
 
   def set name, *args
