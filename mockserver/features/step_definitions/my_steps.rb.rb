@@ -67,9 +67,11 @@ end
 Then /^the response id should be '(\d+)'$/ do |response_id|
   @response_id.should == response_id
 end
+
 Then /^'(.*?)' should have been tracked$/ do |text|
   get("/mockserver/check/#{@response_id}").body.should == text
 end
+
 Then /^'(.*?)' should have been tracked for response id '(.*?)'$/ do |text, response_id|
    get("/mockserver/check/#{response_id}").body.should == text
 end
@@ -81,12 +83,9 @@ end
 Then /^it should take at least '(.*)' seconds$/ do |time|
  (@response_time).should >= time.to_f
 end
-When /^I snapshot the MockServer$/ do
-  get('/mockserver/snapshot')
-end
 
-When /^I rollback the MockServer$/ do
-  get('/mockserver/rollback')
+When /^I (rollback|snapshot) the MockServer$/ do |action|
+  get("/mockserver/#{action}")
 end
 
 Given /^the response for '([^']*)' is file '([^']*)'$/ do |endpoint, file_path|
