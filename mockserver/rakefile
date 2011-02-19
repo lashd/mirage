@@ -101,6 +101,7 @@ task :clean do |task|
     puts "cleaning"
     `export RUBYOPT="" && gem uninstall -x mirage`
   end
+  Dir['*.gem'].each{|gem| FileUtils.rm_f(gem)}
   task.reenable
 end
 
