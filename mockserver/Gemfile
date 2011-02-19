@@ -1,17 +1,13 @@
 source :rubygems
 
 gem 'ramaze'
-
-group :test, :development do
-  gem 'rspec'
-  gem 'rake'
-end
+gem 'thin'
 
 group :test do
-  gem 'rack-test'
+  gem 'rake'
   gem 'mechanize'
-  gem 'thin'
   gem 'cucumber'
+  gem 'rspec'
 end
 
 
