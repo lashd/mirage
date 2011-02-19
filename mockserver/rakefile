@@ -90,14 +90,9 @@ task :stop_mockserver do |task|
   task.reenable
 end
 
-desc "Run all examples"
-RSpec::Core::RakeTask.new('specs') do |t|
-  t.pattern = 'spec/**/*_spec.rb'
-end
-
 Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "features --format pretty"
 end
 
 
-task :default => [:start_mockserver, :specs, :features, :stop_mockserver]
+task :default => [:start_mockserver, :features, :stop_mockserver]
