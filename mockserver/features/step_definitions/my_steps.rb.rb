@@ -3,6 +3,8 @@ Before do
 end
 
 Given /^the response for '([^']*)' is:$/ do |endpoint, text|
+  @expected_text = text
+  @endpoint = endpoint
   @response_id = get("/mockserver/set/#{endpoint}", :response => text).body
 end
 
@@ -62,4 +64,13 @@ end
 
 Then /^tracking the request for response id '(.*?)' should return a 404$/ do |response_id|
   get("/mockserver/check/#{response_id}").code.should == 404
+end
+When /^a delay of '(.*)' seconds$/ do |delay|
+  @start_time = Time.now
+  @response_id = get("/mockserver/set/#{@endpoint}", :response => @expected_text, :delay => delay.to_f).body
+end
+
+
+Then /^it should take at least '(.*)' seconds$/ do |time|
+ (Time.now - @start_time).should >= time.to_f
 end

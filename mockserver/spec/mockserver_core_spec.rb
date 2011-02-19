@@ -19,16 +19,6 @@ describe 'mockserver' do
   end
 
 
-
-  it 'should allow a delay to be set before a response is returned' do
-    delay = 1
-    get("/mockserver/set/greeting", :response=>'hello', :delay=>delay)
-    test_start_time = Time.now
-    get('/mockserver/get/greeting')
-    test_finish_time = Time.now
-    (test_finish_time - test_start_time).should >= delay
-  end
-
   it 'should let you peek a default response' do
     response_id = get("/mockserver/set/greeting", :response=>"hello").body
     puts "response id is: #{response_id}"
