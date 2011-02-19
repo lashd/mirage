@@ -1,22 +1,12 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'mirage/client'
+require 'mirage'
 require 'open-uri'
 require 'optparse'
 require 'mechanize'
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-MOCKSERVER_URL = "http://localhost:7001"
 
-def wait_until time=30
-  start_time = Time.now
-  until Time.now >= start_time + time
-    puts "waiting"
-    sleep 0.1
-    return if yield
-  end
-  raise 'timeout waiting'
-end
-
+include Mirage::Util
 
 mirage = Mirage::Client.new
 if ARGV.include?('start')

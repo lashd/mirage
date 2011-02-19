@@ -3,7 +3,7 @@ require 'rubygems'
 require 'bundler/setup'
 Bundler.setup(:test)
 
-require 'mirage/client'
+require 'mirage'
 require 'cucumber'
 require 'open-uri'
 require 'rspec'
@@ -23,6 +23,8 @@ module Regression
 end
 
 module IntelliJ
+  include  Mirage::Util
+
   def stop_mockserver
     puts "Stoping Mirage"
     `#{File.dirname(__FILE__)}/../../bin/mirage stop`
@@ -42,16 +44,6 @@ module IntelliJ
     end
   end
 end
-
-def wait_until time=30
-  start_time = Time.now
-  until Time.now >= start_time + time
-    sleep 0.1
-    return if yield
-  end
-  raise 'timeout waiting'
-end
-
 
 'regression' == ENV['mode'] ? World(Regression) : World(IntelliJ)
 'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
