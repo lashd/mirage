@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.setup(:test)
+
 require 'cucumber'
 require 'open-uri'
 require 'rspec'
