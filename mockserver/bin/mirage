@@ -1,67 +1,11 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+require 'mirage/client'
 require 'open-uri'
 require 'optparse'
 require 'mechanize'
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 MOCKSERVER_URL = "http://localhost:7001"
-
-module Web
-  def get url, params={}
-    if params[:body]
-      response = Net::HTTP.start("localhost", 7001) do |http|
-        request = Net::HTTP::Get.new(url)
-        request.body=params[:body]
-        http.request(request)
-      end
-
-      def response.code
-        @code.to_i
-      end
-
-    else
-      response = using_mechanize do |browser|
-        browser.get("#{MOCKSERVER_URL}#{url}", params)
-      end
-
-    end
-
-    response
-  end
-
-  def post url, params
-    using_mechanize do |browser|
-      browser.post("#{MOCKSERVER_URL}#{url}",params)
-    end
-  end
-
-  private
-  def using_mechanize
-    begin
-      browser = Mechanize.new
-      browser.keep_alive = false
-      response = yield browser
-
-      def response.code
-        @code.to_i
-      end
-    rescue Exception => e
-      response = e
-
-      def response.code
-        self.response_code.to_i
-      end
-      def response.body
-        ""
-      end
-    end
-    response
-  end
-
-end
-
-
-include Web
 
 def wait_until time=30
   start_time = Time.now
@@ -74,13 +18,11 @@ def wait_until time=30
 end
 
 
+mirage = Mirage::Client.new
 if ARGV.include?('start')
-  begin
-    if open('http://localhost:7001/mirage/clear')
-      puts "Mirage already running"
-      exit 1
-    end
-  rescue
+  if mirage.running?
+    puts "Mirage already running"
+    exit 1
   end
 
 
@@ -88,10 +30,7 @@ if ARGV.include?('start')
   `thin -p 7001 -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
 
   wait_until do
-    begin
-      get('/mirage/clear')
-    rescue
-    end
+    mirage.running?
   end
 
 
@@ -99,9 +38,8 @@ elsif ARGV.include?('stop')
   puts "Stoping Mirage"
   `thin stop`
   wait_until 45 do
-    get('/mirage/clear').is_a?(Errno::ECONNREFUSED)
+    !mirage.running?
   end
-#  FileUtils.rm_rf('tmp')
 
 else
   puts "You must choose to: Start or Stop the mirage"
