@@ -10,18 +10,6 @@ describe 'mockserver' do
     get('/mockserver/clear')
   end
 
-  it 'should let you peek a default response' do
-    response_id = get("/mockserver/set/greeting", :response=>"hello").body
-    puts "response id is: #{response_id}"
-    get("/mockserver/peek/#{response_id}").body.should == 'hello'
-  end
-
-  it 'should let you peek a patterned response' do
-    expected_response = 'patterned_response'
-    response_id = get("/mockserver/set/greeting", :response=>expected_response, :pattern=>'pattern').body
-    get("/mockserver/peek/#{response_id}").body.should == expected_response
-  end
-
 
   it 'should return a 404 when trying to peek for a request that does not exist' do
     get("/mockserver/peek/100").code.should == 404
