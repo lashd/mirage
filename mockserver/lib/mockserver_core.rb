@@ -51,8 +51,12 @@ end
 
 class MockServerCore < Ramaze::Controller
   include Ramaze::Helper::SendFile
-  map '/mockserver'
+  map '/mirage'
   RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
+
+  def index
+    'welcome to mirage'
+  end
 
   def peek response_id
     peeked_response = nil

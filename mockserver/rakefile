@@ -11,7 +11,7 @@ MOCKSERVER_URL = "http://localhost:7000"
 module Web
   def get url, params={}
     if params[:body]
-      response = Net::HTTP.start("localhost", 7000) do |http|
+      response = Net::HTTP.start("localhost", 7001) do |http|
         request = Net::HTTP::Get.new(url)
         request.body=params[:body]
         http.request(request)
@@ -33,7 +33,7 @@ module Web
 
   def post url, params
     using_mechanize do |browser|
-      browser.post("#{MOCKSERVER_URL}#{url}",params)
+      browser.post("#{MOCKSERVER_URL}#{url}", params)
     end
   end
 
@@ -85,20 +85,24 @@ end
 
 task :start_mirage => :stop_mirage do
   %x[export RUBYOPT="" && mirage start]
+  task.reenable
 end
 
 task :stop_mirage do |task|
-  %x[export RUBYOPT="" mirage stop]
+  puts "stoping mirage"
+  %x[export RUBYOPT="" && mirage stop]
   task.reenable
 end
 
 
 task :clean do |task|
-  puts "cleaning"
-  `gem uninstall -x mirage`
+
+  if system "RUBYOPT='' && gem list -i mirage"
+    puts "cleaning"
+    `export RUBYOPT="" && gem uninstall -x mirage`
+  end
   task.reenable
 end
-
 
 
 task :default => [:install, :start_mirage, :features, :stop_mirage, :clean]
