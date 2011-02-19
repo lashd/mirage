@@ -71,12 +71,16 @@ def wait_until time=30
   raise 'timeout waiting'
 end
 
+def run_command command
+  system "export RUBYOPT='' && #{command}"
+end
+
 task :gem => :clean do
-  `gem build mirage.gemspec`
+  run_command 'gem build mirage.gemspec'
 end
 
 task :install => :gem do
-  `gem install mirage`
+  run_command "gem install mirage"
 end
 
 Cucumber::Rake::Task.new(:features) do |t|
@@ -84,22 +88,22 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 task :start_mirage => :stop_mirage do
-  %x[export RUBYOPT="" && mirage start]
+  run_command "mirage start"
   task.reenable
 end
 
 task :stop_mirage do |task|
   puts "stoping mirage"
-  %x[export RUBYOPT="" && mirage stop]
+  run_command "mirage stop"
   task.reenable
 end
 
 
 task :clean do |task|
 
-  if system "RUBYOPT='' && gem list -i mirage"
+  if run_command "gem list -i mirage"
     puts "cleaning"
-    `export RUBYOPT="" && gem uninstall -x mirage`
+    run_command "gem uninstall -x mirage"
   end
   Dir['*.gem'].each{|gem| FileUtils.rm_f(gem)}
   task.reenable
