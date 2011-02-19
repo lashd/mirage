@@ -9,10 +9,3 @@ group :test do
   gem 'cucumber'
   gem 'rspec'
 end
-
-group :self do
-  begin
-    gem 'mirage'
-  rescue
-  end
-end

@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
 Bundler.setup(:test)
-
 require 'cucumber'
 require 'open-uri'
 require 'rspec'
@@ -34,7 +33,7 @@ module Web
 
   def post url, params
     using_mechanize do |browser|
-      browser.post("#{MOCKSERVER_URL}#{url}",params)
+      browser.post("#{MOCKSERVER_URL}#{url}", params)
     end
   end
 
@@ -54,6 +53,7 @@ module Web
       def response.code
         self.response_code.to_i
       end
+
       def response.body
         ""
       end
@@ -61,6 +61,38 @@ module Web
     response
   end
 
+end
+
+module Regression
+  def stop_mockserver
+  end
+
+  def start_mockserver
+  end
+end
+
+module IntelliJ
+  def stop_mockserver
+    puts "Stoping mockserver"
+    `#{File.dirname(__FILE__)}/../../bin/mirage stop`
+    wait_until do
+      get('/mockserver/clear').is_a?(Errno::ECONNREFUSED)
+    end
+    FileUtils.rm_rf('tmp')
+  end
+
+  def start_mockserver
+    stop_mockserver
+    puts "Starting mockserver intellij style  #{File.dirname(__FILE__)}/../../bin/mirage start"
+
+    `#{File.dirname(__FILE__)}/../../bin/mirage start`
+    wait_until do
+      begin
+        open('http://localhost:7000/mockserver/clear')
+      rescue
+      end
+    end
+  end
 end
 include Web
 
@@ -74,33 +106,15 @@ def wait_until time=30
   raise 'timeout waiting'
 end
 
-def stop_mockserver
-  puts "Stoping mockserver"
-  `mirage stop`
-  wait_until do
-    get('/mockserver/clear').is_a?(Errno::ECONNREFUSED)
-  end
-  FileUtils.rm_rf('tmp')
-end
 
-def start_mockserver
-  stop_mockserver
-  puts "Starting mockserver"
-  `mirage start`
-  wait_until do
-    begin
-      open('http://localhost:7000/mockserver/clear')
-    rescue
-    end
-  end
-end
-
-start_mockserver
 
 
 
 World(Web)
 
+'regression' == ENV['mode'] ? World(Regression) : World(IntelliJ)
+'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
+start_mockserver
 
 at_exit do
   stop_mockserver

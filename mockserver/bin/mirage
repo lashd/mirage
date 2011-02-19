@@ -108,12 +108,3 @@ else
   exit 1
 
 end
-
-
-#ARGV.each { |arg| puts arg }
-
-#OptionParser.new do |opts|
-#  opts.on("-s", "--start") do |log|
-#    puts "starting"
-#  end
-#end.parse!

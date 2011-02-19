@@ -1,9 +1,5 @@
 require 'rubygems'
-require 'bundler/setup'
-
-Bundler.setup(:test,:self)
 require 'rake'
-require 'rspec/core/rake_task'
 require 'open-uri'
 require 'cucumber'
 require 'cucumber/rake/task'
@@ -74,39 +70,29 @@ def wait_until time=30
 end
 
 task :gem do
+  `gem uninstall -x mirage `
   `gem build mirage.gemspec`
 end
 
 task :install => :gem do
   `gem install mirage`
-#  require 'mirage'
-end
-
-
-task :start_mockserver => :stop_mockserver do
-  puts "Starting mockserver"
-  `thin -p 7000 -l thin.log -D -V -d -R lib/config.ru start`
-  wait_until do
-    begin
-      open('http://localhost:7000/mockserver/clear')
-    rescue
-    end
-  end
-end
-
-task :stop_mockserver do |task|
-  puts "Stoping mockserver"
-  `thin stop`
-  wait_until do
-    get('/mockserver/clear').is_a?(Errno::ECONNREFUSED)
-  end
-  FileUtils.rm_rf('tmp')
-  task.reenable
+  ENV['BUNDLE_GEMFILE']=nil
 end
 
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --format pretty"
+  t.cucumber_opts = "mode=regression features --format pretty"
+end
+
+task :start_mirage => :stop_mirage do
+  `mirage start`
+end
+
+task :stop_mirage do |task|
+  `mirage stop`
+  task.reenable
 end
 
 
-task :default => [:install, :features]
+
+
+task :default => [:install, :start_mirage, :features, :stop_mirage]
