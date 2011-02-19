@@ -11,23 +11,43 @@ class Mirage
     end
 
     def get endpoint, params={}
-
+      http_get("/get/#{endpoint}", params)
     end
 
     def set endpoint, params={}
-
+      http_post("/set/#{endpoint}", params)
     end
 
-    def clear
+    def peek response_id
+      http_get("/peek/#{response_id}")
+    end
 
+    def clear thing=nil, endpoint='all'
+      if endpoint == 'all'
+        http_get("/clear")
+      else
+        if thing.nil?
+          http_get("/clear/#{endpoint}")
+        else
+          http_get("/clear/#{thing}/#{endpoint}")
+        end
+      end
+    end
+
+    def check response_id
+      http_get("/check/#{response_id}")
     end
 
     def snapshot
-
+      http_post("/snapshot")
     end
 
     def rollback
+      http_post("/rollback")
+    end
 
+    def running?
+      !http_post('/clear').is_a?(Errno::ECONNREFUSED)
     end
 
     private
@@ -45,7 +65,7 @@ class Mirage
 
       else
         response = using_mechanize do |browser|
-          browser.get("http://#{@host}/#{@context_root}", params)
+          browser.get("http://#{@host}:#{@port}/#{@context_root}/#{endpoint}", params)
         end
 
       end
@@ -53,9 +73,9 @@ class Mirage
       response
     end
 
-    def http_post url, params
+    def http_post url, params={}
       using_mechanize do |browser|
-        browser.post("http://#{@host}/#{@context_root}/#{url}", params)
+        browser.post("http://#{@host}:#{@port}/#{@context_root}/#{url}", params)
       end
     end
 
