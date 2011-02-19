@@ -95,4 +95,4 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 
-task :default => [:start_mockserver, :features, :stop_mockserver]
+task :default => [:features]
