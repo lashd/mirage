@@ -2,22 +2,34 @@ Before do
   get('/mockserver/clear')
 end
 
-Given /^the response for '([^']*)' is:$/ do |endpoint, text|
-  @expected_text = text
-  @endpoint = endpoint
-  @response_id = get("/mockserver/set/#{endpoint}", :response => text).body
-end
 
-When /^the response for '([^']*)' with pattern '([^']*)' is:$/ do |endpoint, pattern, text|
-  @response_id = get("/mockserver/set/#{endpoint}", :response => text, :pattern=> pattern).body
+When /^the response for '([^']*)' (with pattern '([^']*)' )?(with a delay of '(\d+)' )?is:$/ do |endpoint, *args, response|
+
+  options = {:response => response}
+  delay_regex = /with a delay of '(\d+)'/
+  pattern_regex = /with pattern '([^']*)'/
+  args = args.values_at(0,2).flatten
+  args.each do |arg|
+    case arg
+      when delay_regex then options[:delay] = arg.scan(delay_regex).first[0]
+      when pattern_regex then options[:pattern] = arg.scan(pattern_regex).first[0]
+    end
+  end
+  @response_id = get("/mockserver/set/#{endpoint}", options).body
 end
 
 When /^getting '(.*?)'$/ do |endpoint|
-  @response = get("/mockserver/get/#{endpoint}")
+  get_response(endpoint)
 end
 
 When /^getting '(.*?)' with request body:$/ do |endpoint, request_body|
-  @response = get("/mockserver/get/#{endpoint}", :body => request_body)
+  get_response(endpoint, :body => request_body)
+end
+
+def get_response(endpoint, parameters={})
+  start_time = Time.now
+  @response = get("/mockserver/get/#{endpoint}", parameters)
+  @response_time = Time.now - start_time
 end
 
 When /^getting '(.*?)' with request parameters:$/ do |endpoint, table|
@@ -25,7 +37,7 @@ When /^getting '(.*?)' with request parameters:$/ do |endpoint, table|
   table.hashes.each do |hash|
     parameters[hash['parameter'].to_sym] = hash['value']
   end
-  @response = get("/mockserver/get/#{endpoint}", parameters)
+  get_response(endpoint, parameters)
 end
 
 Then /^'(.*?)' should be returned$/ do |expected_response|
@@ -65,12 +77,7 @@ end
 Then /^tracking the request for response id '(.*?)' should return a 404$/ do |response_id|
   get("/mockserver/check/#{response_id}").code.should == 404
 end
-When /^a delay of '(.*)' seconds$/ do |delay|
-  @start_time = Time.now
-  @response_id = get("/mockserver/set/#{@endpoint}", :response => @expected_text, :delay => delay.to_f).body
-end
-
 
 Then /^it should take at least '(.*)' seconds$/ do |time|
- (Time.now - @start_time).should >= time.to_f
+ (@response_time).should >= time.to_f
 end

@@ -50,6 +50,9 @@ module Web
       def response.code
         self.response_code.to_i
       end
+      def response.body
+        ""
+      end
     end
     response
   end
