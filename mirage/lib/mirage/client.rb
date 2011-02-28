@@ -33,15 +33,6 @@ class Mirage
         end
 
       end
-#      if endpoint == 'all'
-#        http_get("/clear/#{thing ? "/#{thing}" : ''}/#{endpoint}")
-#      else
-#        if thing.nil?
-#          http_get("/clear/#{endpoint}")
-#        else
-#          http_get("/clear/#{thing}/#{endpoint}")
-#        end
-#      end
     end
 
     def check response_id

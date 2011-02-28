@@ -3,7 +3,7 @@ Before do
 end
 
 Before('@command_line') do
-  stop_mockserver
+  stop_mockserver if $mirage.running?
 end
 
 
@@ -111,6 +111,15 @@ end
 Then /^mirage should be running on '(.*)'$/ do |url|
   Mechanize.new.get(url).code.to_i.should == 200
 end
-Given /^I start Mirage$/ do
-  start_mockserver
+
+Given /^I start Mirage( on port '([^']*)')?$/ do|*args|
+  options = {}
+
+  port_regex=/on port'([^']*)'/
+  args.each do |arg|
+    case arg
+      when port_regex then options[:port] = arg.scan(port_regex).first[0]
+    end
+  end
+  start_mockserver options
 end

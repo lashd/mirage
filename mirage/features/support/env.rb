@@ -5,7 +5,6 @@ Bundler.setup(:test)
 
 require 'mirage'
 require 'cucumber'
-require 'open-uri'
 require 'rspec'
 
 require 'mechanize'
@@ -15,30 +14,29 @@ $mirage = Mirage::Client.new
 
 
 module Regression
-  def stop_mockserver
+  def stop_mockserver options ={}
   end
 
-  def start_mockserver
+  def start_mockserver options={}
   end
 end
 
 module IntelliJ
   include  Mirage::Util
 
-  def stop_mockserver
-    puts "Stoping Mirage"
-    `#{File.dirname(__FILE__)}/../../bin/mirage stop`
+  def stop_mockserver options={}
+    system "#{File.dirname(__FILE__)}/../../bin/mirage stop"
     wait_until do
       !$mirage.running?
     end
     FileUtils.rm_rf('tmp')
   end
 
-  def start_mockserver
+  def start_mockserver options ={}
     stop_mockserver
     puts "Starting mockserver intellij style  #{File.dirname(__FILE__)}/../../bin/mirage start"
 
-    `#{File.dirname(__FILE__)}/../../bin/mirage start`
+    system "#{File.dirname(__FILE__)}/../../bin/mirage start"
     wait_until do
       $mirage.running?
     end

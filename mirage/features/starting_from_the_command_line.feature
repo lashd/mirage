@@ -1,8 +1,8 @@
 Feature: Mirage can be started from the command line.
   Usage:
   Start: Start the Mirage Server
-    --port PORT: The port for Mirage to start on. Defaults to 7001
-    --contextRoot ROOT: Defaults to '/mirage'
+  --port PORT: The port for Mirage to start on. Defaults to 7001
+  --contextRoot ROOT: Defaults to '/mirage'
 
   Stop: Stop the Mirage Server
 
@@ -10,3 +10,8 @@ Feature: Mirage can be started from the command line.
   Scenario: Starting Mirage
     Given I start Mirage
     Then mirage should be running on 'http://localhost:7001/mirage'
+
+#  @command_line
+#  Scenario: Starting Mirage on a custom port
+#    Given I start Mirage on port '9001'
+#    Then mirage should be running on 'http://localhost:9001/mirage'

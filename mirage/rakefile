@@ -32,7 +32,6 @@ task :start_mirage => :stop_mirage do
 end
 
 task :stop_mirage do |task|
-  puts "stoping mirage"
   run_command "mirage stop"
   task.reenable
 end
