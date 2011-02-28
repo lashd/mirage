@@ -109,7 +109,9 @@ Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
   FileUtils.cmp("temp.download", file_path).should == true
 end
 Then /^mirage should be running on '(.*)'$/ do |url|
-  Mechanize.new.get(url).code.to_i.should == 200
+  browser = Mechanize.new
+  browser.keep_alive= false
+  browser.get(url).code.to_i.should == 200
 end
 
 Given /^I start Mirage( on port '([^']*)')?$/ do|*args|
