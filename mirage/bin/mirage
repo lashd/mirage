@@ -5,6 +5,15 @@ require 'mirage'
 require 'open-uri'
 require 'optparse'
 require 'mechanize'
+require 'sys/proctable'
+
+include Sys
+
+class ProcTable::ProcTableStruct
+  def kill
+    Process.kill(9, self.pid)
+  end
+end
 
 
 include Mirage::Util
@@ -35,7 +44,7 @@ if ARGV.include?('start')
 
 
   puts "Starting the Mirage"
-  `thin -p #{options[:port]} -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
+  `thin --tag mirage -p #{options[:port]} -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
 
   wait_until do
     mirage.running?
@@ -44,7 +53,11 @@ if ARGV.include?('start')
 
 elsif ARGV.include?('stop')
   puts "Stoping Mirage"
-  `thin stop`
+  begin
+    ProcTable.ps.find{|ps| ps.cmdline =~ /\[mirage\]/}.kill
+  rescue
+    puts 'Mirage is not running'
+  end
 else
   puts "You must choose to: Start or Stop the mirage"
   exit 1
