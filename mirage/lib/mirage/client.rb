@@ -4,9 +4,11 @@ require 'open-uri'
 class Mirage
   class Client
     def initialize options={}
-      options.merge!({:host=>'localhost', :port=>7001, :context_root => 'mirage'})
+      options = {:host=>'localhost', :port=>7001, :context_root => 'mirage'}.merge(options)
       @host = options[:host]
       @port = options[:port]
+
+      puts "starting on port #{@port}"
       @context_root = options[:context_root]
     end
 

@@ -3,7 +3,12 @@ Before do
 end
 
 Before('@command_line') do
-  stop_mockserver if $mirage.running?
+  stop_mockserver
+end
+
+After('@command_line') do
+  stop_mockserver
+  start_mockserver
 end
 
 
@@ -117,11 +122,14 @@ end
 Given /^I start Mirage( on port '([^']*)')?$/ do|*args|
   options = {}
 
-  port_regex=/on port'([^']*)'/
+
+  port_regex=/ on port '([^']*)'/
   args.each do |arg|
     case arg
       when port_regex then options[:port] = arg.scan(port_regex).first[0]
     end
   end
+
+  puts "args la la #{options}"
   start_mockserver options
 end

@@ -15,9 +15,16 @@ $mirage = Mirage::Client.new
 
 module Regression
   def stop_mockserver options ={}
+    puts 'stopping the thing mirage thing'
+    `export RUBYOPT='' && mirage stop`
   end
 
   def start_mockserver options={}
+    args = ''
+
+    args << "-p #{options[:port]}" if options[:port]
+
+    `export RUBYOPT='' && mirage start #{args}`
   end
 end
 
@@ -33,10 +40,18 @@ module IntelliJ
   end
 
   def start_mockserver options ={}
+    $mirage = Mirage::Client.new(options)
+
     stop_mockserver
     puts "Starting mockserver intellij style  #{File.dirname(__FILE__)}/../../bin/mirage start"
 
-    system "#{File.dirname(__FILE__)}/../../bin/mirage start"
+    args = ''
+
+    args << "-p #{options[:port]}" if options[:port]
+
+    puts "Args are #{args}"
+
+    system "#{File.dirname(__FILE__)}/../../bin/mirage start #{args}"
     wait_until do
       $mirage.running?
     end

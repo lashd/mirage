@@ -9,16 +9,33 @@ require 'mechanize'
 
 include Mirage::Util
 
-mirage = Mirage::Client.new
+args = ARGV
+
+options = {:port => 7001}
+
+puts "args is: #{args}"
+OptionParser.new(args) do |opts|
+  opts.on("-p", "--port PORT", "the port to start Mirage on") do |port|
+    puts "options are #{port}"
+    options[:port] = port
+  end
+end.parse!
+
+mirage = Mirage::Client.new(options)
+
 if ARGV.include?('start')
+
   if mirage.running?
     puts "Mirage already running"
     exit 1
   end
 
 
+  args.delete('start')
+
+
   puts "Starting the Mirage"
-  `thin -p 7001 -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
+  `thin -p #{options[:port]} -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
 
   wait_until do
     mirage.running?
@@ -28,9 +45,9 @@ if ARGV.include?('start')
 elsif ARGV.include?('stop')
   puts "Stoping Mirage"
   `thin stop`
-  wait_until 45 do
-    !mirage.running?
-  end
+#  wait_until 45 do
+#    !mirage.running?
+#  end
 
 else
   puts "You must choose to: Start or Stop the mirage"
