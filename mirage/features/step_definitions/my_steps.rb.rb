@@ -12,9 +12,9 @@ After('@command_line') do
 end
 
 
-When /^the response for '([^']*)' (with pattern '([^']*)' )?(with a delay of '(\d+)' )?is:$/ do |endpoint, *args, response|
+When /^the response for '([^']*)' (with pattern '([^']*)' )?(with a delay of '(\d+)' )?is:$/ do |endpoint, *args|
 
-  options = {:response => response}
+  options = {:response => args.delete_at(args.size()-1)}
   delay_regex = /with a delay of '(\d+)'/
   pattern_regex = /with pattern '([^']*)'/
   args = args.values_at(0,2).flatten
