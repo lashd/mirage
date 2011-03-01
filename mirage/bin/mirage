@@ -45,10 +45,6 @@ if ARGV.include?('start')
 elsif ARGV.include?('stop')
   puts "Stoping Mirage"
   `thin stop`
-#  wait_until 45 do
-#    !mirage.running?
-#  end
-
 else
   puts "You must choose to: Start or Stop the mirage"
   exit 1

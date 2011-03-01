@@ -119,17 +119,7 @@ Then /^mirage should be running on '(.*)'$/ do |url|
   browser.get(url).code.to_i.should == 200
 end
 
-Given /^I start Mirage( on port '([^']*)')?$/ do|*args|
-  options = {}
-
-
-  port_regex=/ on port '([^']*)'/
-  args.each do |arg|
-    case arg
-      when port_regex then options[:port] = arg.scan(port_regex).first[0]
-    end
-  end
-
-  puts "args la la #{options}"
-  start_mockserver options
+Given /^I run '(.*)'$/ do |command|
+  path = ENV['mode'] == 'regression' ? '' : "#{File.dirname(__FILE__)}/../../bin/"
+  system "export RUBYOPT='' && #{path}#{command}"
 end
