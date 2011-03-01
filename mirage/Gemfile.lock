@@ -19,7 +19,7 @@ GEM
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
     nokogiri (1.4.4)
-    rack (1.2.1)
+    rack (1.2.0)
     rake (0.8.7)
     ramaze (2011.01.30)
       innate (>= 2010.03)
@@ -35,7 +35,7 @@ GEM
       test-unit (>= 2.0.2)
     term-ansicolor (1.0.5)
     test-unit (2.2.0)
-    thin (1.2.7)
+    thin (1.2.8)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
@@ -46,6 +46,7 @@ PLATFORMS
 DEPENDENCIES
   cucumber
   mechanize
+  rack (<= 1.2.0)
   rake
   ramaze
   rspec

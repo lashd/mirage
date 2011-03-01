@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'rubygems'
+require 'bundler/setup'
+Bundler.setup
+$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage'
 require 'open-uri'
 require 'optparse'
