@@ -11,7 +11,7 @@ message=""
 result=true
 
 reset_comandline_colours(){
-tput sgr0
+    tput sgr0
 }
 
 run_build_for_ruby( ){
@@ -36,7 +36,8 @@ run_build_for_ruby( ){
           result=false
         fi
     else
-        message="${blue}$1: ${yellow}Not installed"
+        message="${message}${blue}$1: ${yellow}Not installed\n"
+        result=false
     fi
 }
 
@@ -44,15 +45,15 @@ if [ $1 ]
 then
     run_build_for_ruby $1
 else
-    run_build_for_ruby 'ruby-1.8.6'
-    run_build_for_ruby 'ruby-1.8.7'
-    run_build_for_ruby 'ruby-1.9.1'
+    run_build_for_ruby 'ruby-1.8.2'
+    run_build_for_ruby 'ruby-1.8.1'
     run_build_for_ruby 'ruby-1.9.2'
-    run_build_for_ruby 'jruby-1.5.6'
+    run_build_for_ruby 'ruby-1.9.4'
+    run_build_for_ruby 'jruby-1.5.4'
 fi
 
-echo -e ${message}
-
+echo -e "\n\n${message}"
 echo -ne "${white}Result: "
-[ ${result} == true ] && echo -e "${green}Pass" || echo -e "${red}Fail"
+[ ${result} == true ] && echo -e "${green}Pass\n" || echo -e "${red}Fail\n"
 reset_comandline_colours
+echo ""
