@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source "$HOME/.rvm/scripts/rvm"
+
 blue='\033[34m'
 red='\033[31m'
 green='\033[32m'
@@ -57,3 +58,4 @@ echo -ne "${white}Result: "
 [ ${result} == true ] && echo -e "${green}Pass\n" || echo -e "${red}Fail\n"
 reset_comandline_colours
 echo ""
+
