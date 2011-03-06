@@ -15,6 +15,9 @@ run_build_for_ruby( ){
     if [[ ${ruby_list} == *$1* ]]
     then
         rvm $1
+        rvm --force gemset empty
+        gem install bundler
+        bundle install
         rake
 
         if [ $? == 0 ]
@@ -27,20 +30,16 @@ run_build_for_ruby( ){
     else
         message="${blue}$1: ${yellow}Not installed"
     fi
-
-
-
 }
 
 run_build_for_ruby 'ruby-1.8.6'
-run_build_for_ruby 'ruby-1.8.7'
-run_build_for_ruby 'ruby-1.9.1'
-run_build_for_ruby 'ruby-1.9.2'
-run_build_for_ruby 'jruby-1.5.6'
-#run_build_for_ruby 'jruby-something else'
+#run_build_for_ruby 'ruby-1.8.7'
+#run_build_for_ruby 'ruby-1.9.1'
+#run_build_for_ruby 'ruby-1.9.2'
+#run_build_for_ruby 'jruby-1.5.6'
 
 echo -e ${message}
 
 echo -ne "${white}Result: "
-[ result == true ] && echo -e "${green}Pass" || echo -e "${red}Fail"
+[ ${result} == true ] && echo -e "${green}Pass" || echo -e "${red}Fail"
 tput sgr0
