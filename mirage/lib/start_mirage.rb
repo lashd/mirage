@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'bundler/setup'
-Bundler.setup
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage/core'
 require 'mirage/util'
