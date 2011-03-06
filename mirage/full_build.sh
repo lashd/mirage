@@ -7,16 +7,22 @@ white='\033[37m'
 bold='\033[1m'
 reset='\033[0m'
 
-print(){
+println(){
     echo -e "$1${reset}"
 }
 
+print(){
+    echo -ne "$1${reset}"
+}
+
+
+
 usage(){
-    print "${bold}Usage:\n"
-    print "./full_build.sh [ruby_version]\n"
-    print "When running with out a ruby version, the full build is run for ruby versions:"
-    print "1.8.6\n1.8.7\n1.9.1\n1.9.2\njruby\n"
-    print "Else specify a particular ruby version to run the build against\n"
+    println "${bold}Usage:\n"
+    println "./full_build.sh [ruby_version]\n"
+    println "When running with out a ruby version, the full build is run for ruby versions:"
+    println "1.8.6\n1.8.7\n1.9.1\n1.9.2\njruby\n"
+    println "Else specify a particular ruby version to run the build against\n"
 }
 
 
@@ -27,10 +33,10 @@ elif [ -f "/usr/local/rvm/scripts/rvm" ]
 then
   source "/usr/local/rvm/scripts/rvm"
 else
-    print "${bold}RVM Not found"
-    print "I looked in $HOME/.rvm/scripts/rvm and /usr/local/rvm/scripts/rvm"
-    print "RVM must be installed to run this script. It's great! find out more: here ${bold}http://rvm.beginrescueend.com/"
-    print "Until it is installed simply run the default rake target to test Mirage against your active version of Ruby and installed gems"
+    println "${bold}RVM Not found"
+    println "I looked in $HOME/.rvm/scripts/rvm and /usr/local/rvm/scripts/rvm"
+    println "RVM must be installed to run this script. It's great! find out more: here ${bold}http://rvm.beginrescueend.com/"
+    println "Until it is installed simply run the default rake target to test Mirage against your active version of Ruby and installed gems"
     exit 1
 fi
 
@@ -41,7 +47,7 @@ while getopts ":h" opt; do
       exit 0
       ;;
     \?)
-      print "Invalid option: -$OPTARG"
+      println "Invalid option: -$OPTARG"
       usage
       exit 1
       ;;
@@ -52,7 +58,7 @@ message=""
 result=true
 
 run_build_for_ruby( ){
-    print "${green}Running build for: $1"
+    println "${green}Running build for: $1"
 
     ruby_list=`rvm list`
     if [[ ${ruby_list} == *$1* ]]
@@ -88,7 +94,7 @@ else
     run_build_for_ruby 'jruby'
 fi
 
-print "\n\n${message}"
+println "\n\n${message}"
 print "${white}Result: "
-[ ${result} == true ] && print "${green}Pass\n" || print "${red}Fail\n"
+[ ${result} == true ] && println "${green}Pass\n" || println "${red}Fail\n"
 
