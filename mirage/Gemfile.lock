@@ -1,6 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    bouncy-castle-java (1.5.0145.2)
     builder (3.0.0)
     cucumber (0.10.0)
       builder (>= 2.1.2)
@@ -11,12 +12,19 @@ GEM
     diff-lcs (1.1.2)
     gherkin (2.3.3)
       json (~> 1.4.6)
+    gherkin (2.3.3-java)
+      json (~> 1.4.6)
     innate (2011.01)
       rack (>= 1.1.0)
+    jruby-openssl (0.7.3)
+      bouncy-castle-java
     json (1.4.6)
+    json (1.4.6-java)
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
     nokogiri (1.4.4)
+    nokogiri (1.4.4-java)
+      weakling (>= 0.0.3)
     rack (1.2.0)
     rake (0.8.7)
     ramaze (2011.01.30)
@@ -29,12 +37,11 @@ GEM
     rspec-expectations (2.5.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.5.0)
-    sys-proctable (0.8.1)
-      test-unit (>= 2.0.2)
     term-ansicolor (1.0.5)
-    test-unit (2.2.0)
+    weakling (0.0.4-java)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
@@ -45,4 +52,3 @@ DEPENDENCIES
   rake
   ramaze
   rspec
-  sys-proctable (= 0.8.1)

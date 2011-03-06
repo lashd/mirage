@@ -21,8 +21,6 @@ Thanks you for installing mirage-#{s.version}.
 
 
   bundler.dependencies_for(:default).each do |dependency|
-    puts "supported platforms = #{dependency.platforms.join(' ')}"
-    puts "current platform is: #{RUBY_PLATFORM}"
     s.add_dependency dependency.name, dependency.requirement.to_s if (dependency.platforms.empty? || RUBY_PLATFORM == 'java' && dependency.platforms.include?(:jruby) || s.platform == 'ruby' && dependency.platforms.include?(:ruby))
   end
 
