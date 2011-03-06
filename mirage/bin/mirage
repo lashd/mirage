@@ -7,8 +7,10 @@ require 'mirage'
 require 'open-uri'
 require 'optparse'
 require 'mechanize'
-
 include Mirage::Util
+
+RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
+
 
 
 def mirage_process_id
@@ -31,7 +33,7 @@ if ARGV.include?('start')
   end
 
   args.delete('start')
-  system "(cd #{File.dirname(__FILE__)}/../lib/ && ruby start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
+  system "(cd #{File.dirname(__FILE__)}/../lib/ && #{RUBY_CMD} start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
   wait_until do
     mirage.running?
   end
