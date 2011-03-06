@@ -23,6 +23,7 @@ module Regression
     args = ''
 
     args << "-p #{options[:port]}" if options[:port]
+    $mirage = Mirage::Client.new(options)
 
     `export RUBYOPT='' && mirage start #{args}`
   end

@@ -16,6 +16,7 @@ run_build_for_ruby( ){
     then
         rvm $1
         rvm --force gemset empty
+        rm Gemfile.lock
         gem install bundler
         bundle install
         rake

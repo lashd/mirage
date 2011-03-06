@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = 'Mirage is a stub server for stubbing out an applications endpoints to aid testing'
   s.summary = "mirage-#{s.version}"
 
-  s.platform = RUBY_PLATFORM == 'java' ? 'java' : Gem::Platform::RUBY
+  s.platform = Gem::Platform::RUBY
   s.default_executable = "mirage"
   s.post_install_message = %{
 ===============================================================================
