@@ -9,7 +9,6 @@ Feature: After a response has been served from the MockServer, the content of th
   If there is content in the request body because something like a web service is called the request body content is returned.
   If there is nothing in the request body then the query string is returned.
 
-
   Scenario: The MockServer returns a response
     Given the response for 'greeting' is:
     """
@@ -23,9 +22,9 @@ Feature: After a response has been served from the MockServer, the content of th
 
     When getting 'greeting' with request parameters:
       | parameter | value |
-      | firstname | Leon  |
       | surname   | Davis |
-    Then 'firstname=Leon&surname=Davis' should have been tracked
+      | firstname | Leon  |
+    Then 'surname=Davis&firstname=Leon' should have been tracked
 
 
   Scenario: The MockServer has not responsed

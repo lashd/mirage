@@ -16,7 +16,7 @@ run_build_for_ruby( ){
     then
         rvm $1
         rvm --force gemset empty
-        rm Gemfile.lock
+        [ -f Gemfile.lock ] && rm Gemfile.lock
         gem install bundler
         bundle install
         rake
@@ -34,10 +34,10 @@ run_build_for_ruby( ){
 }
 
 run_build_for_ruby 'ruby-1.8.6'
-#run_build_for_ruby 'ruby-1.8.7'
-#run_build_for_ruby 'ruby-1.9.1'
-#run_build_for_ruby 'ruby-1.9.2'
-#run_build_for_ruby 'jruby-1.5.6'
+run_build_for_ruby 'ruby-1.8.7'
+run_build_for_ruby 'ruby-1.9.1'
+run_build_for_ruby 'ruby-1.9.2'
+run_build_for_ruby 'jruby-1.5.6'
 
 echo -e ${message}
 

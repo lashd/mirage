@@ -1,8 +1,3 @@
-require 'rubygems'
-require 'bundler/setup'
-require 'rake'
-
-
 Gem::Specification.new do |s|
   s.name = 'mirage'
   s.version = '1.0'
@@ -18,19 +13,14 @@ Thanks you for installing mirage-#{s.version}.
 ===============================================================================
 }
 
-  bundler = Bundler.load
+  s.add_dependency 'rack', "~> 1.1.0"
+  s.add_dependency 'ramaze', ">= 2011.01.30"
+  s.add_dependency "mechanize", ">= 1.0.0"
 
 
-  bundler.dependencies_for(:default).each do |dependency|
-    s.add_dependency dependency.name, dependency.requirement.to_s if (dependency.platforms.empty? || RUBY_PLATFORM == 'java' && dependency.platforms.include?(:jruby) || s.platform == 'ruby' && dependency.platforms.include?(:ruby))
-  end
-
-  Bundler::Dependency
-
-  bundler.dependencies_for(:test).each do |dependency|
-
-    s.add_development_dependency dependency.name, dependency.requirement.to_s
-  end
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'cucumber'
+  s.add_development_dependency 'rspec'
 
   s.rubygems_version = "1.3.7"
   s.files = `git ls-files`.split("\n")
