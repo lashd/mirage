@@ -31,7 +31,6 @@ if ARGV.include?('start')
   end
 
   args.delete('start')
-  puts "running (cd #{File.dirname(__FILE__)}/../lib/ && ruby start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
   system "(cd #{File.dirname(__FILE__)}/../lib/ && ruby start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
   wait_until do
     mirage.running?

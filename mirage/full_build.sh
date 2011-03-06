@@ -40,15 +40,15 @@ run_build_for_ruby( ){
     fi
 }
 
-if [ $1 == "" ]
+if [ $1 ]
 then
+    run_build_for_ruby $1
+else
     run_build_for_ruby 'ruby-1.8.6'
     run_build_for_ruby 'ruby-1.8.7'
     run_build_for_ruby 'ruby-1.9.1'
     run_build_for_ruby 'ruby-1.9.2'
     run_build_for_ruby 'jruby-1.5.6'
-else
-    run_build_for_ruby $1
 fi
 
 echo -e ${message}
