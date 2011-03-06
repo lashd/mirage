@@ -17,11 +17,13 @@ When /^the response for '([^']*)' (with pattern '([^']*)' )?(with a delay of '(\
   options = {:response => args.delete_at(args.size()-1)}
   delay_regex = /with a delay of '(\d+)'/
   pattern_regex = /with pattern '([^']*)'/
-  args = args.values_at(0,2).flatten
+  args = args.values_at(0, 2).flatten
   args.each do |arg|
     case arg
-      when delay_regex then options[:delay] = arg.scan(delay_regex).first[0]
-      when pattern_regex then options[:pattern] = arg.scan(pattern_regex).first[0]
+      when delay_regex then
+        options[:delay] = arg.scan(delay_regex).first[0]
+      when pattern_regex then
+        options[:pattern] = arg.scan(pattern_regex).first[0]
     end
   end
   @response_id = $mirage.set(endpoint, options).body
@@ -62,7 +64,7 @@ When /^I clear '(.*?)' (responses|requests) from the MockServer$/ do |endpoint, 
   if endpoint == 'all'
     $mirage.clear
   else
-    $mirage.clear(thing,endpoint).code.should == 200
+    $mirage.clear(thing, endpoint).code.should == 200
   end
 end
 
@@ -83,11 +85,20 @@ Then /^the response id should be '(\d+)'$/ do |response_id|
 end
 
 Then /^'(.*?)' should have been tracked$/ do |text|
-  $mirage.check(@response_id).body.should == text
+  tracked_text = $mirage.check(@response_id).body
+
+  if RUBY_VERSION == "1.8.6" && tracked_text != text
+    text.length.should == tracked_text.length
+    text.split('&').each { |param_value_pair| tracked_text.should =~ /#{param_value_pair}}/ }
+  else
+    text.should == tracked_text
+  end
+
+
 end
 
 Then /^'(.*?)' should have been tracked for response id '(.*?)'$/ do |text, response_id|
-   $mirage.check(response_id).body.should == text
+  $mirage.check(response_id).body.should == text
 end
 
 Then /^tracking the request for response id '(.*?)' should return a 404$/ do |response_id|
@@ -95,13 +106,15 @@ Then /^tracking the request for response id '(.*?)' should return a 404$/ do |re
 end
 
 Then /^it should take at least '(.*)' seconds$/ do |time|
- (@response_time).should >= time.to_f
+  (@response_time).should >= time.to_f
 end
 
 When /^I (rollback|snapshot) the MockServer$/ do |action|
   case action
-    when 'rollback' then $mirage.rollback
-    when 'snapshot' then $mirage.snapshot
+    when 'rollback' then
+      $mirage.rollback
+    when 'snapshot' then
+      $mirage.snapshot
   end
 end
 
