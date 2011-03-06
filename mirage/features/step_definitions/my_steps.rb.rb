@@ -93,8 +93,6 @@ Then /^'(.*?)' should have been tracked$/ do |text|
   else
     text.should == tracked_text
   end
-
-
 end
 
 Then /^'(.*?)' should have been tracked for response id '(.*?)'$/ do |text, response_id|
