@@ -12,14 +12,22 @@ MOCKSERVER_URL = "http://localhost:7001"
 
 $mirage = Mirage::Client.new
 
+module Web
+  def get(url)
+    browser = Mechanize.new
+    browser.keep_alive= false
+    browser.get(url)
+  end
+end
+
 
 module Regression
-  def stop_mockserver options ={}
+  def stop_mirage options ={}
     puts 'stopping the thing mirage thing'
     `export RUBYOPT='' && mirage stop`
   end
 
-  def start_mockserver options={}
+  def start_mirage options={}
     args = ''
 
     args << "-p #{options[:port]}" if options[:port]
@@ -30,9 +38,9 @@ module Regression
 end
 
 module IntelliJ
-  include  Mirage::Util
+  include Mirage::Util
 
-  def stop_mockserver options={}
+  def stop_mirage options={}
     system "#{File.dirname(__FILE__)}/../../bin/mirage stop"
     wait_until do
       !$mirage.running?
@@ -40,10 +48,10 @@ module IntelliJ
     FileUtils.rm_rf('tmp')
   end
 
-  def start_mockserver options ={}
+  def start_mirage options ={}
     $mirage = Mirage::Client.new(options)
 
-    stop_mockserver
+    stop_mirage
     puts "Starting mockserver intellij style  #{File.dirname(__FILE__)}/../../bin/mirage start"
 
     args = ''
@@ -61,8 +69,9 @@ end
 
 'regression' == ENV['mode'] ? World(Regression) : World(IntelliJ)
 'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
-start_mockserver
+World(Web)
+start_mirage
 
 at_exit do
-  stop_mockserver
+  stop_mirage
 end

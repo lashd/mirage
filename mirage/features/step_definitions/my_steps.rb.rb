@@ -3,12 +3,12 @@ Before do
 end
 
 Before('@command_line') do
-  stop_mockserver
+  stop_mirage
 end
 
 After('@command_line') do
-  stop_mockserver
-  start_mockserver
+  stop_mirage
+  start_mirage
 end
 
 
@@ -87,9 +87,9 @@ end
 Then /^'(.*?)' should have been tracked$/ do |text|
   tracked_text = $mirage.check(@response_id).body
 
-  if RUBY_VERSION == "1.8.6" && tracked_text != text
+  if ["1.8.6", "1.8.7" ].include?(RUBY_VERSION)  && tracked_text != text
     text.length.should == tracked_text.length
-    text.split('&').each { |param_value_pair| tracked_text.should =~ /#{param_value_pair}}/ }
+    text.split('&').each { |param_value_pair| tracked_text.should =~ /#{param_value_pair}/ }
   else
     text.should == tracked_text
   end
@@ -124,13 +124,30 @@ Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
   @response.save_as("temp.download")
   FileUtils.cmp("temp.download", file_path).should == true
 end
+
 Then /^mirage should be running on '(.*)'$/ do |url|
-  browser = Mechanize.new
-  browser.keep_alive= false
-  browser.get(url).code.to_i.should == 200
+  get(url).code.to_i.should == 200
 end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "#{File.dirname(__FILE__)}/../../bin/"
   system "export RUBYOPT='' && #{path}#{command}"
+end
+
+Given /^Mirage is not running$/ do
+  stop_mirage if $mirage.running?
+end
+
+Given /^Mirage is running$/ do
+  start_mirage unless $mirage.running?
+end
+
+Then /^Connection should be refused to '(.*)'$/ do |url|
+
+  begin
+    get(url)
+    fail "Mirage is still running"
+  rescue Errno::ECONNREFUSED
+  end
+
 end
