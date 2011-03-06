@@ -1,5 +1,22 @@
 #!/bin/bash
 
+
+if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
+
+  source "$HOME/.rvm/scripts/rvm"
+
+elif [[ -s "/usr/local/rvm/scripts/rvm" ]] ; then
+
+  \# Then try to load from a root install
+  source "/usr/local/rvm/scripts/rvm"
+
+else
+    echo -e "RVM must be installed to run this script. \n
+             Until it is installed simply run the default rake target to test Mirage against your active version of Ruby and installed gems"
+fi
+
+
+
 source "$HOME/.rvm/scripts/rvm"
 
 blue='\033[34m'
