@@ -20,8 +20,8 @@ end
 
 
 def mirage_process_id
-  stat_file = Dir['/proc/**/stat'].find{|stat_file| File.read("#{File.dirname(stat_file)}/cmdline") =~ /Mirage/}.first
-  File.read(stat_file).split(' ').first
+  mirage_cmdline_file = Dir['/proc/**/cmdline'].find{|cmdline_file| File.read(cmdline_file) =~ /Mirage/}
+  File.read("#{File.dirname(mirage_cmdline_file)}/stat").split(' ').first.to_i
 end
 
 include Mirage::Util
@@ -65,7 +65,7 @@ if ARGV.include?('start')
 elsif ARGV.include?('stop')
   puts "Stoping Mirage"
   begin
-    ProcTable.ps.find{|ps| ps.cmdline =~ /\[mirage\]/}.kill
+    Process.kill(9, mirage_process_id)
   rescue
     puts 'Mirage is not running'
   end
