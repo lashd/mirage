@@ -7,25 +7,31 @@ require 'mirage'
 require 'open-uri'
 require 'optparse'
 require 'mechanize'
-require 'sys/proctable'
 
-include Sys
-
-class ProcTable::ProcTableStruct
-  def kill
-    Process.kill(9, self.pid)
+if RUBY_PLATFORM != 'java'
+  require 'sys/proctable'
+  include Sys
+  class ProcTable::ProcTableStruct
+    def kill
+      Process.kill(9, self.pid)
+    end
   end
 end
 
 
+def mirage_process_id
+  stat_file = Dir['/proc/**/stat'].find{|stat_file| File.read("#{File.dirname(stat_file)}/cmdline") =~ /Mirage/}.first
+  File.read(stat_file).split(' ').first
+end
+
 include Mirage::Util
 
-args = ARGV
+args = ARGV.clone
 
 options = {:port => 7001}
 
 puts "args is: #{args}"
-OptionParser.new(args) do |opts|
+OptionParser.new(ARGV) do |opts|
   opts.on("-p", "--port PORT", "the port to start Mirage on") do |port|
     puts "options are #{port}"
     options[:port] = port
@@ -45,8 +51,11 @@ if ARGV.include?('start')
   args.delete('start')
 
 
-  puts "Starting the Mirage"
-  `thin --tag mirage -p #{options[:port]} -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
+  puts "Starting the Mirage using args #{args.join(' ')}"
+#  `thin -p #{options[:port]} -l thin.log -D -V -d -R #{File.dirname(__FILE__)}/../lib/config.ru start`
+  puts "going to run (cd #{File.dirname(__FILE__)}/../lib/ && ruby start.rb #{args.join(' ')}) > /dev/null 2>&1 &"
+  system "(cd #{File.dirname(__FILE__)}/../lib/ && ruby start.rb #{args.join(' ')}) > /dev/null 2>&1 &"
+#  `cd  #{File.dirname(__FILE__)}/../lib/ && ruby start.rb&`
 
   wait_until do
     mirage.running?

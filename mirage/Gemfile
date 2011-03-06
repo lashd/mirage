@@ -2,8 +2,9 @@ source "http://rubygems.org"
 
 gem 'rack', "<=1.2.0"
 gem 'ramaze'
-gem 'thin'
-gem 'sys-proctable', '0.8.1'
+gem 'sys-proctable', '0.8.1',:platforms => :ruby
+gem 'jruby-openssl', :platforms => :jruby
+gem "mechanize"
 
 group :test do
   gem 'rake'

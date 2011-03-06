@@ -1,5 +1,6 @@
 require 'ramaze'
 require 'ramaze/helper/send_file'
+$0='[mirage]'
 
 class MockResponse
   @@id_count = 0
