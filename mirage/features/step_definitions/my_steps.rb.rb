@@ -132,7 +132,7 @@ end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "#{File.dirname(__FILE__)}/../../bin/"
-  system "export RUBYOPT='' && #{path}#{command}"
+  @commandline_output = normalise(IO.popen( "export RUBYOPT='' && #{path}#{command}").read)
 end
 
 Given /^Mirage is not running$/ do
@@ -164,4 +164,15 @@ end
 
 When /^reloading the defaults$/ do
   $mirage.load_defaults
+end
+
+def normalise text
+  text.gsub(/[\n]/,' ').gsub(/\s+/, ' ')
+end
+
+Then /^the usage information should be displayed$/ do
+  @usage.each{|line| @commandline_output.should =~ /#{line}/}
+end
+Given /^usage information:$/ do |table|
+  @usage = table.raw.flatten.collect{|line| normalise(line)}
 end
