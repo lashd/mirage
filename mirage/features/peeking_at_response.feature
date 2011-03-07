@@ -1,5 +1,6 @@
 Feature: If you want to see the response that would be when triggered it can be peeked using the unique id of the response
 
+
   Scenario: Peeking a text based response
     Given the response for 'greeting' is:
     """
