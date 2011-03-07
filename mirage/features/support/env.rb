@@ -8,9 +8,7 @@ require 'cucumber'
 require 'rspec'
 
 require 'mechanize'
-MOCKSERVER_URL = "http://localhost:7001"
 
-$mirage = Mirage::Client.new
 
 module Web
   def get(url)
@@ -27,12 +25,8 @@ module Regression
   end
 
   def start_mirage options={}
-    args = ''
-
-    args << "-p #{options[:port]}" if options[:port]
-    $mirage = Mirage::Client.new(options)
-
-    `export RUBYOPT='' && mirage start #{args}`
+    $mirage = Mirage::Client.new
+    `export RUBYOPT='' && mirage start`
   end
 end
 

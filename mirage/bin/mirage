@@ -26,7 +26,7 @@ end
 if ARGV.include?('start')
 
   options =  parse_options(ARGV)
-  mirage_client = Mirage::Client.new(options)
+  mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
 
   if mirage_client.running?
     puts "Mirage already running"

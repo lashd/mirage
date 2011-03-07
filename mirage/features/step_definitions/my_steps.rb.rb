@@ -176,3 +176,6 @@ end
 Given /^usage information:$/ do |table|
   @usage = table.raw.flatten.collect{|line| normalise(line)}
 end
+When /^running '(.*)'$/ do |command|
+  raise "#{command} failed" unless system command
+end

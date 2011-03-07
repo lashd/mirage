@@ -1,13 +1,11 @@
+require 'uri'
 require 'mechanize'
 require 'open-uri'
 
 class Mirage
   class Client
-    def initialize options={}
-      options = {:host=>'localhost', :port=>7001, :context_root => 'mirage'}.merge(options)
-      @host = options[:host]
-      @port = options[:port]
-      @context_root = options[:context_root]
+    def initialize url="http://localhost:7001/mirage"
+      @uri = URI.parse(url)
     end
 
     def get endpoint, params={}
@@ -60,8 +58,8 @@ class Mirage
     private
     def http_get endpoint, params={}
       if params[:body]
-        response = Net::HTTP.start(@host, @port) do |http|
-          request = Net::HTTP::Get.new("/#{@context_root}/#{endpoint}")
+        response = Net::HTTP.start(@uri.host, @uri.port) do |http|
+          request = Net::HTTP::Get.new("#{@uri.path}/#{endpoint}")
           request.body=params[:body]
           http.request(request)
         end
@@ -72,7 +70,7 @@ class Mirage
 
       else
         response = using_mechanize do |browser|
-          browser.get("http://#{@host}:#{@port}/#{@context_root}/#{endpoint}", params)
+          browser.get("#{@uri}#{endpoint}", params)
         end
 
       end
@@ -80,9 +78,9 @@ class Mirage
       response
     end
 
-    def http_post url, params={}
+    def http_post path, params={}
       using_mechanize do |browser|
-        browser.post("http://#{@host}:#{@port}/#{@context_root}/#{url}", params)
+        browser.post("#{@uri}#{path}", params)
       end
     end
 

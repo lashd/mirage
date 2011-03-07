@@ -25,7 +25,7 @@ class Mirage
       begin
         opt_parser.parse args
       rescue
-        p opt_parser
+        puts opt_parser
         exit 1
       end
 
