@@ -8,47 +8,47 @@ require 'open-uri'
 require 'optparse'
 require 'mechanize'
 include Mirage::Util
-
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
-
-
-def mirage_process_id
-  mirage_cmdline_files = Dir['/proc/*/cmdline'].find_all { |cmdline_file| File.read(cmdline_file) =~ /Mirage|start_mirage/ }
-  mirage_cmdline_files.collect{|mirage_cmdline_file| File.read("#{File.dirname(mirage_cmdline_file)}/stat").split(' ').first.to_i }
-end
-
-args = ARGV.clone
-
-options = parse_options(ARGV)
-
-
-if ARGV.include?('start')
-  include Mirage::Util
-
-  mirage = Mirage::Client.new(options)
-  if mirage.running?
-    puts "Mirage already running"
-    exit 1
-  end
-
-  args.delete('start')
+def start_mirage(args, mirage)
+  args << '-r'
+  args << Dir.pwd
   system "(cd #{File.dirname(__FILE__)}/../lib/ && #{RUBY_CMD} start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
   wait_until do
     mirage.running?
   end
+end
+
+def mirage_process_ids
+  mirage_cmdline_files = Dir['/proc/*/cmdline'].find_all { |cmdline_file| File.read(cmdline_file) =~ /Mirage Server|start_mirage/ }
+  mirage_cmdline_files.collect{|mirage_cmdline_file| File.read("#{File.dirname(mirage_cmdline_file)}/stat").split(' ').first.to_i }
+end
+
+if ARGV.include?('start')
+  puts "Starting Mirage"
+  args, options = ARGV.clone, parse_options(ARGV)
+  mirage_client = Mirage::Client.new(options)
+
+  if mirage_client.running?
+    puts "Mirage already running"
+    exit 1
+  end
+
+  start_mirage(args, mirage_client)
+  mirage_client.load_defaults
 
 elsif ARGV.include?('stop')
-
-
   puts "Stoping Mirage"
   begin
-    mirage_process_id.each{|id| Process.kill(9, id)}
+    mirage_process_ids.each do |id|
+      puts "killing #{id}"
+      Process.kill(9, id)
+    end
+
   rescue
     puts 'Mirage is not running'
   end
 else
   puts "You must choose to: Start or Stop the mirage"
   exit 1
-
 end

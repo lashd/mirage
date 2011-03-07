@@ -7,8 +7,6 @@ class Mirage
       options = {:host=>'localhost', :port=>7001, :context_root => 'mirage'}.merge(options)
       @host = options[:host]
       @port = options[:port]
-
-      puts "starting on port #{@port}"
       @context_root = options[:context_root]
     end
 
@@ -52,6 +50,12 @@ class Mirage
     def running?
       !http_post('/clear').is_a?(Errno::ECONNREFUSED)
     end
+
+    def load_defaults
+      clear
+      http_post('/load_defaults')
+    end
+
 
     private
     def http_get endpoint, params={}

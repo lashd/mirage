@@ -1,6 +1,5 @@
 require 'ramaze'
 require 'ramaze/helper/send_file'
-$0='Mirage'
 
 class MockResponse
   @@id_count = 0
@@ -16,10 +15,9 @@ class MockResponse
   end
 
 
-
-  def value(body='', request_parameters={},query_string='')
+  def value(body='', request_parameters={}, query_string='')
     value = @value
-    value.scan(/\${(.*)?\}/).flatten.each do |pattern|
+    value.scan(/\$\{(.*)?\}/).flatten.each do |pattern|
 
       if (parameter_match = request_parameters[pattern])
         value = value.gsub("${#{pattern}}", parameter_match)
@@ -50,7 +48,7 @@ class MockFileResponse < MockResponse
   end
 end
 
-class MockServerCore < Ramaze::Controller
+class MirageServer < Ramaze::Controller
   include Ramaze::Helper::SendFile
   map '/mirage'
   RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
@@ -116,7 +114,7 @@ class MockServerCore < Ramaze::Controller
       end
     end
 
-    stored_response.find_all{|pattern, mock_resoonse| pattern != :default }.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
+    stored_response.find_all { |pattern, mock_resoonse| pattern != :default }.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
     record = stored_response[:default] unless record
 
     respond('Response not found', 404) unless record
@@ -137,9 +135,9 @@ class MockServerCore < Ramaze::Controller
         REQUESTS.delete(name) if name or REQUESTS.clear
       when 'responses' then
         if name
-          RESPONSES.delete(name).each{|pattern, response| REQUESTS.delete(response.response_id)}
+          RESPONSES.delete(name).each { |pattern, response| REQUESTS.delete(response.response_id) }
         else
-         RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
+          RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
         end
       when nil
         [REQUESTS, RESPONSES].each { |map| map.delete(name) if name or map.clear }
@@ -159,6 +157,12 @@ class MockServerCore < Ramaze::Controller
     RESPONSES.clear and RESPONSES.replace(Marshal.load(Marshal.dump(SNAPSHOT)))
   end
 
+  def load_defaults
+    Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
+      load default
+    end
+  end
+
   private
   def response_value
     return request['response'] unless request['response'].nil?
@@ -168,5 +172,8 @@ class MockServerCore < Ramaze::Controller
   def stored_responses (name)
     RESPONSES[name]||={}
   end
+
+
+
 end
 

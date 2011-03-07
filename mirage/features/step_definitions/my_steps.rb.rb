@@ -1,4 +1,5 @@
 Before do
+  ['custom_default_location', 'defaults'].each{|location|FileUtils.rm_rf(location) if File.exists?(location)}
   $mirage.clear
 end
 
@@ -61,7 +62,7 @@ end
 
 When /^I clear '(.*?)' (responses|requests) from the MockServer$/ do |endpoint, thing|
 
-  if endpoint == 'all'
+  if endpoint.downcase == 'all'
     $mirage.clear
   else
     $mirage.clear(thing, endpoint).code.should == 200
@@ -150,4 +151,17 @@ Then /^Connection should be refused to '(.*)'$/ do |url|
   rescue Errno::ECONNREFUSED
   end
 
+end
+
+Given /^the file '(.*)' contains:$/ do |file_path, content|
+  FileUtils.rm_rf(file_path) if File.exists?(file_path)
+  directory = File.dirname(file_path)
+  FileUtils.mkdir_p(directory)
+  file = File.new("#{directory}/#{File.basename(file_path)}", 'w')
+  file.write(content)
+  file.close
+end
+
+When /^reloading the defaults$/ do
+  $mirage.load_defaults
 end

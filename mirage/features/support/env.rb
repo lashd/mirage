@@ -39,7 +39,7 @@ end
 module IntelliJ
   include Mirage::Util
 
-  def stop_mirage options={}
+  def stop_mirage
     system "#{File.dirname(__FILE__)}/../../bin/mirage stop"
     wait_until do
       !$mirage.running?
@@ -47,12 +47,10 @@ module IntelliJ
     FileUtils.rm_rf('tmp')
   end
 
-  def start_mirage options ={}
-    $mirage = Mirage::Client.new(options)
-
-    args = ''
-    args << "-p #{options[:port]}" if options[:port]
-    system "#{File.dirname(__FILE__)}/../../bin/mirage start #{args}"
+  def start_mirage
+    puts "starting mirage"
+    $mirage = Mirage::Client.new
+    system "#{File.dirname(__FILE__)}/../../bin/mirage start"
 
     wait_until do
       $mirage.running?

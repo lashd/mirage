@@ -21,6 +21,6 @@ Feature: Mirage can be started from the command line.
 
 
   Scenario: Stopping Mirage
-    Given I run 'start mirage'
+    Given I run 'mirage start'
     When I run 'mirage stop'
     Then Connection should be refused to 'http://localhost:7001/mirage'
