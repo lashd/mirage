@@ -7,7 +7,7 @@ include Mirage::Util
 
 options = parse_options(ARGV)
 
-DEFAULT_RESPONSES_DIR = File.directory?(options[:defaults_directory]) ? "#{options[:defaults_directory]}" : "#{options[:root_directory]}/#{options[:defaults_directory]}"
+DEFAULT_RESPONSES_DIR = "#{options[:defaults_directory]}"
 Mirage.client = Mirage::Client.new(options)
 Ramaze.start :port => options[:port]
 
