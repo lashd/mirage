@@ -25,7 +25,6 @@ class Mirage
       begin
         opt_parser.parse args
       rescue
-        puts "some help"
         p opt_parser
         exit 1
       end
