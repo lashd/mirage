@@ -62,5 +62,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     When getting 'a_new_response'
     Then a 404 should be returned
 
+    #TODO - write test using full path to defaults
+
 
 
