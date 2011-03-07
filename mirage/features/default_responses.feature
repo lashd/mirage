@@ -30,7 +30,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then 'hello' should be returned
 
 
-  Scenario: Mirage started specifying a custom default location
+  Scenario: Mirage started specifying a custom default location using a relative path
     Given the file 'custom_default_location/default_greetings.rb' contains:
     """
     Mirage.default do |mirage|
@@ -41,6 +41,20 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     When reloading the defaults
     And getting 'greeting'
     Then 'hello' should be returned
+
+
+  Scenario: Mirage started specifying a custom default location using a full path
+    Given the file '/tmp/defaults/default_greetings.rb' contains:
+    """
+    Mirage.default do |mirage|
+      mirage.set('greeting', :response => 'hello')
+    end
+    """
+    And I run 'mirage start -d /tmp/defaults'
+    When reloading the defaults
+    And getting 'greeting'
+    Then 'hello' should be returned
+
 
 
   Scenario: The state of Mirage is change and the the defaults are reloaded
@@ -62,7 +76,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     When getting 'a_new_response'
     Then a 404 should be returned
 
-    #TODO - write test using full path to defaults
+
 
 
 
