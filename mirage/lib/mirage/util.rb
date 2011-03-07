@@ -12,7 +12,7 @@ class Mirage
     def parse_options args
       options = {:port => 7001, :defaults_directory => 'defaults', :root_directory => '.'}
 
-      opt_parser = OptionParser.new(args) do |opts|
+      opt_parser = OptionParser.new do |opts|
         opts.on("-p", "--port PORT", "the port to start Mirage on") do |port|
           options[:port] = port.to_i
         end
@@ -20,14 +20,10 @@ class Mirage
         opts.on("-d", "--defaults DIR", "location to load default responses from") do |directory|
           options[:defaults_directory] = directory
         end
-
-        opts.on("-r", "--ROOT DIR", "location of the root that mirage will be started from") do |directory|
-          options[:root_directory] = directory
-        end
       end
 
       begin
-        opt_parser.parse!
+        opt_parser.parse args
       rescue
         puts "some help"
         p opt_parser
