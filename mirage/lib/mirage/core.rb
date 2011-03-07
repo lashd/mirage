@@ -132,7 +132,7 @@ class MirageServer < Ramaze::Controller
   def clear datatype=nil, name=nil
     case datatype
       when 'requests' then
-        REQUESTS.delete(name) if name or REQUESTS.clear
+        REQUESTS.delete(name.to_i) if name or REQUESTS.clear
       when 'responses' then
         if name
           RESPONSES.delete(name).each { |pattern, response| REQUESTS.delete(response.response_id) }
@@ -158,6 +158,7 @@ class MirageServer < Ramaze::Controller
   end
 
   def load_defaults
+    clear
     Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
       load default
     end

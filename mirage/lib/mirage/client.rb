@@ -61,7 +61,6 @@ class Mirage
     end
 
     def load_defaults
-      clear
       http_post('/load_defaults')
     end
 
