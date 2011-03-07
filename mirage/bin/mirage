@@ -11,8 +11,6 @@ include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
 def start_mirage(args, mirage)
-  args << '-r'
-  args << Dir.pwd
   system "(#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
   wait_until do
     mirage.running?
