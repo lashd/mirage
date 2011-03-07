@@ -3,6 +3,17 @@ require 'mechanize'
 require 'open-uri'
 
 class Mirage
+  class File
+    def initialize response
+      @response = response
+    end
+
+    def save_as path
+      @response.save_as(path)
+    end
+  end
+
+
   class Client
     def initialize url="http://localhost:7001/mirage"
       @uri = URI.parse(url)
@@ -46,7 +57,7 @@ class Mirage
     end
 
     def running?
-      !http_post('/clear').is_a?(Errno::ECONNREFUSED)
+      !http_get('').is_a?(Errno::ECONNREFUSED)
     end
 
     def load_defaults
@@ -72,16 +83,18 @@ class Mirage
         response = using_mechanize do |browser|
           browser.get("#{@uri}#{endpoint}", params)
         end
-
       end
 
+      return response.code == 200 ? response.body : response if response.is_a?(Mechanize::Page) || response.is_a?(Net::HTTPOK)
+      return File.new(response) if response.is_a?(Mechanize::File)
       response
     end
 
     def http_post path, params={}
-      using_mechanize do |browser|
+      response = using_mechanize do |browser|
         browser.post("#{@uri}#{path}", params)
       end
+      response.code == 200 ? response.body : response
     end
 
     def using_mechanize

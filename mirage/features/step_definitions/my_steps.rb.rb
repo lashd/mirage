@@ -1,3 +1,4 @@
+require 'rake'
 Before do
   ['custom_default_location', 'defaults'].each{|location|FileUtils.rm_rf(location) if File.exists?(location)}
   $mirage.clear
@@ -27,7 +28,8 @@ When /^the response for '([^']*)' (with pattern '([^']*)' )?(with a delay of '(\
         options[:pattern] = arg.scan(pattern_regex).first[0]
     end
   end
-  @response_id = $mirage.set(endpoint, options).body
+  @response_id = $mirage.set(endpoint, options)
+  puts "response id is: #{@response_id}"
 end
 
 When /^getting '(.*?)'$/ do |endpoint|
@@ -53,7 +55,7 @@ When /^getting '(.*?)' with request parameters:$/ do |endpoint, table|
 end
 
 Then /^'(.*?)' should be returned$/ do |expected_response|
-  @response.body.should == expected_response
+  @response.should == expected_response
 end
 
 Then /^a (404|500) should be returned$/ do |error_code|
@@ -65,7 +67,7 @@ When /^I clear '(.*?)' (responses|requests) from the MockServer$/ do |endpoint, 
   if endpoint.downcase == 'all'
     $mirage.clear
   else
-    $mirage.clear(thing, endpoint).code.should == 200
+    $mirage.clear(thing, endpoint)
   end
 end
 
@@ -86,7 +88,7 @@ Then /^the response id should be '(\d+)'$/ do |response_id|
 end
 
 Then /^'(.*?)' should have been tracked$/ do |text|
-  tracked_text = $mirage.check(@response_id).body
+  tracked_text = $mirage.check(@response_id)
 
   if ["1.8.6", "1.8.7" ].include?(RUBY_VERSION)  && tracked_text != text
     text.length.should == tracked_text.length
@@ -97,7 +99,7 @@ Then /^'(.*?)' should have been tracked$/ do |text|
 end
 
 Then /^'(.*?)' should have been tracked for response id '(.*?)'$/ do |text, response_id|
-  $mirage.check(response_id).body.should == text
+  $mirage.check(response_id).should == text
 end
 
 Then /^tracking the request for response id '(.*?)' should return a 404$/ do |response_id|
@@ -176,6 +178,12 @@ end
 Given /^usage information:$/ do |table|
   @usage = table.raw.flatten.collect{|line| normalise(line)}
 end
-When /^running '(.*)'$/ do |command|
-  raise "#{command} failed" unless system command
+
+Then /^run$/ do |text|
+  text.gsub!("\"", "\\\\\"")
+  raise "run failed" unless system "ruby -e \"#{@code_snippet}\n#{text}\""
+end
+
+Given /^the following code snippet is included when running code:$/ do |text|
+  @code_snippet = text.gsub("\"", "\\\\\"")
 end
