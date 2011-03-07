@@ -1,6 +1,7 @@
-require 'mirage/client'
+require 'mirage/web'
 require 'mirage/util'
 require 'mirage/core'
+require 'mirage/client'
 
 class Mirage
   def self.default
