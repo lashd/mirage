@@ -16,7 +16,7 @@ Feature: Having set up the MockServer with a number of defaults, your tests may 
       | response | Changed |
 
     And I rollback the MockServer
-    When getting 'leaving'
+    When I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'The default greeting' should be returned

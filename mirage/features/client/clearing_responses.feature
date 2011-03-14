@@ -27,10 +27,10 @@ Feature: The client can be used for clearing responses from Mirage
     """
     Mirage::Client.new.clear
     """
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
     And tracking the request for response id '1' should return a 404
-    And getting 'leaving'
+    And I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned
     And tracking the request for response id '1' should return a 404
 
@@ -47,7 +47,7 @@ Feature: The client can be used for clearing responses from Mirage
     """
     Mirage::Client.new.clear 1
     """
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
     And tracking the request for response id '1' should return a 404
 

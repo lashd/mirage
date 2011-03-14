@@ -27,7 +27,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     """
     Mirage::Client.new.rollback
     """
-    When getting 'leaving'
+    When I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'The default greeting' should be returned

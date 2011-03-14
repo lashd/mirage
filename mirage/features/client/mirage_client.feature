@@ -16,7 +16,7 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     require 'mirage'
     Mirage::Client.new.set('greeting',:response => 'hello')
     """
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
   Scenario: Getting a text based response
@@ -75,7 +75,7 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
       require 'mirage'
       Mirage::Client.new.load_defaults
     """
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
 
@@ -88,7 +88,7 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
       require 'mirage'
       Mirage::Client.new.load_defaults
     """
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
 
   Scenario: snapshotting
@@ -102,7 +102,7 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     """
     And I clear 'all' responses from the MockServer
     And I rollback the MockServer
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'Hello' should be returned
 
 
@@ -117,7 +117,7 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
       require 'mirage'
       Mirage::Client.new.rollback
     """
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'Hello' should be returned
 
   Scenario: checking if mirage is running

@@ -12,9 +12,9 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     end
     """
     And I run 'mirage start'
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
-    When getting 'leaving'
+    When I hit 'http://localhost:7001/mirage/get/leaving'
     Then 'goodbye' should be returned
 
 
@@ -26,7 +26,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     end
     """
     And I run 'mirage start -d ./custom_default_location'
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
 
@@ -39,7 +39,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     """
     And I run 'mirage start -d ./custom_default_location'
     When reloading the defaults
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
 
@@ -52,7 +52,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     """
     And I run 'mirage start -d /tmp/defaults'
     When reloading the defaults
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
 
@@ -69,9 +69,9 @@ Feature: Mirage can be started and preloaded with a number of default responses.
       | response | new response |
 
     When reloading the defaults
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
-    When getting 'a_new_response'
+    When I hit 'http://localhost:7001/mirage/get/a_new_response'
     Then a 404 should be returned
 
 

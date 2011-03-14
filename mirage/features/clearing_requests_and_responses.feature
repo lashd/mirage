@@ -18,17 +18,17 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
 
   Scenario: Clearing all responses
     When I clear 'all' responses from the MockServer
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
-    And getting 'leaving'
+    And I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned
 
   Scenario: clearing a particular response set
     When I hit 'http://localhost:7001/mirage/clear/1'
-    And getting 'greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
     And tracking the request for response id '1' should return a 404
-    And getting 'leaving'
+    And I hit 'http://localhost:7001/mirage/get/leaving'
     Then 'Goodbye' should be returned
 
 

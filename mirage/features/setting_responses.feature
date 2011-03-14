@@ -4,7 +4,7 @@ Feature: The mockserver can be configured to return a default response every tim
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello, how are you? |
 
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'Hello, how are you?' should be returned
 
 
@@ -12,7 +12,7 @@ Feature: The mockserver can be configured to return a default response every tim
     Given I hit 'http://localhost:7001/mirage/set/say/hello/to/me' with parameters:
       | response | Hello to me |
 
-    When getting 'say/hello/to/me'
+    When I hit 'http://localhost:7001/mirage/get/say/hello/to/me'
     Then 'Hello to me' should be returned
 
 
@@ -22,7 +22,7 @@ Feature: The mockserver can be configured to return a default response every tim
 
 
   Scenario: Response does not exist
-    When getting 'response_that_does_not_exist'
+    When I hit 'http://localhost:7001/mirage/get/response_that_does_not_exist'
     Then a 404 should be returned
 
 

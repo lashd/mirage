@@ -187,8 +187,10 @@ Given /^the following code snippet is included when running code:$/ do |text|
   @code_snippet = text.gsub("\"", "\\\\\"")
 end
 
-When /^I hit '(http:\/\/localhost:7001\/mirage\/clear\/(.*?))'$/ do |url, response_id|
-  @response = http_post(url)
+When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, response_id|
+  start_time = Time.now
+  @response = http_get(url)
+  @response_time = Time.now - start_time
 end
 #Given /^I hit '(http:\/\/localhost:7001\/mirage\/set\/(.*?))' with parameters:?$/ do |url, endpoint, parameters|
 #  http_post(url)

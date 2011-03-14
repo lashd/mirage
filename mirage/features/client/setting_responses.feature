@@ -14,7 +14,7 @@ Feature: the client can be used for setting responses on Mirage.
     """
     Mirage::Client.new.set('greeting',:response => 'hello')
     """
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
   Scenario: Setting a response with a pattern
@@ -22,7 +22,7 @@ Feature: the client can be used for setting responses on Mirage.
     """
     Mirage::Client.new.set('greeting', :response => 'Hello Leon', :pattern => '.*?>leon</name>')
     """
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
     When getting 'greeting' with request body:
     """
@@ -44,9 +44,9 @@ Feature: the client can be used for setting responses on Mirage.
     """
     Mirage::Client.new.load_defaults
     """
-    When getting 'greeting'
+    When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
-    When getting 'leaving'
+    When I hit 'http://localhost:7001/mirage/get/leaving'
     Then 'goodbye' should be returned
 
   Scenario: Setting a file as a response
@@ -54,5 +54,5 @@ Feature: the client can be used for setting responses on Mirage.
     """
     Mirage::Client.new.set('download', :file => File.open('features/resources/test.zip'))
     """
-    When getting 'download'
+    When I hit 'http://localhost:7001/mirage/get/download'
     Then the response should be a file the same as 'features/resources/test.zip'

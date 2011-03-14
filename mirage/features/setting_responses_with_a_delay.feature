@@ -6,5 +6,5 @@ Feature: It is possible to make the the MockServer introduce a delay before resp
     """
     Sorry it took me so long!
     """
-    When getting 'an_appology'
+    When I hit 'http://localhost:7001/mirage/get/an_appology'
     Then it should take at least '4' seconds
