@@ -55,6 +55,7 @@ end
 'regression' == ENV['mode'] ? World(Regression) : World(IntelliJ)
 'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
 World(Web)
+World(Mirage::Web)
 start_mirage
 
 at_exit do

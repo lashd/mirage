@@ -10,9 +10,6 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     require 'rspec'
     """
 
-  Scenario: Connecting with the default settings.
-
-
   Scenario: Setting
     Given run
     """

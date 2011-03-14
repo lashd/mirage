@@ -1,6 +1,6 @@
 require 'rake'
 Before do
-  ['custom_default_location', 'defaults'].each{|location|FileUtils.rm_rf(location) if File.exists?(location)}
+  ['custom_default_location', 'defaults'].each{|location|FileUtils.rm_rf(location) if ::File.exists?(location)}
   $mirage.clear
 end
 
@@ -63,7 +63,6 @@ Then /^a (404|500) should be returned$/ do |error_code|
 end
 
 When /^I clear '(.*?)' (responses|requests) from the MockServer$/ do |endpoint, thing|
-
   if endpoint.downcase == 'all'
     $mirage.clear
   else
@@ -120,7 +119,7 @@ When /^I (rollback|snapshot) the MockServer$/ do |action|
 end
 
 Given /^the response for '([^']*)' is file '([^']*)'$/ do |endpoint, file_path|
-  $mirage.set(endpoint, :file=>File.new(file_path))
+  $mirage.set(endpoint, :file=>::File.new(file_path))
 end
 
 Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
@@ -133,7 +132,7 @@ Then /^mirage should be running on '(.*)'$/ do |url|
 end
 
 Given /^I run '(.*)'$/ do |command|
-  path = ENV['mode'] == 'regression' ? '' : "#{File.dirname(__FILE__)}/../../bin/"
+  path = ENV['mode'] == 'regression' ? '' : "#{::File.dirname(__FILE__)}/../../bin/"
   @commandline_output = normalise(IO.popen( "export RUBYOPT='' && #{path}#{command}").read)
 end
 
@@ -156,10 +155,10 @@ Then /^Connection should be refused to '(.*)'$/ do |url|
 end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|
-  FileUtils.rm_rf(file_path) if File.exists?(file_path)
-  directory = File.dirname(file_path)
+  FileUtils.rm_rf(file_path) if ::File.exists?(file_path)
+  directory = ::File.dirname(file_path)
   FileUtils.mkdir_p(directory)
-  file = File.new("#{directory}/#{File.basename(file_path)}", 'w')
+  file = ::File.new("#{directory}/#{::File.basename(file_path)}", 'w')
   file.write(content)
   file.close
 end
@@ -186,4 +185,8 @@ end
 
 Given /^the following code snippet is included when running code:$/ do |text|
   @code_snippet = text.gsub("\"", "\\\\\"")
+end
+
+When /^I hit '(http:\/\/localhost:7001\/mirage\/clear\/(.*?))'$/ do |url, response_id|
+  http_post(url)
 end

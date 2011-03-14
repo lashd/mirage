@@ -1,5 +1,13 @@
 Feature: Once responses and requests are on the MockServer they can be cleared.
-  Clearing a response clears its requests
+  Clearing a response clears its requests.
+
+  Usage:
+  ${mirage_url}/clear - Clear all responses and requests
+  ${mirage_url}/clear/requests - Clear all requests
+  ${mirage_url}/clear/response_id - Clear a requests and response for a particular response
+  ${mirage_url}/clear/request/response_id - Clear request for a particular response
+
+
 
   Background: The MockServer has already got a response for greeting and leaving on it.
     Given the response for 'greeting' is:
@@ -19,7 +27,7 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     Then a 404 should be returned
 
   Scenario: clearing a particular response set
-    When I clear 'greeting' responses from the MockServer
+    When I hit 'http://localhost:7001/mirage/clear/1'
     And getting 'greeting'
     Then a 404 should be returned
     And tracking the request for response id '1' should return a 404
@@ -32,7 +40,7 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     """
     greet me :)
     """
-    And I clear 'greeting' responses from the MockServer
+    And I hit 'http://localhost:7001/mirage/clear/1'
     Then tracking the request for response id '1' should return a 404
 
 
@@ -50,10 +58,10 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     Then tracking the request for response id '2' should return a 404
 
 
-  Scenario: clearing a particular a request set
+  Scenario: clearing a particular request set
     Given getting 'leaving' with request body:
     """
     See you later
     """
-    When I clear 'greeting' requests from the MockServer
-    Then 'See you later' should have been tracked for response id '2'
+    When I hit 'http://localhost:7001/mirage/clear/request/2'
+    Then tracking the request for response id '2' should return a 404

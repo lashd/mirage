@@ -7,11 +7,12 @@ Feature: Having set up the MockServer with a number of defaults, your tests may 
     """
     The default greeting
     """
-    And  I snapshot the MockServer
+
 
 
   Scenario: Taking a snapshot and rolling it back
-    Given the response for 'leaving' is:
+    Given  I snapshot the MockServer
+    And the response for 'leaving' is:
     """
     Goodye
     """

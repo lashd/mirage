@@ -129,18 +129,26 @@ class MirageServer < Ramaze::Controller
     end
   end
 
-  def clear datatype=nil, name=nil
+  def delete_response(response_id)
+    RESPONSES.each do |name, response_set|
+      response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
+    end
+    REQUESTS.delete(response_id)
+  end
+
+  def clear datatype=nil, response_id=nil
+    response_id = response_id.to_i
     case datatype
       when 'requests' then
-        REQUESTS.delete(name.to_i) if name or REQUESTS.clear
+        REQUESTS.clear
       when 'responses' then
-        if name
-          RESPONSES.delete(name).each { |pattern, response| REQUESTS.delete(response.response_id) }
-        else
-          RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
-        end
+        RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
+      when /\d+/ then
+        delete_response(datatype.to_i)
+      when 'request'
+        REQUESTS.delete(response_id)
       when nil
-        [REQUESTS, RESPONSES].each { |map| map.delete(name) if name or map.clear }
+        [REQUESTS, RESPONSES].each { |map| map.clear }
         MockResponse.reset_count
     end
   end
@@ -173,7 +181,6 @@ class MirageServer < Ramaze::Controller
   def stored_responses (name)
     RESPONSES[name]||={}
   end
-
 
 
 end

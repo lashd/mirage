@@ -7,6 +7,7 @@ class Mirage
 
   class Client
     include ::Mirage::Web
+
     def initialize url="http://localhost:7001/mirage"
       @url = url
     end
@@ -23,17 +24,30 @@ class Mirage
       http_get("#{@url}/peek/#{response_id}")
     end
 
-    def clear thing=nil, endpoint=nil
-      if endpoint.nil?
-        http_get("#{@url}/clear")
-      else
-          if thing.nil?
-          http_get("#{@url}/clear/#{endpoint}")
-        else
-          http_get("#{@url}/clear/#{thing}/#{endpoint}")
-        end
+#    client.clear 1
+#    client.clear :request => 1
+#    client.clear :responses
+#    client.clear :requests
+    def clear thing=nil
+      case thing
+        when NilClass then
+          puts "clearing everything"
+          http_get("#{@url}/clear")
+        when Fixnum then
+          http_get("#{@url}/clear/#{thing}")
+        when :requests then
+          http_get("#{@url}/clear/requests")
+        when :responses then
+          http_get("#{@url}/clear/responses")
+
+        when Hash then
+          case thing.keys.first
+            when :request then
+              http_get("#{@url}/clear/request/#{thing.values.first}")
+          end
       end
     end
+
 
     def check response_id
       http_get("#{@url}/check/#{response_id}")
