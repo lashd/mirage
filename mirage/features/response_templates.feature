@@ -2,10 +2,9 @@ Feature: Parts of a response can be substitued for values found in the request b
 
 
   Scenario: Response template populated from match found in the request body using a regex
-    Given the response for 'greeting' is:
-    """
-    Hello ${<name>(.*?)</name>}, how are you?
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello ${<name>(.*?)</name>}, how are you? |
+
     When getting 'greeting' with request body:
     """
     <grettingRequest>
@@ -16,20 +15,18 @@ Feature: Parts of a response can be substitued for values found in the request b
 
 
   Scenario: Response template populated from match found in the query string using a request parameter name
-    Given the response for 'greeting' is:
-    """
-    Hello ${name}, how are you?
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello ${name}, how are you? |
+
     When  getting 'greeting' with request parameters:
       | parameter | value |
       | name      | Leon  |
     Then 'Hello Leon, how are you?' should be returned
 
   Scenario: Response template populated from match found in the query string using a regex
-    Given the response for 'greeting' is:
-    """
-    Hello ${name=([L|l]eon)}, how are you?
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello ${name=([L\|l]eon)}, how are you? |
+
     When  getting 'greeting' with request parameters:
       | parameter | value |
       | name      | Leon  |
@@ -37,9 +34,8 @@ Feature: Parts of a response can be substitued for values found in the request b
 
 
   Scenario: No match is found in either the request body or query string
-    Given the response for 'greeting' is:
-    """
-    Hello ${<name>(.*?)</name>}, how are you?
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello ${<name>(.*?)</name>}, how are you? |
+
     When  getting 'greeting'
     Then 'Hello ${<name>(.*?)</name>}, how are you?' should be returned

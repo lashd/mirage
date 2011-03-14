@@ -2,10 +2,9 @@ Feature: If you want to see the response that would be when triggered it can be 
 
 
   Scenario: Peeking a text based response
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When peeking at the response for response id '1'
     Then 'Hello' should be returned
 

@@ -7,18 +7,16 @@ Feature: The client can be used for clearing responses from Mirage
     require 'rspec'
     require 'mirage'
     """
-    And the response for 'greeting' is:
-    """
-    Hello
-    """
+    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     And getting 'greeting' with request body:
     """
     Hello there
     """
-    And the response for 'leaving' is:
-    """
-    Goodbye
-    """
+    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
+      | response | Goodbye |
+
     And getting 'greeting' with request body:
     """
     I'm going

@@ -8,16 +8,13 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
   ${mirage_url}/clear/request/response_id - Clear request for a particular response
 
 
-
   Background: The MockServer has already got a response for greeting and leaving on it.
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
-    And the response for 'leaving' is:
-    """
-    Goodbye
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
+    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
+      | response | Goodbye |
+
 
   Scenario: Clearing all responses
     When I clear 'all' responses from the MockServer

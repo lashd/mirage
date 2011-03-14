@@ -1,4 +1,5 @@
 Feature: the client can be used for peeking at responses hosted on Mirage.
+
   Background:
     Given the following code snippet is included when running code:
     """
@@ -8,10 +9,9 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     """
 
   Scenario: peeking a response
-    Given the response for 'greeting' is:
-      """
-      Hello
-      """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     Then run
     """
       Mirage::Client.new.peek(1).should == 'Hello'

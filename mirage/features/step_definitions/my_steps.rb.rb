@@ -1,6 +1,6 @@
 require 'rake'
 Before do
-  ['custom_default_location', 'defaults'].each{|location|FileUtils.rm_rf(location) if ::File.exists?(location)}
+  ['custom_default_location', 'defaults'].each { |location| FileUtils.rm_rf(location) if ::File.exists?(location) }
   $mirage.clear
 end
 
@@ -89,7 +89,7 @@ end
 Then /^'(.*?)' should have been tracked$/ do |text|
   tracked_text = $mirage.check(@response_id)
 
-  if ["1.8.6", "1.8.7" ].include?(RUBY_VERSION)  && tracked_text != text
+  if ["1.8.6", "1.8.7"].include?(RUBY_VERSION) && tracked_text != text
     text.length.should == tracked_text.length
     text.split('&').each { |param_value_pair| tracked_text.should =~ /#{param_value_pair}/ }
   else
@@ -133,7 +133,7 @@ end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "#{::File.dirname(__FILE__)}/../../bin/"
-  @commandline_output = normalise(IO.popen( "export RUBYOPT='' && #{path}#{command}").read)
+  @commandline_output = normalise(IO.popen("export RUBYOPT='' && #{path}#{command}").read)
 end
 
 Given /^Mirage is not running$/ do
@@ -168,14 +168,14 @@ When /^reloading the defaults$/ do
 end
 
 def normalise text
-  text.gsub(/[\n]/,' ').gsub(/\s+/, ' ')
+  text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ')
 end
 
 Then /^the usage information should be displayed$/ do
-  @usage.each{|line| @commandline_output.should =~ /#{line}/}
+  @usage.each { |line| @commandline_output.should =~ /#{line}/ }
 end
 Given /^usage information:$/ do |table|
-  @usage = table.raw.flatten.collect{|line| normalise(line)}
+  @usage = table.raw.flatten.collect { |line| normalise(line) }
 end
 
 Then /^run$/ do |text|
@@ -188,5 +188,16 @@ Given /^the following code snippet is included when running code:$/ do |text|
 end
 
 When /^I hit '(http:\/\/localhost:7001\/mirage\/clear\/(.*?))'$/ do |url, response_id|
-  http_post(url)
+  @response = http_post(url)
+end
+#Given /^I hit '(http:\/\/localhost:7001\/mirage\/set\/(.*?))' with parameters:?$/ do |url, endpoint, parameters|
+#  http_post(url)
+#end
+When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |url, endpoint, table|
+  parameters = {}
+  table.raw.each { |row| parameters[row[0].to_sym]=row[1] }
+
+#  puts "parameters are: #{parameters}"
+  @response_id = http_get(url, parameters)
+#  puts "hello"
 end

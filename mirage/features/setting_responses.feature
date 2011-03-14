@@ -1,19 +1,17 @@
 Feature: The mockserver can be configured to return a default response every time the relavent end point is hit.
 
   Scenario: A response without any selection criteria
-    Given the response for 'greeting' is:
-    """
-    Hello, how are you?
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello, how are you? |
+
     When getting 'greeting'
     Then 'Hello, how are you?' should be returned
 
 
   Scenario: A response hosted on a complex endpoint
-    Given the response for 'say/hello/to/me' is:
-    """
-    Hello to me
-    """
+    Given I hit 'http://localhost:7001/mirage/set/say/hello/to/me' with parameters:
+      | response | Hello to me |
+
     When getting 'say/hello/to/me'
     Then 'Hello to me' should be returned
 

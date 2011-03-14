@@ -10,10 +10,9 @@ Feature: After a response has been served from the MockServer, the content of th
   If there is nothing in the request body then the query string is returned.
 
   Scenario: The MockServer returns a response
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When getting 'greeting' with request body:
     """
     Hello MockServer
@@ -28,18 +27,16 @@ Feature: After a response has been served from the MockServer, the content of th
 
 
   Scenario: The MockServer has not responsed
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     Then tracking the request should return a 404
 
 
   Scenario: A response is peeked at
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When getting 'greeting' with request body:
     """
     Hello MockServer
@@ -49,24 +46,20 @@ Feature: After a response has been served from the MockServer, the content of th
 
 
   Scenario: The same endpoint is set more than once
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
-    Then the response id should be '1'
-    Given the response for 'greeting' is:
-    """
-    Hi
-    """
-    Then the response id should be '1'
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
 
+    Then the response id should be '1'
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hi |
+
+    Then the response id should be '1'
 
 
   Scenario: A default response and one for the same endpoint with but with a pattern is added to the MockServer
-    Given the response for 'greeting' is:
-    """
-    Hello who ever you are
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello who ever you are |
+
     And the response id should be '1'
     And the response for 'greeting' with pattern 'Leon' is:
     """

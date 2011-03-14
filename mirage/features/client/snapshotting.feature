@@ -8,24 +8,21 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     require 'rspec'
     require 'mirage'
     """
-    And the response for 'greeting' is:
-    """
-    The default greeting
-    """
+    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | The default greeting |
+
 
   Scenario: Taking a snapshot and rolling it back
     Given run
     """
     Mirage::Client.new.snapshot
     """
-    And the response for 'leaving' is:
-    """
-    Goodye
-    """
-    And the response for 'greeting' is:
-    """
-    Changed
-    """
+    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
+      | response | Goodye |
+
+    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Changed |
+
     Given run
     """
     Mirage::Client.new.rollback

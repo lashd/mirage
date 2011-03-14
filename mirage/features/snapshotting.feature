@@ -3,23 +3,18 @@ Feature: Having set up the MockServer with a number of defaults, your tests may 
   take a snapshot of its current state and to roll it back to that state.
 
   Background: The MockServer has been setup with some default responses
-    Given the response for 'greeting' is:
-    """
-    The default greeting
-    """
-
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | The default greeting |
 
 
   Scenario: Taking a snapshot and rolling it back
     Given  I snapshot the MockServer
-    And the response for 'leaving' is:
-    """
-    Goodye
-    """
-    And the response for 'greeting' is:
-    """
-    Changed
-    """
+    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
+      | response | Goodye |
+
+    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Changed |
+
     And I rollback the MockServer
     When getting 'leaving'
     Then a 404 should be returned

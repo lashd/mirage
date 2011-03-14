@@ -1,4 +1,5 @@
 Feature: Requests made to the Mirage Server can be tracked using the Mirage client
+
   Background:
     Given the following code snippet is included when running code:
     """
@@ -8,10 +9,9 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
     """
 
   Scenario: The MockServer returns a response
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When getting 'greeting' with request parameters:
       | parameter | value |
       | surname   | Davis |

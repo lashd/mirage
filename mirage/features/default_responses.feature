@@ -56,7 +56,6 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then 'hello' should be returned
 
 
-
   Scenario: The state of Mirage is change and the the defaults are reloaded
     Given the file 'defaults/default_greetings.rb' contains:
     """
@@ -66,10 +65,9 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     """
     And I run 'mirage start'
     And I clear 'all' responses from the MockServer
-    And the response for 'a_new_response' is:
-    """
-    new response
-    """
+    And I hit 'http://localhost:7001/mirage/set/a_new_response' with parameters:
+      | response | new response |
+
     When reloading the defaults
     When getting 'greeting'
     Then 'hello' should be returned

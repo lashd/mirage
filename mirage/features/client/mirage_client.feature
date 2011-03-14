@@ -20,10 +20,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Then 'hello' should be returned
 
   Scenario: Getting a text based response
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     Then run
     """
       require 'mirage'
@@ -40,10 +39,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     """
 
   Scenario: Checking
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When getting 'greeting' with request body:
     """
     Hi
@@ -55,10 +53,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     """
 
   Scenario: Peeking
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     Then run
     """
       require 'mirage'
@@ -83,10 +80,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
 
 
   Scenario: Clearing
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When run
     """
       require 'mirage'
@@ -96,10 +92,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Then a 404 should be returned
 
   Scenario: snapshotting
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     When run
     """
       require 'mirage'
@@ -112,10 +107,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
 
 
   Scenario: Rolling back
-    Given the response for 'greeting' is:
-    """
-    Hello
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello |
+
     And I snapshot the MockServer
     And I clear 'all' responses from the MockServer
     When run

@@ -2,16 +2,14 @@ Feature: The MockServer can be configured to return particular responses conditi
   querystring or the body of a request.
 
   Background: There is already a default response for 'greeting'
-    Given the response for 'greeting' is:
-    """
-    Hello Stranger.
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello Stranger. |
+
 
   Scenario: A plain text pattern found in the request body
-    Given the response for 'greeting' with pattern '<name>leon</name>' is:
-    """
-    Hello Leon, how are you?
-    """
+    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello Leon, how are you? |
+      | pattern  | <name>leon</name>        |
     When getting 'greeting' with request body:
     """
      <greetingRequest>
