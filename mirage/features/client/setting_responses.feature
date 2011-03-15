@@ -1,8 +1,8 @@
-Feature: the client can be used for setting responses on Mirage.
-  Responses and parameters are escaped before sending them to the Mirage server.
+Feature: the Mirage client provides methods for setting responses and default response.
+  There is no need to escape any parameters before using the client api as this is done for you.
 
   Background:
-    Given the following code snippet is included when running code:
+    Given the following gems are required to run the Mirage client test code:
     """
     require 'rubygems'
     require 'rspec'
@@ -10,7 +10,7 @@ Feature: the client can be used for setting responses on Mirage.
     """
 
   Scenario: Setting a basic response
-    Given run
+    Given I run
     """
     Mirage::Client.new.set('greeting',:response => 'hello')
     """
@@ -18,7 +18,7 @@ Feature: the client can be used for setting responses on Mirage.
     Then 'hello' should be returned
 
   Scenario: Setting a response with a pattern
-    Given run
+    Given I run
     """
     Mirage::Client.new.set('greeting', :response => 'Hello Leon', :pattern => '.*?>leon</name>')
     """
@@ -40,7 +40,7 @@ Feature: the client can be used for setting responses on Mirage.
       mirage.set('leaving', :response => 'goodbye')
     end
     """
-    When run
+    When I run
     """
     Mirage::Client.new.load_defaults
     """
@@ -49,10 +49,40 @@ Feature: the client can be used for setting responses on Mirage.
     When I hit 'http://localhost:7001/mirage/get/leaving'
     Then 'goodbye' should be returned
 
+
+    #TODO clean up files that get created during test runs
+  Scenario: Setting defaults using a file with something bad in it
+    Given the file 'defaults/default_greetings.rb' contains:
+    """
+    Something bad...
+    """
+    When I run
+    """
+    begin
+      Mirage::Client.new.load_defaults
+      fail("Error should have been thrown")
+    rescue Exception => e
+      e.is_a?(Mirage::InternalServerException).should == true
+    end
+    """
+
+
   Scenario: Setting a file as a response
-    Given run
+    Given I run
     """
     Mirage::Client.new.set('download', :file => File.open('features/resources/test.zip'))
     """
     When I hit 'http://localhost:7001/mirage/get/download'
     Then the response should be a file the same as 'features/resources/test.zip'
+
+
+  Scenario: a response or file is not supplied
+    Given I run
+    """
+      begin
+        Mirage::Client.new.set('download',{})
+        fail("Error should have been thrown")
+      rescue Exception => e
+        e.is_a?(Mirage::InternalServerException).should == true
+      end
+    """

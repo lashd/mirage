@@ -3,7 +3,7 @@ require 'mirage/util'
 require 'mirage/core'
 require 'mirage/client'
 
-class Mirage
+module Mirage
   def self.default
     yield @@client
   end

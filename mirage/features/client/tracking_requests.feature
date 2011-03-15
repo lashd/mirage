@@ -1,7 +1,7 @@
 Feature: Requests made to the Mirage Server can be tracked using the Mirage client
 
   Background:
-    Given the following code snippet is included when running code:
+    Given the following gems are required to run the Mirage client test code:
     """
     require 'rubygems'
     require 'rspec'
@@ -15,7 +15,7 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
     When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | surname   | Davis |
       | firstname | Leon  |
-    Then run
+    Then I run
     """
        Mirage::Client.new.check(1).should == 'surname=Davis&firstname=Leon'
     """

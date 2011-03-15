@@ -1,4 +1,4 @@
-class Mirage
+module Mirage
   module Util
     def wait_until time=30
       start_time = Time.now

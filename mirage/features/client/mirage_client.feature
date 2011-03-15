@@ -4,16 +4,16 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
   By default the client is configured to connect to an instance of the Mirage server on localhost:7001 which the default port that Mirage starts on.
 
   Background:
-    Given the following code snippet is included when running code:
+    Given the following gems are required to run the Mirage client test code:
     """
     require 'rubygems'
     require 'rspec'
+    require 'mirage'
     """
 
   Scenario: Setting
-    Given run
+    Given I run
     """
-    require 'mirage'
     Mirage::Client.new.set('greeting',:response => 'hello')
     """
     When I hit 'http://localhost:7001/mirage/get/greeting'
@@ -23,9 +23,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    Then run
+    Then I run
     """
-      require 'mirage'
       Mirage::Client.new.get('greeting').should == 'Hello'
     """
 
@@ -33,9 +32,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
 
     Given I hit 'http://localhost:7001/mirage/set/some/location/download' with parameters:
       | file | features/resources/test.zip |
-    Then run
+    Then I run
     """
-      require 'mirage'
       response = Mirage::Client.new.get('some/location/download').save_as('temp.download')
       FileUtils.cmp('features/resources/test.zip', 'temp.download').should == true
     """
@@ -48,9 +46,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     """
     Hi
     """
-    Then run
+    Then I run
     """
-      require 'mirage'
       Mirage::Client.new.check(1).should == 'Hi'
     """
 
@@ -58,9 +55,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    Then run
+    Then I run
     """
-      require 'mirage'
       Mirage::Client.new.peek(1).should == 'Hello'
     """
 
@@ -72,9 +68,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
       mirage.set('greeting', :response => 'hello')
     end
     """
-    When run
+    When I run
     """
-      require 'mirage'
       Mirage::Client.new.load_defaults
     """
     And I hit 'http://localhost:7001/mirage/get/greeting'
@@ -85,9 +80,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When run
+    When I run
     """
-      require 'mirage'
       Mirage::Client.new.load_defaults
     """
     And I hit 'http://localhost:7001/mirage/get/greeting'
@@ -97,9 +91,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When run
+    When I run
     """
-      require 'mirage'
       Mirage::Client.new.snapshot
     """
     And I hit 'http://localhost:7001/mirage/clear'
@@ -114,9 +107,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
 
     And I hit 'http://localhost:7001/mirage/snapshot'
     And I hit 'http://localhost:7001/mirage/clear'
-    When run
+    When I run
     """
-      require 'mirage'
       Mirage::Client.new.rollback
     """
     And I hit 'http://localhost:7001/mirage/get/greeting'
@@ -124,18 +116,12 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
 
   Scenario: checking if mirage is running
     Given Mirage is not running
-    Then run
+    Then I run
     """
-      require 'mirage'
       Mirage::Client.new.running?.should == false
     """
     Given Mirage is running
-    Then run
+    Then I run
     """
-      require 'mirage'
       Mirage::Client.new.running?.should == true
     """
-
-
-
-

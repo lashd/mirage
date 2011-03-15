@@ -1,4 +1,4 @@
-class Mirage
+module Mirage
   module Web
     class File
       def initialize response
@@ -29,16 +29,13 @@ class Mirage
         end
       end
 
-      return response.code == 200 ? response.body : response if response.is_a?(Mechanize::Page) || response.is_a?(Net::HTTPOK)
-      return File.new(response) if response.is_a?(Mechanize::File)
       response
     end
 
     def http_post url, params={}
-      response = using_mechanize do |browser|
+      using_mechanize do |browser|
         browser.post(url, params)
       end
-      response.code == 200 ? response.body : response
     end
 
     private

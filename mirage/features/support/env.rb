@@ -2,12 +2,12 @@ $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../../lib")
 require 'rubygems'
 require 'bundler/setup'
 Bundler.setup(:test)
-
 require 'mirage'
 require 'cucumber'
 require 'rspec'
-
 require 'mechanize'
+
+SCRATCH = './scratch'
 
 
 module Web
@@ -32,13 +32,12 @@ end
 
 
 module Regression
-  def stop_mirage options ={}
-    `export RUBYOPT='' && mirage stop`
+  def stop_mirage
+    `export RUBYOPT='' && cd #{SCRATCH} && mirage stop`
   end
 
-  def start_mirage options={}
-    $mirage = Mirage::Client.new
-    `export RUBYOPT='' && mirage start`
+  def start_mirage
+    `export RUBYOPT='' && cd #{SCRATCH} && mirage start`
   end
 end
 
@@ -46,17 +45,15 @@ module IntelliJ
   include Mirage::Util
 
   def stop_mirage
-    system "#{File.dirname(__FILE__)}/../../bin/mirage stop"
+    system "cd #{SCRATCH} && ../bin/mirage stop"
     wait_until do
       !$mirage.running?
     end
-    FileUtils.rm_rf('tmp')
   end
 
   def start_mirage
     puts "starting mirage"
-    $mirage = Mirage::Client.new
-    system "#{File.dirname(__FILE__)}/../../bin/mirage start"
+    system "cd #{SCRATCH} && ../bin/mirage start"
 
     wait_until do
       $mirage.running?
@@ -68,7 +65,19 @@ end
 'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
 
 World(Web)
-start_mirage
+
+Before do
+  FileUtils.mkdir_p(SCRATCH)
+  `rm -Rf #{SCRATCH}/*`
+  $mirage = Mirage::Client.new
+
+  if $mirage.running?
+    $mirage.clear
+  else
+    start_mirage
+  end
+
+end
 
 at_exit do
   stop_mirage

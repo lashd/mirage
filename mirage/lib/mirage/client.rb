@@ -3,7 +3,22 @@ require 'mechanize'
 require 'open-uri'
 require 'mirage/web'
 
-class Mirage
+module Mirage
+
+  class MirageError < ::Exception
+    attr_reader :code
+
+    def initialize message, code
+      super message
+      @code = message, code
+    end
+  end
+
+  class InternalServerException < MirageError;
+  end
+
+  class ResponseNotFound < MirageError;
+  end
 
   class Client
     include ::Mirage::Web
@@ -13,25 +28,20 @@ class Mirage
     end
 
     def get endpoint, params={}
-      http_get("#{@url}/get/#{endpoint}", params)
+      response(http_get("#{@url}/get/#{endpoint}", params))
     end
 
-    def set endpoint, params={}
-      http_post("#{@url}/set/#{endpoint}", params)
+    def set endpoint, params
+      response(http_post("#{@url}/set/#{endpoint}", params))
     end
 
     def peek response_id
-      http_get("#{@url}/peek/#{response_id}")
+      response(http_get("#{@url}/peek/#{response_id}"))
     end
 
-#    client.clear 1
-#    client.clear :request => 1
-#    client.clear :responses
-#    client.clear :requests
     def clear thing=nil
       case thing
         when NilClass then
-          puts "clearing everything"
           http_get("#{@url}/clear")
         when Fixnum then
           http_get("#{@url}/clear/#{thing}")
@@ -50,15 +60,15 @@ class Mirage
 
 
     def check response_id
-      http_get("#{@url}/check/#{response_id}")
+      response(http_get("#{@url}/check/#{response_id}"))
     end
 
     def snapshot
-      http_post("#{@url}/snapshot")
+      http_post("#{@url}/snapshot").code == 200
     end
 
     def rollback
-      http_post("#{@url}/rollback")
+      http_post("#{@url}/rollback").code == 200
     end
 
     def running?
@@ -66,7 +76,20 @@ class Mirage
     end
 
     def load_defaults
-      http_post("#{@url}/load_defaults")
+      response(http_post("#{@url}/load_defaults"))
+    end
+
+    private
+    def response response
+      return Mirage::Web::File.new(response) if response.instance_of?(Mechanize::File)
+      case response.code
+        when 500 then
+          raise ::Mirage::InternalServerException.new(response.page.body, response.code)
+        when 404 then
+          raise ::Mirage::ResponseNotFound.new(response.page.body, response.code)
+        else
+          response.body
+      end
     end
 
   end

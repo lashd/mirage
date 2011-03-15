@@ -168,14 +168,19 @@ class MirageServer < Ramaze::Controller
   def load_defaults
     clear
     Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
-      load default
+      begin
+        load default
+      rescue Exception
+        respond("Unable to load default responses from: #{default}", 500)
+      end
+
     end
   end
 
   private
   def response_value
     return request['response'] unless request['response'].nil?
-    respond('response required', 500)
+    respond('response or file parameter required', 500)
   end
 
   def stored_responses (name)

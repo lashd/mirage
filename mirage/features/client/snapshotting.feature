@@ -2,7 +2,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
 
 
   Background:
-    Given the following code snippet is included when running code:
+    Given the following gems are required to run the Mirage client test code:
     """
     require 'rubygems'
     require 'rspec'
@@ -13,7 +13,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
 
 
   Scenario: Taking a snapshot and rolling it back
-    Given run
+    Given I run
     """
     Mirage::Client.new.snapshot
     """
@@ -23,7 +23,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Changed |
 
-    Given run
+    Given I run
     """
     Mirage::Client.new.rollback
     """

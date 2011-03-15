@@ -1,5 +1,5 @@
-Feature: Once responses and requests are on the MockServer they can be cleared.
-  Clearing a response clears its requests.
+Feature: Responses and requests on the Mirage Server can be cleared.
+  Clearing a response clears any associated request information that may have been stored.
 
   Usage:
   ${mirage_url}/clear - Clear all responses and requests
@@ -10,10 +10,10 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
 
 
   Background: The MockServer has already got a response for greeting and leaving on it.
-    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+    Given I post to 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
+    And I post to 'http://localhost:7001/mirage/set/leaving' with parameters:
       | response | Goodbye |
 
 
