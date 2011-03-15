@@ -30,7 +30,9 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     """
 
   Scenario: Getting a file based response
-    Given the response for 'some/location/download' is file 'features/resources/test.zip'
+
+    Given I hit 'http://localhost:7001/mirage/set/some/location/download' with parameters:
+      | file | features/resources/test.zip |
     Then run
     """
       require 'mirage'
@@ -100,8 +102,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
       require 'mirage'
       Mirage::Client.new.snapshot
     """
-    And I clear 'all' responses from the MockServer
-    And I rollback the MockServer
+    And I hit 'http://localhost:7001/mirage/clear'
+    And I hit 'http://localhost:7001/mirage/rollback'
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'Hello' should be returned
 
@@ -110,8 +112,8 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    And I snapshot the MockServer
-    And I clear 'all' responses from the MockServer
+    And I hit 'http://localhost:7001/mirage/snapshot'
+    And I hit 'http://localhost:7001/mirage/clear'
     When run
     """
       require 'mirage'

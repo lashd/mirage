@@ -8,14 +8,14 @@ Feature: Having set up the MockServer with a number of defaults, your tests may 
 
 
   Scenario: Taking a snapshot and rolling it back
-    Given  I snapshot the MockServer
+    Given  I hit 'http://localhost:7001/mirage/snapshot'
     And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
       | response | Goodye |
 
     And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Changed |
 
-    And I rollback the MockServer
+    And I hit 'http://localhost:7001/mirage/rollback'
     When I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned
     When I hit 'http://localhost:7001/mirage/get/greeting'

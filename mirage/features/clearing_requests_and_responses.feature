@@ -17,7 +17,7 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
 
 
   Scenario: Clearing all responses
-    When I clear 'all' responses from the MockServer
+    When I hit 'http://localhost:7001/mirage/clear'
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
     And I hit 'http://localhost:7001/mirage/get/leaving'
@@ -27,8 +27,11 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     When I hit 'http://localhost:7001/mirage/clear/1'
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
-    And tracking the request for response id '1' should return a 404
-    And I hit 'http://localhost:7001/mirage/get/leaving'
+
+    When I hit 'http://localhost:7001/mirage/check/1'
+    Then a 404 should be returned
+
+    When I hit 'http://localhost:7001/mirage/get/leaving'
     Then 'Goodbye' should be returned
 
 
@@ -38,7 +41,8 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     greet me :)
     """
     And I hit 'http://localhost:7001/mirage/clear/1'
-    Then tracking the request for response id '1' should return a 404
+    Then I hit 'http://localhost:7001/mirage/check/1'
+    Then a 404 should be returned
 
 
   Scenario: clearing requests
@@ -50,9 +54,11 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     """
     Say 'Goodbye' to me
     """
-    When I clear 'all' requests from the MockServer
-    Then tracking the request for response id '1' should return a 404
-    Then tracking the request for response id '2' should return a 404
+    When I hit 'http://localhost:7001/mirage/clear'
+    Then I hit 'http://localhost:7001/mirage/check/1'
+    Then a 404 should be returned
+    Then I hit 'http://localhost:7001/mirage/check/2'
+    Then a 404 should be returned
 
 
   Scenario: clearing a particular request set
@@ -61,4 +67,5 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
     See you later
     """
     When I hit 'http://localhost:7001/mirage/clear/request/2'
-    Then tracking the request for response id '2' should return a 404
+    Then I hit 'http://localhost:7001/mirage/check/2'
+    Then a 404 should be returned

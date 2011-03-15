@@ -12,8 +12,9 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    Then run
+    When run
     """
       Mirage::Client.new.peek(1).should == 'Hello'
     """
-    And tracking the request for response id '1' should return a 404
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then a 404 should be returned

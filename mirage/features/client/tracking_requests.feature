@@ -12,8 +12,7 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When getting 'greeting' with request parameters:
-      | parameter | value |
+    When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | surname   | Davis |
       | firstname | Leon  |
     Then run

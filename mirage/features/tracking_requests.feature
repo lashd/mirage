@@ -17,20 +17,22 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello MockServer
     """
-    Then 'Hello MockServer' should have been tracked
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then 'Hello MockServer' should be returned
 
-    When getting 'greeting' with request parameters:
-      | parameter | value |
+    When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | surname   | Davis |
       | firstname | Leon  |
-    Then 'surname=Davis&firstname=Leon' should have been tracked
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then 'surname=Davis&firstname=Leon' should be returned
 
 
   Scenario: The MockServer has not responsed
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    Then tracking the request should return a 404
+    When I hit 'http://localhost:7001/mirage/check/1'
+    Then a 404 should be returned
 
 
   Scenario: A response is peeked at
@@ -41,8 +43,10 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello MockServer
     """
-    And peeking at the response for response id '(.*?)'
-    Then 'Hello MockServer' should have been tracked
+    And I hit 'http://localhost:7001/mirage/peek/1'
+
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then 'Hello MockServer' should be returned
 
 
   Scenario: The same endpoint is set more than once
@@ -61,10 +65,9 @@ Feature: After a response has been served from the MockServer, the content of th
       | response | Hello who ever you are |
 
     And the response id should be '1'
-    And the response for 'greeting' with pattern 'Leon' is:
-    """
-    Hello Leon
-    """
+    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+      | response | Hello Leon |
+      | pattern  | Leon       |
     And the response id should be '2'
     When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
@@ -74,7 +77,9 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     My name is Leon
     """
-    Then 'My name is Joel' should have been tracked for response id '1'
-    Then 'My name is Leon' should have been tracked for response id '2'
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then 'My name is Joel' should be returned
+    And I hit 'http://localhost:7001/mirage/check/2'
+    Then 'My name is Leon' should be returned
 
 

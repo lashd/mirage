@@ -38,7 +38,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     end
     """
     And I run 'mirage start -d ./custom_default_location'
-    When reloading the defaults
+    When I hit 'http://localhost:7001/mirage/load_defaults'
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
@@ -51,7 +51,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     end
     """
     And I run 'mirage start -d /tmp/defaults'
-    When reloading the defaults
+    When I hit 'http://localhost:7001/mirage/load_defaults'
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
 
@@ -64,11 +64,11 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     end
     """
     And I run 'mirage start'
-    And I clear 'all' responses from the MockServer
+    And I hit 'http://localhost:7001/mirage/clear'
     And I hit 'http://localhost:7001/mirage/set/a_new_response' with parameters:
       | response | new response |
 
-    When reloading the defaults
+    When I hit 'http://localhost:7001/mirage/load_defaults'
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
     When I hit 'http://localhost:7001/mirage/get/a_new_response'

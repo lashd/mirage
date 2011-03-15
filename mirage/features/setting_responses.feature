@@ -17,7 +17,7 @@ Feature: The mockserver can be configured to return a default response every tim
 
 
   Scenario: A response is not supplied
-    Given an attempt is made to set 'greeting' without a response
+    Given I hit 'http://localhost:7001/mirage/set/greeting'
     Then a 500 should be returned
 
 
