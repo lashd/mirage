@@ -53,22 +53,23 @@ Feature: After a response has been served from the MockServer, the content of th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    Then the response id should be '1'
+    Then '1' should be returned
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hi |
 
-    Then the response id should be '1'
+    Then '1' should be returned
 
 
   Scenario: A default response and one for the same endpoint with but with a pattern is added to the MockServer
-    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+    When I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello who ever you are |
+    Then '1' should be returned
 
-    And the response id should be '1'
-    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
+    When I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello Leon |
       | pattern  | Leon       |
-    And the response id should be '2'
+    Then '2' should be returned
+
     When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     My name is Joel

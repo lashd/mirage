@@ -13,14 +13,6 @@ After('@command_line') do
   start_mirage
 end
 
-
-When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
-  start_time = Time.now
-  @response = http_get(url, {:body => request_body})
-  @response_time = Time.now - start_time
-end
-
-
 Then /^'(.*?)' should be returned$/ do |expected_response|
   if ["1.8.6", "1.8.7"].include?(RUBY_VERSION) && @response != expected_response
     expected_response.length.should == @response.length
@@ -33,10 +25,6 @@ end
 
 Then /^a (404|500) should be returned$/ do |error_code|
   @response.code.should == error_code.to_i
-end
-
-Then /^the response id should be '(\d+)'$/ do |response_id|
-  @response_id.should == response_id
 end
 
 Then /^it should take at least '(.*)' seconds$/ do |time|
@@ -58,12 +46,12 @@ Given /^I run '(.*)'$/ do |command|
   @commandline_output = normalise(IO.popen("export RUBYOPT='' && #{path}#{command}").read)
 end
 
-Given /^Mirage is not running$/ do
-  stop_mirage if $mirage.running?
-end
-
-Given /^Mirage is running$/ do
-  start_mirage unless $mirage.running?
+Given /^Mirage (is|is not) running$/ do |running|
+  if running == 'is'
+    start_mirage unless $mirage.running?
+  else
+    stop_mirage if $mirage.running?
+  end
 end
 
 Then /^Connection should be refused to '(.*)'$/ do |url|
@@ -85,10 +73,6 @@ Given /^the file '(.*)' contains:$/ do |file_path, content|
   file.close
 end
 
-def normalise text
-  text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ')
-end
-
 Then /^the usage information should be displayed$/ do
   @usage.each { |line| @commandline_output.should =~ /#{line}/ }
 end
@@ -106,9 +90,7 @@ Given /^the following code snippet is included when running code:$/ do |text|
 end
 
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, response_id|
-  start_time = Time.now
-  @response = http_get(url)
-  @response_time = Time.now - start_time
+  @response = hit_mirage(url)
 end
 
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |url, endpoint, table|
@@ -116,17 +98,13 @@ When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |u
   parameters = {}
   table.raw.each do |row|
     parameter, value = row[0].to_sym, row[1]
-
-    puts "parameter is: #{parameter}"
-    puts "value is: #{value}"
-    value = parameter == :file ? ::File.open(value) : value
+    value = (parameter == :file ? ::File.open(value) : value)
     parameters[parameter.to_sym]=value
   end
 
-  if parameters.include? :file
-    @response_id = http_post(url, parameters)
-  else
-    @response_id = http_get(url, parameters)
-  end
-  @response = @response_id
+  @response = hit_mirage(url, parameters)
+end
+
+When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
+  @response = hit_mirage(url,{:body => request_body})
 end

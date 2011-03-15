@@ -11,10 +11,22 @@ require 'mechanize'
 
 
 module Web
+  include Mirage::Web
   def get(url)
     browser = Mechanize.new
     browser.keep_alive= false
     browser.get(url)
+  end
+
+  def hit_mirage(url, parameters={})
+    start_time = Time.now
+    response = (parameters.include?(:file) ? http_post(url, parameters) : http_get(url, parameters))
+    @response_time = Time.now - start_time
+    response
+  end
+
+  def normalise text
+    text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ')
   end
 end
 
@@ -54,8 +66,8 @@ end
 
 'regression' == ENV['mode'] ? World(Regression) : World(IntelliJ)
 'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
+
 World(Web)
-World(Mirage::Web)
 start_mirage
 
 at_exit do
