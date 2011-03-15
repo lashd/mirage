@@ -13,7 +13,7 @@ Feature: After a response has been served from the MockServer, the content of th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Hello MockServer
     """
@@ -37,7 +37,7 @@ Feature: After a response has been served from the MockServer, the content of th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Hello MockServer
     """
@@ -66,11 +66,11 @@ Feature: After a response has been served from the MockServer, the content of th
     Hello Leon
     """
     And the response id should be '2'
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     My name is Joel
     """
-    And getting 'greeting' with request body:
+    And I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     My name is Leon
     """

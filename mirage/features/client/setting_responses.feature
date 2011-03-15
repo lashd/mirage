@@ -24,7 +24,7 @@ Feature: the client can be used for setting responses on Mirage.
     """
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
      <greetingRequest>
       <name>leon</name>

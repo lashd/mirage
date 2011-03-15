@@ -36,8 +36,10 @@ When /^getting '(.*?)'$/ do |endpoint|
   get_response(endpoint)
 end
 
-When /^getting '(.*?)' with request body:$/ do |endpoint, request_body|
-  get_response(endpoint, :body => request_body)
+When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
+  start_time = Time.now
+  @response = http_get(url, {:body => request_body})
+  @response_time = Time.now - start_time
 end
 
 def get_response(endpoint, parameters={})
@@ -198,8 +200,5 @@ end
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |url, endpoint, table|
   parameters = {}
   table.raw.each { |row| parameters[row[0].to_sym]=row[1] }
-
-#  puts "parameters are: #{parameters}"
   @response_id = http_get(url, parameters)
-#  puts "hello"
 end

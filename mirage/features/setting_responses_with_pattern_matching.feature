@@ -10,7 +10,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello Leon, how are you? |
       | pattern  | <name>leon</name>        |
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
      <greetingRequest>
       <name>leon</name>
@@ -23,7 +23,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     """
     Hello Leon, how are you?
     """
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
      <greetingRequest>
       <name>leon</name>
@@ -58,7 +58,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     """
     Hello Leon, how are you?
     """
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
      <greetingRequest>
       <name>jim</name>

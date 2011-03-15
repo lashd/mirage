@@ -42,7 +42,7 @@ Feature: Interacting with Mirage is done via HTTP using a REST style URLs and th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Hi
     """

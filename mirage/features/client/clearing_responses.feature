@@ -10,14 +10,14 @@ Feature: The client can be used for clearing responses from Mirage
     And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    And getting 'greeting' with request body:
+    And I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Hello there
     """
     And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
       | response | Goodbye |
 
-    And getting 'greeting' with request body:
+    And I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     I'm going
     """

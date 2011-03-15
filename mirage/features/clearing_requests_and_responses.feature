@@ -33,7 +33,7 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
 
 
   Scenario: Check request for a response that has been cleared
-    When getting 'greeting' with request body:
+    When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     greet me :)
     """
@@ -42,11 +42,11 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
 
 
   Scenario: clearing requests
-    And getting 'greeting' with request body:
+    And I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Say 'Hello' to me
     """
-    And getting 'leaving' with request body:
+    And I hit 'http://localhost:7001/mirage/get/leaving' with request body:
     """
     Say 'Goodbye' to me
     """
@@ -56,7 +56,7 @@ Feature: Once responses and requests are on the MockServer they can be cleared.
 
 
   Scenario: clearing a particular request set
-    Given getting 'leaving' with request body:
+    Given I hit 'http://localhost:7001/mirage/get/leaving' with request body:
     """
     See you later
     """
