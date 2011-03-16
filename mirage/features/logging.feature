@@ -1,5 +1,5 @@
-Feature: Output is store in mirage.log.
-  This file is located at which ever path mirage is started from.
+Feature: Output is stored in mirage.log.
+  This file is located at the root from which mirage is started.
 
   Scenario: response is set.
     Given I post to 'http://localhost:7001/mirage/set/greeting' with parameters:

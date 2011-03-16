@@ -1,6 +1,6 @@
 @command_line
 Feature: Mirage can be started from the command line.
-  Mirage logs to mirage.log which can be found at the path where mirage is started from.
+  Mirage logs to mirage.log which can be found at the root from which Mirage is started
 
   Background: Mirage usage
     Given usage information:
