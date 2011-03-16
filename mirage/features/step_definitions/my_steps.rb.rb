@@ -17,7 +17,7 @@ Then /^'(.*?)' should be returned$/ do |expected_response|
     expected_response.length.should == response_text.length
     expected_response.split('&').each { |param_value_pair| response_text.should =~ /#{param_value_pair}/ }
   else
-    expected_response.should == response_text
+    response_text.should == expected_response
   end
 end
 
@@ -64,7 +64,7 @@ Then /^Connection should be refused to '(.*)'$/ do |url|
 end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|
-  file_path = "#{SCRATCH}/#{file_path}"
+  file_path = "#{SCRATCH}/#{file_path}" unless file_path =~ /^\//
 
   FileUtils.rm_rf(file_path) if ::File.exists?(file_path)
   directory = ::File.dirname(file_path)
@@ -108,4 +108,7 @@ end
 
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
   @response = hit_mirage(url,{:body => request_body})
+end
+Then /^I should see '(.*?)' on the command line$/ do |content|
+  @commandline_output.should =~/#{content}/
 end

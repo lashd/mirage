@@ -10,6 +10,8 @@ require 'mechanize'
 include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
+LOGGER = Logger.new(STDOUT)
+
 def start_mirage(args, mirage)
   puts "Starting Mirage"
   system "(#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
@@ -34,7 +36,12 @@ if ARGV.include?('start')
   end
 
   start_mirage(ARGV, mirage_client)
-  mirage_client.load_defaults
+  begin
+    mirage_client.load_defaults
+  rescue Mirage::InternalServerException => e
+    puts "WARN: #{e.message}"
+  end
+
 
 elsif ARGV.include?('stop')
   puts "Stoping Mirage"

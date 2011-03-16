@@ -75,6 +75,27 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then a 404 should be returned
 
 
+  Scenario: starting mirage and having a file in the defaults directory that has a mistake in it
+    Given the file 'defaults/default_greetings.rb' contains:
+    """
+    A file with a mistake in it
+    """
+    When I run 'mirage start'
+    Then I should see 'WARN: Unable to load default responses from: defaults/default_greetings.rb' on the command line
+
+
+  Scenario: loading a default response file, that has a mistake in it, after mirage has started
+    Given I run 'mirage start'
+    When the file 'defaults/default_greetings.rb' contains:
+    """
+    A file with a mistake in it
+    """
+    And I hit 'http://localhost:7001/mirage/load_defaults'
+    Then a 500 should be returned
+
+
+
+
 
 
 
