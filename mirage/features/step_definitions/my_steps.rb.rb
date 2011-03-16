@@ -1,8 +1,3 @@
-require 'rake'
-Before do
-
-end
-
 Before('@command_line') do
   stop_mirage
 end
@@ -109,6 +104,15 @@ end
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
   @response = hit_mirage(url,{:body => request_body})
 end
+
 Then /^I should see '(.*?)' on the command line$/ do |content|
   @commandline_output.should =~/#{content}/
+end
+
+Then /^'(.*)' should exist$/ do |path|
+  ::File.exists?("#{SCRATCH}/#{path}").should == true
+end
+
+Then /^'(.*)' should contain '(.*)'$/ do |file, content|
+  fail("#{content} not found in: #{file}") unless ::File.read("#{SCRATCH}/#{file}").index(content)
 end
