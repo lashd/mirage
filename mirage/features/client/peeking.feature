@@ -16,7 +16,7 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     """
       Mirage::Client.new.peek(1).should == 'Hello'
     """
-    And I hit 'http://localhost:7001/mirage/check/1'
+    And I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
   Scenario: getting a response that does not exist

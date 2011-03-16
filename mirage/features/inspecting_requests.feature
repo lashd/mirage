@@ -17,13 +17,13 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     Hello MockServer
     """
-    And I hit 'http://localhost:7001/mirage/check/1'
+    And I hit 'http://localhost:7001/mirage/inspect/1'
     Then 'Hello MockServer' should be returned
 
     When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | surname   | Davis |
       | firstname | Leon  |
-    And I hit 'http://localhost:7001/mirage/check/1'
+    And I hit 'http://localhost:7001/mirage/inspect/1'
     Then 'surname=Davis&firstname=Leon' should be returned
 
 
@@ -31,7 +31,7 @@ Feature: After a response has been served from the MockServer, the content of th
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello |
 
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
 
@@ -45,7 +45,7 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     And I hit 'http://localhost:7001/mirage/peek/1'
 
-    And I hit 'http://localhost:7001/mirage/check/1'
+    And I hit 'http://localhost:7001/mirage/inspect/1'
     Then 'Hello MockServer' should be returned
 
 
@@ -78,9 +78,9 @@ Feature: After a response has been served from the MockServer, the content of th
     """
     My name is Leon
     """
-    And I hit 'http://localhost:7001/mirage/check/1'
+    And I hit 'http://localhost:7001/mirage/inspect/1'
     Then 'My name is Joel' should be returned
-    And I hit 'http://localhost:7001/mirage/check/2'
+    And I hit 'http://localhost:7001/mirage/inspect/2'
     Then 'My name is Leon' should be returned
 
 

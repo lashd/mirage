@@ -30,13 +30,13 @@ Feature: The client can be used for clearing responses from Mirage
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
     And I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/check/2'
+    When I hit 'http://localhost:7001/mirage/inspect/2'
     Then a 404 should be returned
 
 
@@ -45,10 +45,10 @@ Feature: The client can be used for clearing responses from Mirage
     """
     Mirage::Client.new.clear :requests
     """
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/check/2'
+    When I hit 'http://localhost:7001/mirage/inspect/2'
     Then a 404 should be returned
 
   Scenario: Clearning a response
@@ -58,7 +58,7 @@ Feature: The client can be used for clearing responses from Mirage
     """
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
   Scenario: Clearning a request
@@ -66,7 +66,7 @@ Feature: The client can be used for clearing responses from Mirage
     """
     Mirage::Client.new.clear :request => 1
     """
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
 
@@ -75,7 +75,7 @@ Feature: The client can be used for clearing responses from Mirage
     """
     Mirage::Client.new.clear :request => 1
     """
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/inspect/1'
     Then a 404 should be returned
 
 
