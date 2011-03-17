@@ -14,11 +14,16 @@ Feature: Mirage's home page allows you to see what response are currently being 
     Then I should see 'greeting'
     Then I should see 'leaving'
 
+  Scenario: Using the home page to peek at a response
+    Given I goto 'http://localhost:7001/mirage'
+    When  I click 'peek_response_1'
+    Then I should see 'hello'
+
   Scenario: Using the home page to check if a request has been made
     Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Yo!
     """
     Given I goto 'http://localhost:7001/mirage'
-    When  I click 'check 1'
+    When  I click 'check_response_1'
     Then I should see 'Yo!'
