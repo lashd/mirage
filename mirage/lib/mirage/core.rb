@@ -153,7 +153,7 @@ class MirageServer < Ramaze::Controller
     end
   end
 
-  def inspect id
+  def query id
     REQUESTS[id.to_i] || respond("Nothing stored for: #{id}", 404)
   end
 

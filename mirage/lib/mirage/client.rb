@@ -59,8 +59,8 @@ module Mirage
     end
 
 
-    def inspect response_id
-      response(http_get("#{@url}/inspect/#{response_id}"))
+    def query response_id
+      response(http_get("#{@url}/query/#{response_id}"))
     end
 
     def snapshot
