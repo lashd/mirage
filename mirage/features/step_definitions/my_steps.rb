@@ -123,5 +123,5 @@ Then /^I should see '(.*)'$/ do |text|
   @page.body.should =~ /#{text}/m
 end
 When /^I click '(.*)'$/ do |thing|
-  @page = @page.links.find{|link| link.attributes['name'] == thing}.click
+  @page = @page.links.find{|link| link.attributes['id'] == thing}.click
 end
