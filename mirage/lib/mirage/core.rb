@@ -93,9 +93,10 @@ class MirageServer < Ramaze::Controller
       response = MockResponse.new(name, response_value, pattern, delay.to_f)
     end
 
-    stored_response = stored_responses(name)
-    old_response = stored_response[pattern]
-    stored_response[pattern] = response
+    stored_responses = RESPONSES[name]||={}
+
+    old_response = stored_responses[pattern]
+    stored_responses[pattern] = response
 
     # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
     response.response_id = old_response.response_id if old_response
@@ -103,20 +104,21 @@ class MirageServer < Ramaze::Controller
   end
 
   def get *args
-    body, query_string, record = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING'], nil
+    body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
 
 
     name = args.join('/')
-    stored_response = stored_responses(name)
-    if stored_response.empty?
-      matches = RESPONSES.keys.find_all{|key| name.index(key) == 0 && !RESPONSES[key].empty?}.sort{|a,b| b.length <=> a.length}
-      stored_response = RESPONSES[matches.first]
+    stored_responses = RESPONSES[name]
+
+    unless stored_responses
+      matches = RESPONSES.keys.find_all{|key| name.index(key) == 0}.sort{|a,b| b.length <=> a.length}
+      stored_responses = RESPONSES[matches.first]
     end
 
-    stored_response = {} unless stored_response
+    respond('Response not found', 404) unless stored_responses
 
-    stored_response.find_all { |pattern, mock_resoonse| pattern != :default }.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
-    record = stored_response[:default] unless record
+    pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find{ |pattern| body =~ pattern || query_string =~ pattern }
+    record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
 
     respond('Response not found', 404) unless record
     sleep record.delay
@@ -183,11 +185,6 @@ class MirageServer < Ramaze::Controller
     return request['response'] unless request['response'].nil?
     respond('response or file parameter required', 500)
   end
-
-  def stored_responses (name)
-    RESPONSES[name]||={}
-  end
-
 
 end
 

@@ -10,6 +10,8 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
   'level1/level2' will be returned as it is the most specific match out of the two.
 
   Scenario: a root response is returned
+    Given I hit 'http://localhost:7001/mirage/set/level0/level1' with parameters:
+      | response | another level |
     Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
       | response | level 1 |
 
