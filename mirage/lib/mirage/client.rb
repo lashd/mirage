@@ -126,7 +126,7 @@ module Mirage
 
     private
     def response response
-      return Mirage::Web::File.new(response) if response.instance_of?(Mechanize::File)
+      return Mirage::Web::FileResponse.new(response) if response.instance_of?(Mechanize::File)
       case response.code
         when 500 then
           raise ::Mirage::InternalServerException.new(response.page.body, response.code)

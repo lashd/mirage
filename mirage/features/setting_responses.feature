@@ -12,8 +12,6 @@ Feature: Mirage can be configured with endpoints that when request returned defi
 
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'Hello, how are you?' should be returned
-    And '1' should be returned
-
 
   Scenario: A response hosted on a longer url
     Given I hit 'http://localhost:7001/mirage/set/say/hello/to/me' with parameters:
@@ -21,7 +19,6 @@ Feature: Mirage can be configured with endpoints that when request returned defi
 
     When I hit 'http://localhost:7001/mirage/get/say/hello/to/me'
     Then 'Hello to me' should be returned
-    And '1' should be returned
 
 
   Scenario: The same endpoint is set more than once

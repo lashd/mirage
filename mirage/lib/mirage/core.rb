@@ -96,6 +96,7 @@ class MirageServer < Ramaze::Controller
         stored_response[/#{pattern}/] = response
     end
 
+    # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
     response.response_id = old_response.response_id if old_response
 
     response.response_id

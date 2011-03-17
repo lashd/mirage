@@ -61,10 +61,10 @@ end
 Given /^the file '(.*)' contains:$/ do |file_path, content|
   file_path = "#{SCRATCH}/#{file_path}" unless file_path =~ /^\//
 
-  FileUtils.rm_rf(file_path) if ::File.exists?(file_path)
-  directory = ::File.dirname(file_path)
+  FileUtils.rm_rf(file_path) if File.exists?(file_path)
+  directory = File.dirname(file_path)
   FileUtils.mkdir_p(directory)
-  file = ::File.new("#{directory}/#{::File.basename(file_path)}", 'w')
+  file = File.new("#{directory}/#{File.basename(file_path)}", 'w')
   file.write(content)
   file.close
 end
@@ -94,7 +94,7 @@ When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with param
   parameters = {}
   table.raw.each do |row|
     parameter, value = row[0].to_sym, row[1]
-    value = (parameter == :file ? ::File.open(value) : value)
+    value = (parameter == :file ? File.open(value) : value)
     parameters[parameter.to_sym]=value
   end
 
@@ -110,9 +110,9 @@ Then /^I should see '(.*?)' on the command line$/ do |content|
 end
 
 Then /^'(.*)' should exist$/ do |path|
-  ::File.exists?("#{SCRATCH}/#{path}").should == true
+  File.exists?("#{SCRATCH}/#{path}").should == true
 end
 
 Then /^'(.*)' should contain '(.*)'$/ do |file, content|
-  fail("#{content} not found in: #{file}") unless ::File.read("#{SCRATCH}/#{file}").index(content)
+  fail("#{content} not found in: #{file}") unless File.read("#{SCRATCH}/#{file}").index(content)
 end

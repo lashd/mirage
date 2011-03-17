@@ -1,0 +1,5 @@
+= Mirage
+A really nice description of the project
+
+
+ruby 1.8.6 on ubuntu, export CC="gcc-4.3" and rebuild ruby

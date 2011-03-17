@@ -41,13 +41,14 @@ Feature: After a response has been served from Mirage, the content of the reques
   Scenario: A response is peeked at
     Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
-    Hello MockServer
+    Hello
     """
-    When I hit 'http://localhost:7001/mirage/peek/1'
-    Then a 404 should be returned
+    And I hit 'http://localhost:7001/mirage/peek/1'
+    When I hit 'http://localhost:7001/mirage/query/1'
+    Then 'Hello' should be returned
 
 
-  Scenario: A default response and one for the same endpoint with but with a pattern is added to the MockServer
+  Scenario: A default response and one for the same endpoint with a pattern are set
     When I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello who ever you are |
     Then '1' should be returned
@@ -55,7 +56,7 @@ Feature: After a response has been served from Mirage, the content of the reques
     When I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello Leon |
       | pattern  | Leon       |
-    Then '2' should be returned
+    Then '3' should be returned
 
     When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
@@ -67,7 +68,7 @@ Feature: After a response has been served from Mirage, the content of the reques
     """
     And I hit 'http://localhost:7001/mirage/query/1'
     Then 'My name is Joel' should be returned
-    And I hit 'http://localhost:7001/mirage/query/2'
+    And I hit 'http://localhost:7001/mirage/query/3'
     Then 'My name is Leon' should be returned
 
 

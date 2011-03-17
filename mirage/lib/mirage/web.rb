@@ -1,6 +1,6 @@
 module Mirage
   module Web
-    class File
+    class FileResponse
       def initialize response
         @response = response
       end
