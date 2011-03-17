@@ -70,16 +70,6 @@ Feature: The client can be used for clearing responses from Mirage
     Then a 404 should be returned
 
 
-  Scenario: Clearning a request
-    Given I run
-    """
-    Mirage::Client.new.clear :request => 1
-    """
-    When I hit 'http://localhost:7001/mirage/query/1'
-    Then a 404 should be returned
-
-
-
 
 
 

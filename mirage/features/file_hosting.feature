@@ -1,6 +1,6 @@
-Feature: Files can also be returned as a response
+Feature: Mirage can also be used to host files.
 
-  Scenario: A file is put on the MockServer
+  Scenario: A file is set as a response
     Given I hit 'http://localhost:7001/mirage/set/some/location/download' with parameters:
       | file | features/resources/test.zip |
 

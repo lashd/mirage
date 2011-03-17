@@ -1,5 +1,7 @@
-Feature: The MockServer can be configured to return particular responses conditionally based on a pattern in the
+Feature: The MockServer can be configured to return particular responses conditionally based on if a prescribed pattern is found in
   querystring or the body of a request.
+
+  Patterns can be either plain text or a regular expression
 
   Background: There is already a default response for 'greeting'
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
@@ -55,7 +57,7 @@ Feature: The MockServer can be configured to return particular responses conditi
     Then 'Hello Leon, how are you?' should be returned
 
 
-  Scenario: Pattern not matched
+  Scenario: The pattern is not matched
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Hello Leon, how are you? |
       | pattern  | .*?leon<\/name>          |

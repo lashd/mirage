@@ -1,4 +1,5 @@
-Feature: If you want to see the response that would be when triggered it can be peeked using the unique id of the response
+Feature: If you want to see the content of a particular response without triggering then it can be peeked instead.
+  To do this, the responses unique id is required to identify it
 
 
   Scenario: Peeking a text based response

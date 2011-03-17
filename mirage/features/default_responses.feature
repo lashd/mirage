@@ -1,9 +1,12 @@
 @command_line
-Feature: Mirage can be started and preloaded with a number of default responses.
-  Usage: put defaults in to
+Feature: Mirage can be primed with a default responses.
+  By default, Mirage loads any rb files found in ./defaults on startup. Mirage can also be made to load default responses
+  from a directory of your choosing.
+
+  Defaults can also be added/reloaded after Mirage has started
 
 
-  Scenario: Mirage started with responses in the default location
+  Scenario: Mirage is started with defaults in the standard location.
     Given the file 'defaults/default_greetings.rb' contains:
     """
     Mirage.default do |mirage|
@@ -18,8 +21,8 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then 'goodbye' should be returned
 
 
-  Scenario: Mirage started specifying default responses location
-    Given the file 'custom_default_location/default_greetings.rb' contains:
+  Scenario: Mirage is started pointing with a relative path for default responses
+    Given the file './custom_default_location/default_greetings.rb' contains:
     """
     Mirage.default do |mirage|
       mirage.set('greeting', :response => 'hello')
@@ -30,20 +33,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then 'hello' should be returned
 
 
-  Scenario: Mirage started specifying a custom default location using a relative path
-    Given the file 'custom_default_location/default_greetings.rb' contains:
-    """
-    Mirage.default do |mirage|
-      mirage.set('greeting', :response => 'hello')
-    end
-    """
-    And I run 'mirage start -d ./custom_default_location'
-    When I hit 'http://localhost:7001/mirage/load_defaults'
-    And I hit 'http://localhost:7001/mirage/get/greeting'
-    Then 'hello' should be returned
-
-
-  Scenario: Mirage started specifying a custom default location using a full path
+  Scenario: Mirage is started pointing with a full path for default responses
     Given the file '/tmp/defaults/default_greetings.rb' contains:
     """
     Mirage.default do |mirage|
@@ -56,7 +46,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then 'hello' should be returned
 
 
-  Scenario: The state of Mirage is change and the the defaults are reloaded
+  Scenario: Reloading default responses after mirage has been started
     Given the file 'defaults/default_greetings.rb' contains:
     """
     Mirage.default do |mirage|
@@ -75,7 +65,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then a 404 should be returned
 
 
-  Scenario: starting mirage and having a file in the defaults directory that has a mistake in it
+  Scenario: Mirage is started with a bad defaults file
     Given the file 'defaults/default_greetings.rb' contains:
     """
     A file with a mistake in it
@@ -84,7 +74,7 @@ Feature: Mirage can be started and preloaded with a number of default responses.
     Then I should see 'WARN: Unable to load default responses from: defaults/default_greetings.rb' on the command line
 
 
-  Scenario: loading a default response file, that has a mistake in it, after mirage has started
+  Scenario: Defaults with a mistake in them are reloaded after mirage has been started
     Given I run 'mirage start'
     When the file 'defaults/default_greetings.rb' contains:
     """

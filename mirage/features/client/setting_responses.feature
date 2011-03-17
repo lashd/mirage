@@ -1,4 +1,4 @@
-Feature: the Mirage client provides methods for setting responses and default response.
+Feature: the Mirage client provides methods for setting responses and loading default responses.
   There is no need to escape any parameters before using the client api as this is done for you.
 
   Background:
@@ -32,26 +32,29 @@ Feature: the Mirage client provides methods for setting responses and default re
     """
     Then 'Hello Leon' should be returned
 
-  Scenario: Mirage started with responses in the default location
-    Given the file 'defaults/default_greetings.rb' contains:
+  Scenario: Loading default responses
+    Given Mirage is not running
+    And I run 'mirage start'
+
+    When the file 'defaults/default_greetings.rb' contains:
     """
     Mirage.default do |mirage|
       mirage.set('greeting', :response => 'hello')
       mirage.set('leaving', :response => 'goodbye')
     end
     """
-    When I run
+    And I run
     """
     Mirage::Client.new.load_defaults
     """
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
+
     When I hit 'http://localhost:7001/mirage/get/leaving'
     Then 'goodbye' should be returned
 
 
-    #TODO clean up files that get created during test runs
-  Scenario: Setting defaults using a file with something bad in it
+  Scenario: Setting defaults and one of the files has something bad in it
     Given the file 'defaults/default_greetings.rb' contains:
     """
     Something bad...
@@ -76,7 +79,7 @@ Feature: the Mirage client provides methods for setting responses and default re
     Then the response should be a file the same as 'features/resources/test.zip'
 
 
-  Scenario: a response or file is not supplied
+  Scenario: A response or file is not supplied
     Given I run
     """
       begin

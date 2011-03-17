@@ -28,7 +28,7 @@ Feature: Responses and requests can be cleared.
     Then a 404 should be returned
 
 
-  Scenario: clearing a particular response set
+  Scenario: Clearing a particular response
     Given I hit 'http://localhost:7001/mirage/clear/1'
 
     When I hit 'http://localhost:7001/mirage/get/greeting'
@@ -41,18 +41,7 @@ Feature: Responses and requests can be cleared.
     Then 'Goodbye' should be returned
 
 
-  Scenario: Check request for a response that has been cleared
-    Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
-    """
-    greet me :)
-    """
-    And I hit 'http://localhost:7001/mirage/clear/1'
-
-    When I hit 'http://localhost:7001/mirage/query/1'
-    Then a 404 should be returned
-
-
-  Scenario: clearing requests
+  Scenario: Clearing all requests
     Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Say 'Hello' to me
@@ -70,7 +59,7 @@ Feature: Responses and requests can be cleared.
     Then a 404 should be returned
 
 
-  Scenario: clearing a particular request set
+  Scenario: Clearing a stored request request for a prticular response
     Given I hit 'http://localhost:7001/mirage/get/leaving' with request body:
     """
     See you later
@@ -79,3 +68,14 @@ Feature: Responses and requests can be cleared.
     When I hit 'http://localhost:7001/mirage/clear/request/2'
     Then I hit 'http://localhost:7001/mirage/query/2'
     And a 404 should be returned
+
+
+    Scenario: Querying a response that has been cleared
+    Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
+    """
+    greet me :)
+    """
+    And I hit 'http://localhost:7001/mirage/clear/1'
+
+    When I hit 'http://localhost:7001/mirage/query/1'
+    Then a 404 should be returned

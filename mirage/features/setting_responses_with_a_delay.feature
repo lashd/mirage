@@ -1,5 +1,5 @@
-Feature: It is possible to make the the MockServer introduce a delay before responding to a client. This lets you simulate real world
-  conditions and make your application wait before receiving a response.
+Feature: Its possible introduce a delay before responding to a client with a particular response. This lets you simulate real world
+  conditions by making your application wait before receiving a response.
 
   Scenario: Response with a delay
     Given I hit 'http://localhost:7001/mirage/set/an_appology' with parameters:
