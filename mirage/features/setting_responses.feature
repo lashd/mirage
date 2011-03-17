@@ -3,7 +3,6 @@ Feature: Mirage can be configured with endpoints that when request returned defi
 
   Usage:
   ${mirage_url}/set/your/end/point?response=your_response
-  ${mirage_url}/set/your/end/point?response=your_response&pattern=pattern
 
 
   Scenario: Setting a response without any selection criteria
