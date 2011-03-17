@@ -103,6 +103,8 @@ class MirageServer < Ramaze::Controller
     response.response_id
   end
 
+
+
   def get *args
     body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
 
@@ -111,8 +113,7 @@ class MirageServer < Ramaze::Controller
     stored_responses = RESPONSES[name]
 
     unless stored_responses
-      matches = RESPONSES.keys.find_all{|key| name.index(key) == 0}.sort{|a,b| b.length <=> a.length}
-      stored_responses = RESPONSES[matches.first]
+      stored_responses = root_response(name)
     end
 
     respond('Response not found', 404) unless stored_responses
@@ -184,6 +185,12 @@ class MirageServer < Ramaze::Controller
   def response_value
     return request['response'] unless request['response'].nil?
     respond('response or file parameter required', 500)
+  end
+
+  def root_response(name)
+    matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
+    stored_responses = RESPONSES[matches.first]
+    stored_responses
   end
 
 end
