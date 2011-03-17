@@ -80,9 +80,6 @@ module Mirage
           http_get("#{@url}/clear/#{thing}")
         when :requests then
           http_get("#{@url}/clear/requests")
-        when :responses then
-          http_get("#{@url}/clear/responses")
-
         when Hash then
           case thing.keys.first
             when :request then
