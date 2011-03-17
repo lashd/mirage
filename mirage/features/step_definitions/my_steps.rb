@@ -78,7 +78,7 @@ end
 
 Then /^I run$/ do |text|
   text.gsub!("\"", "\\\\\"")
-  raise "run failed" unless system "ruby -e \"#{@code_snippet}\n#{text}\""
+  raise "run failed" unless system "#{RUBY_CMD} -e \"#{@code_snippet}\n#{text}\""
 end
 
 Given /^the following gems are required to run the Mirage client test code:$/ do |text|

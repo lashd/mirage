@@ -8,6 +8,7 @@ require 'rspec'
 require 'mechanize'
 
 SCRATCH = './scratch'
+RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
 
 module Web
