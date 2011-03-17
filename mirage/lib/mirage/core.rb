@@ -56,7 +56,7 @@ class MirageServer < Ramaze::Controller
   def index
     @responses = {}
 
-    RESPONSES.each do|name, responses|
+    RESPONSES.each do |name, responses|
       @responses[name]=responses.default unless responses.default.nil?
 
       responses.each do |pattern, response|
@@ -83,10 +83,10 @@ class MirageServer < Ramaze::Controller
   end
 
   def set name, *args
-    pattern, delay =request['pattern'], (request['delay']||0)
+    delay = (request['delay']||0)
+    pattern = request['pattern'] ? /#{request['pattern']}/ : :default
 
     name = "#{name}/#{args.join('/')}" unless args.empty?
-
     stored_response = stored_responses(name)
 
     if request[:file]
@@ -95,14 +95,8 @@ class MirageServer < Ramaze::Controller
       response = MockResponse.new(name, response_value, pattern, delay.to_f)
     end
 
-    case pattern
-      when nil then
-        old_response = stored_response[:default]
-        stored_response[:default] = response
-      else
-        old_response = stored_response[/#{pattern}/] unless stored_response.empty?
-        stored_response[/#{pattern}/] = response
-    end
+    old_response = stored_response[pattern]
+    stored_response[pattern] = response
 
     # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
     response.response_id = old_response.response_id if old_response
