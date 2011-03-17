@@ -9,11 +9,14 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
   responses exist for: 'level1' and 'level1/level2'. If a response for 'level1/level2/level3 is made, then the response for
   'level1/level2' will be returned as it is the most specific match out of the two.
 
-  Scenario: a root response is returned
+  Root responses can cause unexpected behaviour and so in order to qualify as a root reponse a client must knowingly mark it as one.
+
+  Scenario: A root response is returned
     Given I hit 'http://localhost:7001/mirage/set/level0/level1' with parameters:
       | response | another level |
-    Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
-      | response | level 1 |
+    And I hit 'http://localhost:7001/mirage/set/level1' with parameters:
+      | response      | level 1 |
+      | root_response | true    |
 
     When I hit 'http://localhost:7001/mirage/get/level1/level2'
     Then 'level 1' should be returned
@@ -21,11 +24,21 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
 
   Scenario: More than one potential root response exists
     Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
-      | response | level 1 |
-    Given I hit 'http://localhost:7001/mirage/set/level1/level2' with parameters:
-      | response | level 2 |
-    Given I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4' with parameters:
-      | response | level 4 |
+      | response      | level 1 |
+      | root_response | true    |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2' with parameters:
+      | response      | level 2 |
+      | root_response | true    |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4' with parameters:
+      | response      | level 4 |
+      | root_response | true    |
 
     When I hit 'http://localhost:7001/mirage/get/level1/level2/level3'
     Then 'level 2' should be returned
+
+  Scenario: There isnt a root response
+    Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
+      | response      | level 1 |
+
+    When I hit 'http://localhost:7001/mirage/get/level1/level2'
+    Then a 404 should be returned

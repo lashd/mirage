@@ -6,12 +6,16 @@ class MockResponse
   attr_reader :response_id, :delay, :name, :pattern
   attr_accessor :response_id
 
-  def initialize name, value, pattern=nil, delay=0
-    @name, @value, @pattern, @response_id, @delay = name, value, pattern, @@id_count+=1, delay
+  def initialize name, value, pattern=nil, delay=0, root_response=false
+    @name, @value, @pattern, @response_id, @delay, @root_response = name, value, pattern, @@id_count+=1, delay, root_response
   end
 
   def self.reset_count
     @@id_count = 0
+  end
+
+  def root_response?
+    @root_response == 'true'
   end
 
 
@@ -42,8 +46,8 @@ end
 class MockFileResponse < MockResponse
   attr_accessor :file
 
-  def initialize name, file, pattern=nil, delay=0
-    super(name, '', pattern, delay)
+  def initialize name, file, pattern=nil, delay=0, root_response
+    super(name, '', pattern, delay, root_response)
     @file = file
   end
 end
@@ -86,11 +90,12 @@ class MirageServer < Ramaze::Controller
     delay = (request['delay']||0)
     pattern = request['pattern'] ? /#{request['pattern']}/ : :default
     name = args.join('/')
+    is_root_response = request['root_response'] == 'true'
 
     if request[:file]
-      response = MockFileResponse.new(name, request[:file], pattern, delay.to_f)
+      response = MockFileResponse.new(name, request[:file], pattern, delay.to_f, is_root_response)
     else
-      response = MockResponse.new(name, response_value, pattern, delay.to_f)
+      response = MockResponse.new(name, response_value, pattern, delay.to_f, is_root_response)
     end
 
     stored_responses = RESPONSES[name]||={}
@@ -107,12 +112,14 @@ class MirageServer < Ramaze::Controller
 
   def get *args
     body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
+    requires_root_response = false
 
 
     name = args.join('/')
     stored_responses = RESPONSES[name]
 
     unless stored_responses
+      requires_root_response = true
       stored_responses = root_response(name)
     end
 
@@ -121,7 +128,8 @@ class MirageServer < Ramaze::Controller
     pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find{ |pattern| body =~ pattern || query_string =~ pattern }
     record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
 
-    respond('Response not found', 404) unless record
+    respond('Response not found', 404) if record.nil? || (requires_root_response && !record.root_response?)
+
     sleep record.delay
     REQUESTS[record.response_id] = body.empty? ? query_string : body
 
