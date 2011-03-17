@@ -22,6 +22,8 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
       | response | level 1 |
     Given I hit 'http://localhost:7001/mirage/set/level1/level2' with parameters:
       | response | level 2 |
+    Given I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4' with parameters:
+      | response | level 4 |
 
     When I hit 'http://localhost:7001/mirage/get/level1/level2/level3'
     Then 'level 2' should be returned
