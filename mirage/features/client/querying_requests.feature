@@ -13,9 +13,8 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
       | response | Hello |
 
     When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
-      | surname   | Davis |
-      | firstname | Leon  |
+      | name | leon  |
     Then I run
     """
-       Mirage::Client.new.query(1).should == 'surname=Davis&firstname=Leon'
+       Mirage::Client.new.query(1).should == 'name=leon'
     """
