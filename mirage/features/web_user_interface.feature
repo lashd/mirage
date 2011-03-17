@@ -27,3 +27,5 @@ Feature: Mirage's home page allows you to see what response are currently being 
     Given I goto 'http://localhost:7001/mirage'
     When  I click 'check_response_1'
     Then I should see 'Yo!'
+
+    # TODO - make root responses on web interface
