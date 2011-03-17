@@ -81,5 +81,5 @@ Before do
 end
 
 at_exit do
-  stop_mirage
+#  stop_mirage
 end

@@ -102,7 +102,7 @@ When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with param
 end
 
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
-  @response = hit_mirage(url,{:body => request_body})
+  @response = hit_mirage(url, {:body => request_body})
 end
 
 Then /^I should see '(.*?)' on the command line$/ do |content|
@@ -115,4 +115,13 @@ end
 
 Then /^'(.*)' should contain '(.*)'$/ do |file, content|
   fail("#{content} not found in: #{file}") unless File.read("#{SCRATCH}/#{file}").index(content)
+end
+Given /^I goto '(.*)'$/ do |url|
+  @page = Mechanize.new.get url
+end
+Then /^I should see '(.*)'$/ do |text|
+  @page.body.should =~ /#{text}/m
+end
+When /^I click '(.*)'$/ do |thing|
+  @page = @page.link_with(:text => /#{thing}/).click
 end

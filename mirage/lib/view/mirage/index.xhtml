@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Mirage</title>
+</head>
+<body>
+    <?r @responses.each do |key, response| ?>
+        <a href="/mirage/peek/#{response.response_id}">#{key}</a> <a href="/mirage/query/#{response.response_id}">check #{response.response_id}</a><br/>
+    <?r end ?>
+</body>
+</html>

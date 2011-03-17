@@ -54,7 +54,15 @@ class MirageServer < Ramaze::Controller
   RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
 
   def index
-    'welcome to mirage'
+    @responses = {}
+
+    RESPONSES.each do|name, responses|
+      @responses[name]=responses.default unless responses.default.nil?
+
+      responses.each do |pattern, response|
+        @responses["#{name}: #{pattern}"] = response
+      end
+    end
   end
 
   def peek response_id
