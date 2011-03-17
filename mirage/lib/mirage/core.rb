@@ -102,18 +102,18 @@ class MirageServer < Ramaze::Controller
     response.response_id
   end
 
-  def get name, * args
+  def get *args
     body, query_string, record = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING'], nil
 
 
+    name = args.join('/')
     stored_response = stored_responses(name)
-
-    unless (args.empty?)
-      other_response = stored_responses("#{name}/#{args.join('/')}")
-      if other_response[:default] || !other_response.empty?
-        stored_response = other_response
-      end
+    if stored_response.empty?
+      matches = RESPONSES.keys.find_all{|key| name.index(key) == 0 && !RESPONSES[key].empty?}.sort{|a,b| b.length <=> a.length}
+      stored_response = RESPONSES[matches.first]
     end
+
+    stored_response = {} unless stored_response
 
     stored_response.find_all { |pattern, mock_resoonse| pattern != :default }.each { |pattern, mock_response| record = mock_response and puts "matched pattern: #{pattern.source}" and break if body =~ pattern || query_string =~ pattern }
     record = stored_response[:default] unless record
