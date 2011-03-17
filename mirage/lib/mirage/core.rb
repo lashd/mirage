@@ -15,7 +15,7 @@ class MockResponse
   end
 
   def root_response?
-    @root_response == 'true'
+    @root_response
   end
 
 
@@ -120,10 +120,8 @@ class MirageServer < Ramaze::Controller
 
     unless stored_responses
       requires_root_response = true
-      stored_responses = root_response(name)
+      stored_responses = root_response(name) || {}
     end
-
-    respond('Response not found', 404) unless stored_responses
 
     pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find{ |pattern| body =~ pattern || query_string =~ pattern }
     record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
@@ -139,13 +137,6 @@ class MirageServer < Ramaze::Controller
     else
       return record.value(body, request, query_string)
     end
-  end
-
-  def delete_response(response_id)
-    RESPONSES.each do |name, response_set|
-      response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
-    end
-    REQUESTS.delete(response_id)
   end
 
   def clear datatype=nil, response_id=nil
@@ -199,6 +190,13 @@ class MirageServer < Ramaze::Controller
     matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
     stored_responses = RESPONSES[matches.first]
     stored_responses
+  end
+
+  def delete_response(response_id)
+    RESPONSES.each do |name, response_set|
+      response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
+    end
+    REQUESTS.delete(response_id)
   end
 
 end
