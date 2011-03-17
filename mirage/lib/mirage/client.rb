@@ -23,7 +23,7 @@ module Mirage
   class Client
     include ::Mirage::Web
 
-    # Creates instance of the MIrage client that can be used to interact with the Mirage Server
+    # Creates an instance of the MIrage client that can be used to interact with the Mirage Server
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
