@@ -6,5 +6,6 @@ Feature: Mirage can respond with a 'root' response when a when a response reques
   Scenario: a root response is returned
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | default greeting |
+
     When I hit 'http://localhost:7001/mirage/get/greeting/on/a/sub/url'
     Then 'default greeting' should be returned
