@@ -6,7 +6,7 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
   If a request is made and there is more than one response that could be appropriate then the closet is chosen.
 
   E.g.
-  responses exist for: 'level1' and 'level2/level2'. If a response for 'level1/level2/level3 is made, then the response for
+  responses exist for: 'level1' and 'level1/level2'. If a response for 'level1/level2/level3 is made, then the response for
   'level1/level2' will be returned as it is the most specific match out of the two.
 
   Scenario: a root response is returned
