@@ -15,11 +15,13 @@ Below are a few instructions telling you how to use Mirage. They are definately 
 can do then have a look at the feature files for a complete low down. I know I know, it sounds a bit corney to say that a project's documentatoin is it's tests. But they are written using
 cucumber and a lot of effort has been put in to try and make these things readable... promise!
 ###Setting a response on Mirage
-> http://localhost:7001/mirage/set/greeting?response=hello  
+> http://localhost:7001/mirage/set/my_endpoint?response=hello  
 
-By hitting this url, you have just put a response on mirage. How do I get it back?
-> http://localhost:7001/mirage/get/greeting    
-> Response? (yep you guessed it): Hello
+By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'
+How do I get it back?
+> http://localhost:7001/mirage/get/my_endpoint  
+  
+Simply
 
 
 
