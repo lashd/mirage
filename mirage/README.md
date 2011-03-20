@@ -11,8 +11,15 @@ That's it, its running, your done... No seriously, go to http://localhost:7001/m
 
 Usage:
 ------
+Below are a few instructions telling you how to use Mirage. They are definately enough to get you up and running, but if you want to know everything you 
+can do then have a look at the feature files for a complete low down. I know I know, it sounds a bit corney to say that a project's documentatoin is it's tests. But they are written using
+cucumber and a lot of effort has been put in to try and make these things readable... promise!
 ###Setting a response on Mirage
-> http://localhost:7001/mirage/set/greeting?response=hello
+> http://localhost:7001/mirage/set/greeting?response=hello  
+
+By hitting this url, you have just put a response on mirage. How do I get it back?
+> http://localhost:7001/mirage/get/greeting  
+> > Response? (yep you guessed it): Hello
 
 
 
