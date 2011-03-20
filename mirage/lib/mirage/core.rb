@@ -96,7 +96,7 @@ module Mirage
 
       stored_responses = RESPONSES[name]||={}
 
-      old_response = stored_responses[pattern]
+      old_response = stored_responses.delete(pattern)
       stored_responses[pattern] = response
 
       # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
