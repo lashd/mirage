@@ -1,4 +1,4 @@
-Feature: The MockServer can be configured to return particular responses conditionally based on if a prescribed pattern is found in
+Feature: Mirage can be configured to return particular responses conditionally based on if a prescribed pattern is found in
   querystring or the body of a request.
 
   Patterns can be either plain text or a regular expression
