@@ -17,7 +17,8 @@ cucumber and a lot of effort has been put in to try and make these things readab
 ###Setting a response on Mirage
 > http://localhost:7001/mirage/set/my_endpoint?response=hello  
 
-By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'
+By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'  
+
 How do I get it back?
 > http://localhost:7001/mirage/get/my_endpoint  
   
