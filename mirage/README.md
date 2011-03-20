@@ -20,7 +20,8 @@ cucumber and a lot of effort has been put in to try and make these things readab
 
 By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'  
 
-How do I get it back?
+How do I get my response back back?
+  
 `http://localhost:7001/mirage/get/my_endpoint`  
   
 Simply
