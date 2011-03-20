@@ -18,8 +18,8 @@ cucumber and a lot of effort has been put in to try and make these things readab
 > http://localhost:7001/mirage/set/greeting?response=hello  
 
 By hitting this url, you have just put a response on mirage. How do I get it back?
-> http://localhost:7001/mirage/get/greeting  
-> > Response? (yep you guessed it): Hello
+> http://localhost:7001/mirage/get/greeting    
+> Response? (yep you guessed it): Hello
 
 
 
