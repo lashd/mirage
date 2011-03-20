@@ -24,7 +24,7 @@ How do I get my response back back?
   
 `http://localhost:7001/mirage/get/my_endpoint`  
   
-Simply
+All you need to do is 'get/the/endpoint' and Mirage will serve which ever response has been set.
 
 
 
