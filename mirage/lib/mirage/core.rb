@@ -70,7 +70,7 @@ module Mirage
         @responses[name]=responses.default unless responses.default.nil?
 
         responses.each do |pattern, response|
-          @responses["#{name}: #{pattern}"] = response
+          @responses["#{name}#{'/*' if response.root_response?}: #{pattern}"] = response
         end
       end
     end
@@ -135,7 +135,8 @@ module Mirage
         when 'responses' then
           RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
         when /\d+/ then
-          delete_response(datatype.to_i)
+          response_id = datatype.to_i
+          delete_response(response_id)
           REQUESTS.delete(response_id)
         when 'request'
           REQUESTS.delete(response_id)

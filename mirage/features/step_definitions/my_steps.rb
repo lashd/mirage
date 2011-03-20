@@ -120,7 +120,7 @@ Given /^I goto '(.*)'$/ do |url|
   @page = Mechanize.new.get url
 end
 Then /^I should see '(.*)'$/ do |text|
-  @page.body.should =~ /#{text}/m
+  @page.body.index(text).should_not == nil
 end
 When /^I click '(.*)'$/ do |thing|
   @page = @page.links.find{|link| link.attributes['id'] == thing}.click
