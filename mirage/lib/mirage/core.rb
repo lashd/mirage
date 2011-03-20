@@ -1,6 +1,12 @@
 require 'ramaze'
 require 'ramaze/helper/send_file'
 
+class Object
+  def deep_clone
+    Marshal.load(Marshal.dump(self))
+  end
+end
+
 module Mirage
 
   class MockResponse
@@ -51,6 +57,7 @@ module Mirage
     end
   end
 
+
   class MirageServer < Ramaze::Controller
     include Ramaze::Helper::SendFile
     map '/mirage'
@@ -97,18 +104,28 @@ module Mirage
       response.response_id
     end
 
+    def find_response(body, query_string, stored_responses)
+      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find { |pattern| body =~ pattern || query_string =~ pattern }
+      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
+      record
+    end
+
     def get *args
       body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
       requires_root_response, name = false, args.join('/')
       stored_responses = RESPONSES[name]
 
-      unless stored_responses
+      if stored_responses
+        record = find_response(body, query_string, stored_responses)
+      else
         requires_root_response = true
-        stored_responses = root_response(name) || {}
-      end
+        record = nil
+        stored_responses = root_response(name).deep_clone || {}
 
-      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find { |pattern| body =~ pattern || query_string =~ pattern }
-      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
+        until (record && record.root_response?) || stored_responses.empty?
+          record = find_response(body, query_string, stored_responses.delete_at(0))
+        end
+      end
 
       respond('Response not found', 404) if record.nil? || (requires_root_response && !record.root_response?)
 
@@ -140,11 +157,11 @@ module Mirage
     end
 
     def snapshot
-      SNAPSHOT.clear and SNAPSHOT.replace(Marshal.load(Marshal.dump(RESPONSES)))
+      SNAPSHOT.clear and SNAPSHOT.replace(RESPONSES.deep_clone)
     end
 
     def rollback
-      RESPONSES.clear and RESPONSES.replace(Marshal.load(Marshal.dump(SNAPSHOT)))
+      RESPONSES.clear and RESPONSES.replace(SNAPSHOT.deep_clone)
     end
 
     def load_defaults
@@ -167,7 +184,7 @@ module Mirage
 
     def root_response(name)
       matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
-      RESPONSES[matches.first]
+      matches.collect { |key| RESPONSES[key] }
     end
 
     def delete_response(response_id)
@@ -177,7 +194,7 @@ module Mirage
       REQUESTS.delete(response_id)
     end
 
-    def send_response(response, body='',request={}, query_string='')
+    def send_response(response, body='', request={}, query_string='')
       if response.file?
         tempfile, filename, type = response.value.values_at(:tempfile, :filename, :type)
         send_file(tempfile.path, type, "Content-Disposition: attachment; filename=#{filename}")

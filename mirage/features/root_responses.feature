@@ -29,16 +29,20 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
     And I hit 'http://localhost:7001/mirage/set/level1/level2' with parameters:
       | response      | level 2 |
       | root_response | true    |
-    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4' with parameters:
-      | response      | level 4 |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3' with parameters:
+      | response      | level 3 |
+      | root_response | false   |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4/level5' with parameters:
+      | response      | level 5 |
       | root_response | true    |
 
-    When I hit 'http://localhost:7001/mirage/get/level1/level2/level3'
+    When I hit 'http://localhost:7001/mirage/get/level1/level2/level3/level4'
     Then 'level 2' should be returned
+
 
   Scenario: There isnt a root response
     Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
-      | response      | level 1 |
+      | response | level 1 |
 
     When I hit 'http://localhost:7001/mirage/get/level1/level2'
     Then a 404 should be returned
