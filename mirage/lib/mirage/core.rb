@@ -106,27 +106,24 @@ module Mirage
 
     def get *args
       body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
-      requires_root_response, name = false, args.join('/')
+      name = args.join('/')
       stored_responses = RESPONSES[name]
 
       if stored_responses
         record = find_response(body, query_string, stored_responses)
       else
-        requires_root_response = true
-        record = nil
-        stored_responses = root_response(name).deep_clone || {}
+        root_responses, record = find_root_responses(name), nil
 
-        until record  || stored_responses.empty?
-          record = find_response(body, query_string, stored_responses.delete_at(0))
+        until record  || root_responses.empty?
+          record = find_response(body, query_string, root_responses.delete_at(0))
           record = record.root_response? ? record : nil
         end
       end
 
-      respond('Response not found', 404) if record.nil?
-
-      sleep record.delay
+      respond('Response not found', 404) unless record
       REQUESTS[record.response_id] = body.empty? ? query_string : body
 
+      sleep record.delay
       send_response(record, body, request, query_string)
     end
 
@@ -139,6 +136,7 @@ module Mirage
           RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
         when /\d+/ then
           delete_response(datatype.to_i)
+          REQUESTS.delete(response_id)
         when 'request'
           REQUESTS.delete(response_id)
         when nil
@@ -183,7 +181,7 @@ module Mirage
       respond('response or file parameter required', 500)
     end
 
-    def root_response(name)
+    def find_root_responses(name)
       matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
       matches.collect { |key| RESPONSES[key] }
     end
@@ -192,7 +190,6 @@ module Mirage
       RESPONSES.each do |name, response_set|
         response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
       end
-      REQUESTS.delete(response_id)
     end
 
     def send_response(response, body='', request={}, query_string='')
