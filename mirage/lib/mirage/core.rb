@@ -146,7 +146,7 @@ module Mirage
       end
     end
 
-    def query id
+    def check id
       REQUESTS[id.to_i] || respond("Nothing stored for: #{id}", 404)
     end
 

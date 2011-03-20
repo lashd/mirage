@@ -8,7 +8,7 @@
 </head>
 <body>
     <?r @responses.each do |key, response| ?>
-        <a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a> <a id='check_response_#{response.response_id}' href="/mirage/query/#{response.response_id}">check</a><br/>
+        <a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a> <a id='check_response_#{response.response_id}' href="/mirage/check/#{response.response_id}">check</a><br/>
     <?r end ?>
 </body>
 </html>

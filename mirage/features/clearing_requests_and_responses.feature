@@ -34,7 +34,7 @@ Feature: Responses and requests can be cleared.
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/query/1'
+    When I hit 'http://localhost:7001/mirage/check/1'
     Then a 404 should be returned
 
     When I hit 'http://localhost:7001/mirage/get/leaving'
@@ -52,10 +52,10 @@ Feature: Responses and requests can be cleared.
     """
     And I hit 'http://localhost:7001/mirage/clear'
 
-    When I hit 'http://localhost:7001/mirage/query/1'
+    When I hit 'http://localhost:7001/mirage/check/1'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/query/2'
+    When I hit 'http://localhost:7001/mirage/check/2'
     Then a 404 should be returned
 
 
@@ -66,7 +66,7 @@ Feature: Responses and requests can be cleared.
     """
 
     When I hit 'http://localhost:7001/mirage/clear/request/2'
-    Then I hit 'http://localhost:7001/mirage/query/2'
+    Then I hit 'http://localhost:7001/mirage/check/2'
     And a 404 should be returned
 
 
@@ -77,5 +77,5 @@ Feature: Responses and requests can be cleared.
     """
     And I hit 'http://localhost:7001/mirage/clear/1'
 
-    When I hit 'http://localhost:7001/mirage/query/1'
+    When I hit 'http://localhost:7001/mirage/check/1'
     Then a 404 should be returned

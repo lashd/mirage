@@ -21,7 +21,7 @@ Feature: After a response has been served from Mirage, the content of the reques
     """
     Hello MockServer
     """
-    When I hit 'http://localhost:7001/mirage/query/1'
+    When I hit 'http://localhost:7001/mirage/check/1'
     Then 'Hello MockServer' should be returned
 
 
@@ -29,12 +29,12 @@ Feature: After a response has been served from Mirage, the content of the reques
     Given I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | surname   | Davis |
       | firstname | Leon  |
-    When I hit 'http://localhost:7001/mirage/query/1'
+    When I hit 'http://localhost:7001/mirage/check/1'
     Then 'surname=Davis&firstname=Leon' should be returned
 
 
   Scenario: Querying a response that has not been served yet
-    Given I hit 'http://localhost:7001/mirage/query/1'
+    Given I hit 'http://localhost:7001/mirage/check/1'
     Then a 404 should be returned
 
 
@@ -44,7 +44,7 @@ Feature: After a response has been served from Mirage, the content of the reques
     Hello
     """
     And I hit 'http://localhost:7001/mirage/peek/1'
-    When I hit 'http://localhost:7001/mirage/query/1'
+    When I hit 'http://localhost:7001/mirage/check/1'
     Then 'Hello' should be returned
 
 
@@ -66,9 +66,9 @@ Feature: After a response has been served from Mirage, the content of the reques
     """
     My name is Leon
     """
-    And I hit 'http://localhost:7001/mirage/query/1'
+    And I hit 'http://localhost:7001/mirage/check/1'
     Then 'My name is Joel' should be returned
-    And I hit 'http://localhost:7001/mirage/query/3'
+    And I hit 'http://localhost:7001/mirage/check/3'
     Then 'My name is Leon' should be returned
 
 

@@ -93,9 +93,9 @@ module Mirage
     # request did not have any content in its body then what ever was in the request query string is returned instead
     #
     #   Example:
-    #   Client.new.query(response_id) => Tracked request as a String
-    def query response_id
-      response(http_get("#{@url}/query/#{response_id}"))
+    #   Client.new.check(response_id) => Tracked request as a String
+    def check response_id
+      response(http_get("#{@url}/check/#{response_id}"))
     end
 
     # Snapshot the state of the Mirage server so that it can be rolled back to that exact state at a later time.
