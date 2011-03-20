@@ -16,6 +16,7 @@ Thanks you for installing mirage-#{s.version}.
   s.add_dependency 'rack', "~> 1.1.0"
   s.add_dependency 'ramaze', ">= 2011.01.30"
   s.add_dependency "mechanize", ">= 1.0.0"
+  s.add_dependency "bundler"
 
 
   s.add_development_dependency 'rake'
