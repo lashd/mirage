@@ -1,0 +1,6 @@
+== Description
+Mirage is a simple application for hosting responses to fool your applications into thinking that they are talking to real endpoints
+whilst you are developing them. Its accessible via HTTP so it can be accessed via any language and has a restful interface so is easy to interact with.
+
+
+

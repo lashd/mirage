@@ -2,6 +2,8 @@ Gem::Specification.new do |s|
   s.name = 'mirage'
   s.version = '1.0'
   s.authors = ["Leon Davis"]
+  s.email = 'leon@leon.com'
+  s.homepage = 'http://localhost/hompage.html'
   s.description = 'Mirage is a stub server for stubbing out an applications endpoints to aid testing'
   s.summary = "mirage-#{s.version}"
 
@@ -12,6 +14,12 @@ Gem::Specification.new do |s|
 Thanks you for installing mirage-#{s.version}.
 ===============================================================================
 }
+  
+  s.has_rdoc = 'true'
+  s.extra_rdoc_files << 'README.rdoc'
+  s.rdoc_options = [
+        '-m', 'README.rdoc',
+  ]
 
   s.add_dependency 'rack', "~> 1.1.0"
   s.add_dependency 'ramaze', ">= 2011.01.30"
@@ -28,4 +36,7 @@ Thanks you for installing mirage-#{s.version}.
   s.test_files = `git ls-files -- features/*`.split("\n")
   s.executables = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_path = "lib"
+  
+  
+      
 end
