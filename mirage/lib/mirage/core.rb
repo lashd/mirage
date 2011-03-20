@@ -104,12 +104,6 @@ module Mirage
       response.response_id
     end
 
-    def find_response(body, query_string, stored_responses)
-      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find { |pattern| body =~ pattern || query_string =~ pattern }
-      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
-      record
-    end
-
     def get *args
       body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
       requires_root_response, name = false, args.join('/')
@@ -122,12 +116,13 @@ module Mirage
         record = nil
         stored_responses = root_response(name).deep_clone || {}
 
-        until (record && record.root_response?) || stored_responses.empty?
+        until record  || stored_responses.empty?
           record = find_response(body, query_string, stored_responses.delete_at(0))
+          record = record.root_response? ? record : nil
         end
       end
 
-      respond('Response not found', 404) if record.nil? || (requires_root_response && !record.root_response?)
+      respond('Response not found', 404) if record.nil?
 
       sleep record.delay
       REQUESTS[record.response_id] = body.empty? ? query_string : body
@@ -177,6 +172,12 @@ module Mirage
     end
 
     private
+    def find_response(body, query_string, stored_responses)
+      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find { |pattern| body =~ pattern || query_string =~ pattern }
+      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
+      record
+    end
+
     def response_value
       return request['response'] unless request['response'].nil?
       respond('response or file parameter required', 500)
