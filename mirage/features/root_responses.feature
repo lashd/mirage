@@ -43,6 +43,5 @@ Feature: Mirage can respond with a 'root' response when a when the response requ
   Scenario: There isnt a root response
     Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
       | response | level 1 |
-
     When I hit 'http://localhost:7001/mirage/get/level1/level2'
     Then a 404 should be returned
