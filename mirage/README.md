@@ -28,7 +28,7 @@ All you need to do is 'get/the/endpoint' and Mirage will serve which ever respon
 
 When it comes to getting and setting responses, Mirage lets you do quite a lot:  
 
-*  [associate responses on an endpoint with a pattern](http://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_pattern_matching.feature )
+*  [associate responses on an endpoint with a pattern](http://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_pattern_matching.feature ) - This lets you simulate different behaviour depending on the request that is sent to Mirage
 
 
 
