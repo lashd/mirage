@@ -9,7 +9,7 @@ cucumber and a lot of effort has been put in to try and make these things readab
 
 Any ideas/improvements or feedback you have are greatly appreciated.
 
-I hope that it proves useful. 
+I hope that its useful. 
 
 Leon
 
