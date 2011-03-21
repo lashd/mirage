@@ -2,8 +2,7 @@ Gem::Specification.new do |s|
   s.name = 'mirage'
   s.version = '1.0'
   s.authors = ["Leon Davis"]
-  s.email = 'leon@leon.com'
-  s.homepage = 'http://localhost/hompage.html'
+  s.homepage = 'https://github.com/lashd/Mirage'
   s.description = 'Mirage is a stub server for stubbing out an applications endpoints to aid testing'
   s.summary = "mirage-#{s.version}"
 
