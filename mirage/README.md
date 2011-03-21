@@ -51,7 +51,8 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
  * [Root responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
  
  * [Default responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Prime on or after startup with a bunch of default responses    
- ###Check
+
+###Check
 If you want to see what data was sent when a response is triggered you can use the response's unique id to get that data back. This can be useful as it lets you test that your application is sending the right data.
 `example: http://localhost:7001/mirage/check/response_id`
 
@@ -62,11 +63,10 @@ Peeking at response will return allow you to see what a response is set to witho
 `example: http://localhost:7001/mirage/peek/your_response_id`
 ###Snapshot and Rollback
 Once you have set up Mirage just as you want it, you can snapshot its state. This lets you roll it back to that state when ever you want to.
-`
-example:
-http://localhost:7001/mirage/snapshot
-http://localhost:7001/mirage/rollback
-'
+
+`example:
+`http://localhost:7001/mirage/snapshot
+`http://localhost:7001/mirage/rollback`
 ###Ruby Client
 You can use whatever you like interact with Mirage but if you are using Ruby and you and have better things to do with your time, then you can use 
 the client that you get when you install Mirage. 
