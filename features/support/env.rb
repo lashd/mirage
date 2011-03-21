@@ -81,7 +81,7 @@ Before do
   end
   
   `ls #{SCRATCH}/ | grep -v mirage.log | rm -rf`
-  'regression' == ENV['mode'] ? `truncate -s 0 mirage.log` : `truncate -s 0 #{SCRATCH}/mirage.log`
+  `truncate -s 0 #{SCRATCH}/mirage.log`
   $mirage = Mirage::Client.new
 
 
