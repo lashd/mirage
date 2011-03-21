@@ -13,6 +13,7 @@ RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
 module Web
   include Mirage::Web
+
   def get(url)
     browser = Mechanize.new
     browser.keep_alive= false
@@ -38,6 +39,7 @@ module Regression
   end
 
   def start_mirage
+    `truncate mirage.log --size 0`
     `export RUBYOPT='' && cd #{SCRATCH} && mirage start`
   end
 end
@@ -54,6 +56,7 @@ module IntelliJ
 
   def start_mirage
     puts "starting mirage"
+    `truncate mirage.log --size 0`
     system "cd #{SCRATCH} && ../bin/mirage start"
 
     wait_until do
@@ -69,7 +72,6 @@ World(Web)
 
 Before do
   FileUtils.mkdir_p(SCRATCH)
-  `rm -Rf #{SCRATCH}/*`
   $mirage = Mirage::Client.new
 
   if $mirage.running?
@@ -77,6 +79,10 @@ Before do
   else
     start_mirage
   end
+  
+  `ls #{SCRATCH}/ | grep -v mirage.log | rm -rf`
+  $mirage = Mirage::Client.new
+
 
 end
 

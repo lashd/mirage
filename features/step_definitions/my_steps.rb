@@ -114,7 +114,7 @@ Then /^'(.*)' should exist$/ do |path|
 end
 
 Then /^'(.*)' should contain '(.*)'$/ do |file, content|
-  fail("#{content} not found in: #{file}") unless File.read("#{SCRATCH}/#{file}").index(content)
+  fail("#{content} not found in: #{File.read(file)}") unless File.read("#{SCRATCH}/#{file}").index(content)
 end
 Given /^I goto '(.*)'$/ do |url|
   @page = Mechanize.new.get url
