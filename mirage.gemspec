@@ -16,10 +16,6 @@ Thanks you for installing mirage-#{s.version}.
 }
   
   s.has_rdoc = 'true'
-  s.extra_rdoc_files << 'README.rdoc'
-  s.rdoc_options = [
-        '-m', 'README.rdoc',
-  ]
 
   s.add_dependency 'rack', "~> 1.1.0"
   s.add_dependency 'ramaze', ">= 2011.01.30"
