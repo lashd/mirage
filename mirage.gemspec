@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 ===============================================================================
 Thanks you for installing mirage-#{s.version}.   
 
-Run mirage with:
+Run Mirage with:
 
 mirage start
 ===============================================================================

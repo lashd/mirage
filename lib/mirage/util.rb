@@ -25,6 +25,7 @@ module Mirage
       begin
         opt_parser.parse args
       rescue
+        puts "mirage start|stop [OPTIONS]"
         puts opt_parser
         exit 1
       end

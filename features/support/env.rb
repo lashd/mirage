@@ -82,9 +82,6 @@ Before do
   
   `ls #{SCRATCH}/ | grep -v mirage.log | rm -rf`
   `truncate -s 0 #{SCRATCH}/mirage.log`
-  $mirage = Mirage::Client.new
-
-
 end
 
 at_exit do

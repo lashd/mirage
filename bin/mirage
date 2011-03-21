@@ -55,6 +55,6 @@ elsif ARGV.include?('stop')
     puts 'Mirage is not running'
   end
 else
-  puts "You must choose to: Start or Stop the mirage"
+  puts "Invalid usage, run mirage -h for help"
   exit 1
 end
