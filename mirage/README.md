@@ -18,14 +18,15 @@ There are also a [few options](https://github.com/Ladtech/sandbox/blob/master/mi
 
 Usage:
 ------
-###Setting a response on Mirage
-`http://localhost:7001/mirage/set/my_endpoint?response=hello`  
+###Set
+`example: http://localhost:7001/mirage/set/my_endpoint?response=hello`  
 
-By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'  
+By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'. In return for
+  doing this Mirage will return you a response id. You can use this id to various things with this response.
 
 How do I get my response back back?
   
-`http://localhost:7001/mirage/get/my_endpoint`  
+`example: http://localhost:7001/mirage/get/my_endpoint`  
   
 All you need to do is 'get/the/endpoint' and Mirage will serve which ever response has been set.  
 
@@ -41,8 +42,16 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
    
  * [File hosting](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
  
-###Peeking  
-   
-   
+###Check
+
+###Peek  
+If you want to see a what a response is set as then you can [peek](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) at it using the unique id you got when setting the response.
+Peeking at response will return allow you to see what a response is set to without causing a request to be tracked.
+
+`example: http://localhost:7001/mirage/peek/your_response_id`
+
+
+
+
  
  
