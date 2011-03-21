@@ -1,10 +1,10 @@
 Mirage
 ======
 Mirage is a simple application for hosting responses to fool your applications into thinking that they are talking to real endpoints
-whilst you are developing them. Its accessible via HTTP so it can be accessed via any language and has a restful interface so is easy to interact with.
+whilst you are developing them. Its accessible via HTTP, so it can be accessed using any language, and has a restful interface so is easy to interact with.
 
 Below are a few instructions telling you how to use Mirage. They are definately enough to get you up and running, but if you want to know everything you 
-can do then have a look at the feature files for a complete low down. I know I know, it sounds a bit corney to say that a project's documentation is it's tests. But they are written using
+can do then have a look at the feature files for a complete low down. I know I know, it sounds a bit corney to say that a project's documentation is its tests. But they are written using
 cucumber and a lot of effort has been put in to try and make these things readable... promise!  
 
 Any ideas/improvements or feedback you have are greatly appreciated.
@@ -19,14 +19,14 @@ Installation & Running
     
 That's it, its running, your done... No seriously, go to http://localhost:7001/mirage and you see that its running.
 
-There are also a [few options](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) that mirage can be started with as well.
+There are also a [few options](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) that let you configure things like what port mirage is started on.
 
 Usage:
 ------
 ###Set
 `example: http://localhost:7001/mirage/set/my_endpoint?response=hello`  
 
-By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'. In return for
+By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'http://localhost:7001/mirage/set' can be anything you like for example 'anything/you/like'. In return for
   doing this Mirage will return you a response id. You can use this id to various things with this response.
 
 ###Get
@@ -48,8 +48,10 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
    
  * [File hosting](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
  
- * [Root responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files  
-###Check
+ * [Root responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
+ 
+ * [Default responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Prime on or after startup with a bunch of default responses    
+ ###Check
 If you want to see what data was sent when a response is triggered you can use the response's unique id to get that data back. This can be useful as it lets you test that your application is sending the right data.
 `example: http://localhost:7001/mirage/check/response_id`
 
@@ -68,8 +70,7 @@ http://localhost:7001/mirage/rollback
 ###Ruby Client
 You can use whatever you like interact with Mirage but if you are using Ruby and you and have better things to do with your time, then you can use 
 the client that you get when you install Mirage. 
-`
-example:
+`example:
 require 'rubygems
 require 'mirage'
 
