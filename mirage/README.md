@@ -24,6 +24,7 @@ Usage:
 By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'mirage/set' can be anything you like for example 'anything/you/like'. In return for
   doing this Mirage will return you a response id. You can use this id to various things with this response.
 
+###Get
 How do I get my response back back?
   
 `example: http://localhost:7001/mirage/get/my_endpoint`  
