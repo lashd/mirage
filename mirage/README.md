@@ -9,7 +9,8 @@ cucumber and a lot of effort has been put in to try and make these things readab
 
 Any ideas/improvements or feedback you have are greatly appreciated.
 
-I hope that it proves useful.
+I hope that it proves useful. 
+
 Leon
 
 Installation & Running
@@ -23,6 +24,8 @@ There are also a [few options](https://github.com/Ladtech/sandbox/blob/master/mi
 
 Usage:
 ------
+The examples below assume that you are running mirage with the default settings.
+
 ###Set
 Example:
     http://localhost:7001/mirage/set/my_endpoint?response=hello  
@@ -76,7 +79,8 @@ Example:
 ###Ruby Client
 You can use whatever you like interact with Mirage but if you are using Ruby and you and have other things to do, then you can use 
 the client that you get when you install Mirage.
-example
+  
+Example:
     require 'rubygems
     require 'mirage'
     Mirage::Client.new.set('greeting', :response=>'hello')` 
