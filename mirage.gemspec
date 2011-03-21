@@ -10,7 +10,11 @@ Gem::Specification.new do |s|
   s.default_executable = "mirage"
   s.post_install_message = %{
 ===============================================================================
-Thanks you for installing mirage-#{s.version}.
+Thanks you for installing mirage-#{s.version}.   
+
+Run mirage with:
+
+mirage start
 ===============================================================================
 }
   
