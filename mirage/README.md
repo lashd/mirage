@@ -65,18 +65,17 @@ Peeking at response will return allow you to see what a response is set to witho
 ###Snapshot and Rollback
 Once you have set up Mirage just as you want it, you can snapshot its state. This lets you roll it back to that state when ever you want to.
 
-`example:
-`http://localhost:7001/mirage/snapshot
-`http://localhost:7001/mirage/rollback`
-###Ruby Client
-You can use whatever you like interact with Mirage but if you are using Ruby and you and have better things to do with your time, then you can use 
-the client that you get when you install Mirage. 
-`example:
-require 'rubygems
-require 'mirage'
+example:
+    http://localhost:7001/mirage/snapshot
+    http://localhost:7001/mirage/rollback  
 
-Mirage::Client.new.set('greeting', :response=>'hello')
-` 
+###Ruby Client
+You can use whatever you like interact with Mirage but if you are using Ruby and you and have other things to do, then you can use 
+the client that you get when you install Mirage. 
+    example:
+    require 'rubygems
+    require 'mirage'
+    Mirage::Client.new.set('greeting', :response=>'hello')` 
 
 Your response is now waiting for you at: http://localhost:7001/mirage/get/greeting :)
 The client has methods that let allow you to fully interact with mirage. So go ahead and check it out.
