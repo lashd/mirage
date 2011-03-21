@@ -24,15 +24,17 @@ There are also a [few options](https://github.com/Ladtech/sandbox/blob/master/mi
 Usage:
 ------
 ###Set
-    example: http://localhost:7001/mirage/set/my_endpoint?response=hello  
+Example:
+    http://localhost:7001/mirage/set/my_endpoint?response=hello  
 
 By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'http://localhost:7001/mirage/set' can be anything you like for example 'anything/you/like'. In return for
   doing this Mirage will return you a response id. You can use this id to various things with this response.
 
 ###Get
 How do I get my response back back?
-  
-    example: http://localhost:7001/mirage/get/my_endpoint  
+
+Example:
+    http://localhost:7001/mirage/get/my_endpoint  
   
 All you need to do is 'get/the/endpoint' and Mirage will serve which ever response has been set.  
 
@@ -55,24 +57,26 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
  
 ###Check
 If you want to see what data was sent when a response is triggered you can use the response's unique id to get that data back. This can be useful as it lets you test that your application is sending the right data.
-    example: http://localhost:7001/mirage/check/response_id
+Example:
+    http://localhost:7001/mirage/check/response_id
 
 ###Peek  
 If you want to see a what a response is set as then you can [peek](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) at it using the unique id you got when setting the response.
 Peeking at response will return allow you to see what a response is set to without causing a request to be tracked.
 
-    example: http://localhost:7001/mirage/peek/your_response_id
+Example:
+    http://localhost:7001/mirage/peek/your_response_id
 ###Snapshot and Rollback
 Once you have set up Mirage just as you want it, you can snapshot its state. This lets you roll it back to that state when ever you want to.
 
-example:
+Example:
     http://localhost:7001/mirage/snapshot
     http://localhost:7001/mirage/rollback  
 
 ###Ruby Client
 You can use whatever you like interact with Mirage but if you are using Ruby and you and have other things to do, then you can use 
-the client that you get when you install Mirage. 
-    example:
+the client that you get when you install Mirage.
+example
     require 'rubygems
     require 'mirage'
     Mirage::Client.new.set('greeting', :response=>'hello')` 
