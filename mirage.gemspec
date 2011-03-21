@@ -15,7 +15,7 @@ Thanks you for installing mirage-#{s.version}.
 ===============================================================================
 }
   
-  s.has_rdoc = 'true'
+  s.has_rdoc = 'true' 
 
   s.add_dependency 'rack', "~> 1.1.0"
   s.add_dependency 'ramaze', ">= 2011.01.30"

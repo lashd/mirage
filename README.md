@@ -13,8 +13,11 @@ I hope that its useful.
 
 Leon
 
+P.s. Currently Mirage only runs on Linux, I plan to change this very soon!
+
 Installation & Running
 ----------------------
+
 `gem install mirage`  
 `mirage start`  
     
