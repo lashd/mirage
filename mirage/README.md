@@ -50,8 +50,9 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
  
  * [Root responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
  
- * [Default responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Prime on or after startup with a bunch of default responses    
-
+ * [Default responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Prime on or after startup with a bunch of default responses  
+     
+ 
 ###Check
 If you want to see what data was sent when a response is triggered you can use the response's unique id to get that data back. This can be useful as it lets you test that your application is sending the right data.
 `example: http://localhost:7001/mirage/check/response_id`
