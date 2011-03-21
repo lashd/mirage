@@ -30,7 +30,7 @@ The examples below assume that you are running mirage with the default settings.
 Example:
     http://localhost:7001/mirage/set/my_endpoint?response=hello  
 
-By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'http://localhost:7001/mirage/set' can be anything you like for example 'anything/you/like'. In return for
+By hitting this url, you have just put a response on mirage. Your endpoint, the bit after 'http://localhost:7001/mirage/set', can be anything you like for example 'anything/you/like'. In return for
   doing this Mirage will return you a response id. You can use this id to various things with this response.
 
 ###Get
@@ -53,7 +53,7 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
    
  * [File hosting](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
  
- * [Root responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - As well as text based responses, Mirage can also host files
+ * [Root responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Want default a response for all urls under an endpoint? this is how.
  
  * [Default responses](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Prime on or after startup with a bunch of default responses  
      
