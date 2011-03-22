@@ -23,7 +23,7 @@ Installation & Running
     
 That's it, its running, your done... No seriously, go to http://localhost:7001/mirage and you see that its running.
 
-There are also a [few options](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) that let you configure things like what port mirage is started on.
+There are also a [few options](https://github.com/lashd/mirage/blob/master/features/command_line_iterface.feature) that let you configure things like what port mirage is started on.
 
 Usage:
 ------
@@ -46,19 +46,19 @@ All you need to do is 'get/the/endpoint' and Mirage will serve which ever respon
 
 When it comes to getting and setting responses, Mirage lets you do quite a lot:
   
- * [Setting responses](https://github.com/lashd/Mirage/blob/master/features/setting_responses.feature) - The basics
+ * [Setting responses](https://github.com/lashd/mirage/blob/master/features/setting_responses.feature) - The basics
 
- * [Associate responses on an endpoint with a pattern](https://github.com/lashd/Mirage/blob/master/features/setting_responses_with_pattern_matching.feature) - This lets you simulate different behaviour depending on the request that is sent to Mirage
+ * [Associate responses on an endpoint with a pattern](https://github.com/lashd/mirage/blob/master/features/setting_responses_with_pattern_matching.feature) - This lets you simulate different behaviour depending on the request that is sent to Mirage
  
- * [Introduce a delay](https://github.com/lashd/Mirage/blob/master/features/setting_responses_with_a_delay.feature) - Make things a bit more realistic and make your application wait.
+ * [Introduce a delay](https://github.com/lashd/mirage/blob/master/features/setting_responses_with_a_delay.feature) - Make things a bit more realistic and make your application wait.
    
- * [Templatise responses](https://github.com/lashd/Mirage/blob/master/features/response_templates.feature) - Substitute values found in a request back in to the response.
+ * [Templatise responses](https://github.com/lashd/mirage/blob/master/features/response_templates.feature) - Substitute values found in a request back in to the response.
   
- * [File hosting](https://github.com/lashd/Mirage/blob/master/features/file_hosting.feature) - As well as text based responses, Mirage can also host files
+ * [File hosting](https://github.com/lashd/mirage/blob/master/features/file_hosting.feature) - As well as text based responses, Mirage can also host files
  
- * [Root responses](https://github.com/lashd/Mirage/blob/master/features/root_responses.feature) - Want default a response for all urls under an endpoint? this is how.
+ * [Root responses](https://github.com/lashd/mirage/blob/master/features/root_responses.feature) - Want default a response for all urls under an endpoint? this is how.
  
- * [Default responses](https://github.com/lashd/Mirage/blob/master/features/default_responses.feature) - Prime on or after startup with a bunch of default responses  
+ * [Default responses](https://github.com/lashd/mirage/blob/master/features/default_responses.feature) - Prime on or after startup with a bunch of default responses  
      
  
 ###Check
@@ -67,7 +67,7 @@ Example:
     http://localhost:7001/mirage/check/response_id
 
 ###Peek  
-If you want to see a what a response is set as then you can [peek](https://github.com/lashd/Mirage/blob/master/features/peeking_at_response.feature) at it using the unique id you got when setting the response.
+If you want to see a what a response is set as then you can [peek](https://github.com/lashd/mirage/blob/master/features/peeking_at_response.feature) at it using the unique id you got when setting the response.
 Peeking at response will return allow you to see what a response is set to without causing a request to be tracked.
 
 Example:
@@ -89,5 +89,5 @@ Example:
     Mirage::Client.new.set('greeting', :response=>'hello')` 
 
 Your response is now waiting for you at: http://localhost:7001/mirage/get/greeting :)
-The client has methods that let allow you to fully interact with mirage. [So go ahead and check it out](https://github.com/lashd/Mirage/tree/master/features/client).  
+The client has methods that let allow you to fully interact with mirage. [So go ahead and check it out](https://github.com/lashd/mirage/tree/master/features/client).  
 
