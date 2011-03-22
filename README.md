@@ -1,10 +1,9 @@
 Mirage
 ======
-Mirage is an application for hosting responses to fool your applications into thinking that they are talking to real endpoints whilst you are developing them. 
-Its accessible via HTTP has a RESTful interface so is easy to interact with.  
-
-Below are a few instructions telling you how to use Mirage. They are definately enough to get you up and running, but if you want to know everything you 
-can do then have a look at the feature files for a complete low down. I know I know, it sounds a bit corney to say that a project's documentation is its tests. But they are written using
+Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.  
+ 
+Below are a few instructions telling you how to use Mirage. They are definitely enough to get you up and running, but if you want to know everything you 
+can do then have a look at the feature files for a complete lowdown. I know I know, it sounds a bit corney to say that a project's documentation is its tests. But they are written using
 cucumber and a lot of effort has been put in to try and make these things readable... promise!  
 
 Any ideas/improvements or feedback you have are greatly appreciated.
