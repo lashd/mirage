@@ -13,7 +13,7 @@ I hope that its useful.
 
 Leon
 
-P.s. Currently Mirage only runs on Linux, I plan to change this very soon!
+P.s. Currently Mirage only runs on Linux; Rubies 1.8, 1.9 and JRuby. I plan to add support for Windows and MacOsX very soon.
 
 Installation & Running
 ----------------------
