@@ -7,8 +7,17 @@
     <title>Mirage</title>
 </head>
 <body>
+<h1>Welcome to Mirage</h1>
+
+<p>Below are any responses you are currently hosting. Click the response itself to peek at it and click check to view the last request that triggered it. <br/>
+    Note: if requests or responses contain xml, you will need to view page source to see it properly.</p>
+
+<?r unless @responses.empty? ?>
+<table border="1" width='100%'>
     <?r @responses.each do |key, response| ?>
-        <a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a> <a id='check_response_#{response.response_id}' href="/mirage/check/#{response.response_id}">check</a><br/>
+        <tr><td><a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a></td><td><a id='check_response_#{response.response_id}' href="/mirage/check/#{response.response_id}">check</a></td></tr>
     <?r end ?>
+</table>
+<?r end ?>
 </body>
 </html>
