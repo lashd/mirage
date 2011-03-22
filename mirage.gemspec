@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version = '0.1.1'
   s.authors = ["Leon Davis"]
   s.homepage = 'https://github.com/lashd/Mirage'
-  s.description = 'Mirage is a stub server for stubbing out an applications endpoints to aid testing'
+  s.description = 'Mirage is an application for hosting responses to fool your applications into thinking that they are talking to real endpoints whilst you are developing them. Its accessible via HTTP has a RESful interface so is easy to interact with.'
   s.summary = "mirage-#{s.version}"
 
   s.platform = Gem::Platform::RUBY

@@ -1,7 +1,7 @@
 Mirage
 ======
-Mirage is a simple application for hosting responses to fool your applications into thinking that they are talking to real endpoints
-whilst you are developing them. Its accessible via HTTP, so it can be accessed using any language, and has a restful interface so is easy to interact with.
+Mirage is an application for hosting responses to fool your applications into thinking that they are talking to real endpoints whilst you are developing them. 
+Its accessible via HTTP has a RESful interface so is easy to interact with.  
 
 Below are a few instructions telling you how to use Mirage. They are definately enough to get you up and running, but if you want to know everything you 
 can do then have a look at the feature files for a complete low down. I know I know, it sounds a bit corney to say that a project's documentation is its tests. But they are written using
