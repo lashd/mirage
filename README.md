@@ -4,7 +4,7 @@ Mirage aids testing of your applications by hosting mock responses so that your 
  
 Below are a few instructions telling you how to use Mirage. They are definitely enough to get you up and running, but if you want to know everything you 
 can do then have a look at the feature files for a complete lowdown. I know I know, it sounds a bit corney to say that a project's documentation is its tests. But they are written using
-cucumber and a lot of effort has been put in to try and make these things readable... promise!  
+[cucumber](https://github.com/aslakhellesoy/cucumber) and a lot of effort has been put in to try and make these things readable... promise!  
 
 Any ideas/improvements or feedback you have are greatly appreciated.
 
