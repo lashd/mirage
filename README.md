@@ -50,7 +50,7 @@ When it comes to getting and setting responses, Mirage lets you do quite a lot:
 
  * [Associate responses on an endpoint with a pattern](https://github.com/lashd/Mirage/blob/master/features/setting_responses_with_pattern_matching.feature) - This lets you simulate different behaviour depending on the request that is sent to Mirage
  
- * [Introduce a delay](https://github.com/Ladtech/sandbox/blob/master/mirage/features/setting_responses_with_a_delay.feature) - Make things a bit more realistic and make your application wait.
+ * [Introduce a delay](https://github.com/lashd/Mirage/blob/master/features/setting_responses_with_a_delay.feature) - Make things a bit more realistic and make your application wait.
    
  * [Templatise responses](https://github.com/lashd/Mirage/blob/master/features/response_templates.feature) - Substitute values found in a request back in to the response.
   
