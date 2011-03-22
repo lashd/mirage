@@ -55,6 +55,6 @@ elsif ARGV.include?('stop')
     puts 'Mirage is not running'
   end
 else
-  print_usage
+  parse_options ['--help']
   exit 1
 end

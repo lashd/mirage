@@ -5,8 +5,9 @@ Feature: Mirage is started from the command line.
 
   Background: Mirage usage
     Given usage information:
-      | -p, --port PORT    |
-      | -d, --defaults DIR |
+      | Usage: mirage start\|stop [options] |
+      | -p, --port PORT     |
+      | -d, --defaults DIR  |
 
 
   Scenario: Starting with help option

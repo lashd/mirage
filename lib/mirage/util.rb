@@ -1,5 +1,6 @@
 module Mirage
   module Util
+    
     def wait_until time=30
       start_time = Time.now
       until Time.now >= start_time + time
@@ -12,23 +13,8 @@ module Mirage
     def parse_options args
       options = {:port => 7001, :defaults_directory => 'defaults', :root_directory => '.'}
 
-      begin
-        opt_parser.parse args
-      rescue
-        print_usage
-        exit 1
-      end
-      options
-    end
-
-    def print_usage
-      puts "mirage start|stop [OPTIONS]"
-      puts opt_parser
-    end
-
-    private
-    def opt_parser
-      OptionParser.new do |opts|
+      opt_parser = OptionParser.new do |opts|
+        opts.banner = "Usage: mirage start|stop [options]"
         opts.on("-p", "--port PORT", "the port to start Mirage on") do |port|
           options[:port] = port.to_i
         end
@@ -37,6 +23,16 @@ module Mirage
           options[:defaults_directory] = directory
         end
       end
+
+      begin
+        opt_parser.parse args
+      rescue
+        puts "mirage start|stop [OPTIONS]"
+        puts opt_parser
+        exit 1
+      end
+
+      options
     end
   end
 
