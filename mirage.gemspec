@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'mirage'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.authors = ["Leon Davis"]
   s.homepage = 'https://github.com/lashd/Mirage'
   s.description = 'Mirage is a stub server for stubbing out an applications endpoints to aid testing'
@@ -23,12 +23,11 @@ mirage start
   s.add_dependency 'rack', "~> 1.1.0"
   s.add_dependency 'ramaze', ">= 2011.01.30"
   s.add_dependency "mechanize", ">= 1.0.0"
-  s.add_dependency "bundler"
-
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'rspec'
+  s.add_development_dependency 'bundler'
 
   s.rubygems_version = "1.3.7"
   s.files = `git ls-files`.split("\n")

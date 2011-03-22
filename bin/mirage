@@ -1,16 +1,10 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'bundler/setup'
-Bundler.setup
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage'
-require 'open-uri'
-require 'optparse'
-require 'mechanize'
 include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
-LOGGER = Logger.new(STDOUT)
 
 def start_mirage(args, mirage)
   puts "Starting Mirage"

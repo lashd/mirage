@@ -1,3 +1,4 @@
+require 'optparse'
 module Mirage
   module Util
     

@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'bundler/setup'
 $0='Mirage Server'
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage'

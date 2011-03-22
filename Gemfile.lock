@@ -1,8 +1,7 @@
 PATH
   remote: .
   specs:
-    mirage (0.1.0)
-      bundler
+    mirage (0.1.1)
       mechanize (>= 1.0.0)
       rack (~> 1.1.0)
       ramaze (>= 2011.01.30)
@@ -44,6 +43,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler
   cucumber
   mirage!
   rake
