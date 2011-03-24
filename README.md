@@ -1,6 +1,6 @@
 Mirage
 ======
-Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.    
+Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. It's accessible via HTTP and has a RESTful interface.    
 
 Any ideas/improvements or feedback you have are greatly appreciated.  
   
