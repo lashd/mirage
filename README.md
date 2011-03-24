@@ -2,7 +2,7 @@ Mirage
 ======
 Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.   
   
-Information on how to use Mirage can be found [https://github.com/lashd/mirage/wiki](here)   
+Information on how to use Mirage can be found [here](https://github.com/lashd/mirage/wiki)  
 
 Any ideas/improvements or feedback you have are greatly appreciated.
 
