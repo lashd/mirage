@@ -4,7 +4,7 @@ Mirage aids testing of your applications by hosting mock responses so that your 
 
 Any ideas/improvements or feedback you have are greatly appreciated.  
   
-Information on how to use Mirage can be found [here](https://github.com/lashd/mirage/wiki) .  
+Information on how to use Mirage can be found [here](https://github.com/lashd/mirage/wiki).  
   
 I hope you find it useful,  
 
