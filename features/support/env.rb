@@ -80,7 +80,7 @@ Before do
     start_mirage
   end
   
-  `cd #{SCRATCH}/ && ls | grep -v mirage.log | rm -rf`
+  `cd #{SCRATCH}/ && ls | grep -v mirage.log | xargs rm -rf`
   `truncate -s 0 #{SCRATCH}/mirage.log`
 end
 
