@@ -1,91 +1,48 @@
-@command_line
-Feature: Mirage can be primed with a default responses.
-  By default, Mirage loads any rb files found in ./defaults on startup. Mirage can also be made to load default responses
-  from a directory of your choosing.
+Feature: Mirage can respond with a 'default' response when a when the response requested at a sub url is not found.
+  I.e.
+  if a response is held for 'level1' and request comes in for 'level1/level2' the response for 'level1'
+  can be returned if nothing is held for 'level1/level2'
 
-  Defaults can also be added/reloaded after Mirage has started
+  If a request is made and there is more than one response that could be appropriate then the closet is chosen.
 
+  E.g.
+  responses exist for: 'level1' and 'level1/level2'. If a response for 'level1/level2/level3 is made, then the response for
+  'level1/level2' will be returned as it is the most specific match out of the two.
 
-  Scenario: Mirage is started with defaults in the standard location.
-    Given the file 'defaults/default_greetings.rb' contains:
-    """
-    Mirage.default do |mirage|
-      mirage.set('greeting', :response => 'hello')
-      mirage.set('leaving', :response => 'goodbye')
-    end
-    """
-    And I run 'mirage start'
-    When I hit 'http://localhost:7001/mirage/get/greeting'
-    Then 'hello' should be returned
-    When I hit 'http://localhost:7001/mirage/get/leaving'
-    Then 'goodbye' should be returned
+  Root responses can cause unexpected behaviour and so in order to qualify as a default reponse a client must knowingly mark it as one.
 
+  Scenario: A default response is returned
+    Given I hit 'http://localhost:7001/mirage/set/level0/level1' with parameters:
+      | response | another level |
+    And I hit 'http://localhost:7001/mirage/set/level1' with parameters:
+      | response      | level 1 |
+      | root_response | true    |
 
-  Scenario: Mirage is started pointing with a relative path for default responses
-    Given the file './custom_default_location/default_greetings.rb' contains:
-    """
-    Mirage.default do |mirage|
-      mirage.set('greeting', :response => 'hello')
-    end
-    """
-    And I run 'mirage start -d ./custom_default_location'
-    When I hit 'http://localhost:7001/mirage/get/greeting'
-    Then 'hello' should be returned
+    When I hit 'http://localhost:7001/mirage/get/level1/level2'
+    Then 'level 1' should be returned
 
 
-  Scenario: Mirage is started pointing with a full path for default responses
-    Given the file '/tmp/defaults/default_greetings.rb' contains:
-    """
-    Mirage.default do |mirage|
-      mirage.set('greeting', :response => 'hello')
-    end
-    """
-    And I run 'mirage start -d /tmp/defaults'
-    When I hit 'http://localhost:7001/mirage/load_defaults'
-    And I hit 'http://localhost:7001/mirage/get/greeting'
-    Then 'hello' should be returned
+  Scenario: More than one potential default response exists
+    Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
+      | response      | level 1 |
+      | root_response | true    |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2' with parameters:
+      | response      | level 2 |
+      | root_response | true    |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3' with parameters:
+      | response | level 3 |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4' with parameters:
+      | pattern | a pattern that wont be matched |
+    And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4/level5' with parameters:
+      | response      | level 5 |
+      | root_response | true    |
+
+    When I hit 'http://localhost:7001/mirage/get/level1/level2/level3/level4'
+    Then 'level 2' should be returned
 
 
-  Scenario: Reloading default responses after mirage has been started
-    Given the file 'defaults/default_greetings.rb' contains:
-    """
-    Mirage.default do |mirage|
-      mirage.set('greeting', :response => 'hello')
-    end
-    """
-    And I run 'mirage start'
-    And I hit 'http://localhost:7001/mirage/clear'
-    And I hit 'http://localhost:7001/mirage/set/a_new_response' with parameters:
-      | response | new response |
-
-    When I hit 'http://localhost:7001/mirage/load_defaults'
-    When I hit 'http://localhost:7001/mirage/get/greeting'
-    Then 'hello' should be returned
-    When I hit 'http://localhost:7001/mirage/get/a_new_response'
+  Scenario: There isnt a default response
+    Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
+      | response | level 1 |
+    When I hit 'http://localhost:7001/mirage/get/level1/level2'
     Then a 404 should be returned
-
-
-  Scenario: Mirage is started with a bad defaults file
-    Given the file 'defaults/default_greetings.rb' contains:
-    """
-    A file with a mistake in it
-    """
-    When I run 'mirage start'
-    Then I should see 'WARN: Unable to load default responses from: defaults/default_greetings.rb' on the command line
-
-
-  Scenario: Defaults with a mistake in them are reloaded after mirage has been started
-    Given I run 'mirage start'
-    When the file 'defaults/default_greetings.rb' contains:
-    """
-    A file with a mistake in it
-    """
-    And I hit 'http://localhost:7001/mirage/load_defaults'
-    Then a 500 should be returned
-
-
-
-
-
-
-

@@ -117,8 +117,8 @@ module Mirage
     end
 
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
-    def load_defaults
-      response(http_post("#{@url}/load_defaults"))
+    def prime
+      response(http_post("#{@url}/prime"))
     end
 
     private

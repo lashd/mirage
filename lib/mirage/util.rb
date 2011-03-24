@@ -12,7 +12,7 @@ module Mirage
     end
 
     def parse_options args
-      options = {:port => 7001, :defaults_directory => 'defaults', :root_directory => '.'}
+      options = {:port => 7001, :defaults_directory => 'responses', :root_directory => '.'}
 
       opt_parser = OptionParser.new do |opts|
         opts.banner = "Usage: mirage start|stop [options]"

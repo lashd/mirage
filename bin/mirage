@@ -31,7 +31,7 @@ if ARGV.include?('start')
 
   start_mirage(ARGV, mirage_client)
   begin
-    mirage_client.load_defaults
+    mirage_client.prime
   rescue Mirage::InternalServerException => e
     puts "WARN: #{e.message}"
   end

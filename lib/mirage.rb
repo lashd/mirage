@@ -4,7 +4,7 @@ require 'mirage/core'
 require 'mirage/client'
 
 module Mirage
-  def self.default
+  def self.prime
     yield @@client
   end
 

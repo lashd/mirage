@@ -32,20 +32,20 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Then 'Hello Leon' should be returned
 
-  Scenario: Loading default responses
+  Scenario: Priming Mirage
     Given Mirage is not running
     And I run 'mirage start'
 
-    When the file 'defaults/default_greetings.rb' contains:
+    When the file 'responses/default_greetings.rb' contains:
     """
-    Mirage.default do |mirage|
+    Mirage.prime do |mirage|
       mirage.set('greeting', :response => 'hello')
       mirage.set('leaving', :response => 'goodbye')
     end
     """
     And I run
     """
-    Mirage::Client.new.load_defaults
+    Mirage::Client.new.prime
     """
     And I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
@@ -54,15 +54,15 @@ Feature: the Mirage client provides methods for setting responses and loading de
     Then 'goodbye' should be returned
 
 
-  Scenario: Setting defaults and one of the files has something bad in it
-    Given the file 'defaults/default_greetings.rb' contains:
+  Scenario: Priming Mirage when one of the response file has something bad in it
+    Given the file 'responses/default_greetings.rb' contains:
     """
     Something bad...
     """
     When I run
     """
     begin
-      Mirage::Client.new.load_defaults
+      Mirage::Client.new.prime
       fail("Error should have been thrown")
     rescue Exception => e
       e.is_a?(Mirage::InternalServerException).should == true

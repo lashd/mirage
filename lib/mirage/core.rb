@@ -159,7 +159,7 @@ module Mirage
       RESPONSES.clear and RESPONSES.replace(SNAPSHOT.deep_clone)
     end
 
-    def load_defaults
+    def prime
       clear
       Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
         begin
