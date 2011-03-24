@@ -70,6 +70,7 @@ module Mirage
         @responses[name]=responses.default unless responses.default.nil?
 
         responses.each do |pattern, response|
+          pattern = pattern.is_a?(Regexp) ? pattern.source : pattern
           @responses["#{name}#{'/*' if response.root_response?}: #{pattern}"] = response
         end
       end
