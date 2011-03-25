@@ -35,7 +35,7 @@ module Mirage
       return @value if file?
 
       value = @value
-      value.scan(/\$\{(.*)?\}/).flatten.each do |pattern|
+      value.scan(/\$\{([^\}]*)\}/).flatten.each do |pattern|
 
         if (parameter_match = request_parameters[pattern])
           value = value.gsub("${#{pattern}}", parameter_match)

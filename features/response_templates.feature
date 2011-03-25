@@ -6,17 +6,18 @@ Feature: Parts of a response can be substitued for values found in the request b
   matching group which is what is put in to the response.
 
 
-  Scenario: A response template populated from match found in the request body using a regex
+  Scenario: A response template populated from matches found in the request body using a regex
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Hello ${<name>(.*?)</name>}, how are you? |
+      | response | Hello ${<firstname>(.*?)</firstname>} ${<surname>(.*?)</surname>}, how are you? |
 
     When I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     <grettingRequest>
-      <name>Leon</name>
+      <firstname>Leon</firstname>
+      <surname>Davis</surname>
     </greetingRequest>
     """
-    Then 'Hello Leon, how are you?' should be returned
+    Then 'Hello Leon Davis, how are you?' should be returned
 
 
   Scenario: A response template populated from match found in the query string using a request parameter name
@@ -26,6 +27,7 @@ Feature: Parts of a response can be substitued for values found in the request b
     When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | name | Leon |
     Then 'Hello Leon, how are you?' should be returned
+
 
   Scenario: Response template populated from match found in the query string using a regex
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
