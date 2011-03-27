@@ -16,7 +16,7 @@ Feature: Mirage can respond with a 'default' response when a when the response r
       | response | another level |
     And I hit 'http://localhost:7001/mirage/set/level1' with parameters:
       | response      | level 1 |
-      | root_response | true    |
+      | default | true    |
 
     When I hit 'http://localhost:7001/mirage/get/level1/level2'
     Then 'level 1' should be returned
@@ -25,17 +25,17 @@ Feature: Mirage can respond with a 'default' response when a when the response r
   Scenario: More than one potential default response exists
     Given I hit 'http://localhost:7001/mirage/set/level1' with parameters:
       | response      | level 1 |
-      | root_response | true    |
+      | default | true    |
     And I hit 'http://localhost:7001/mirage/set/level1/level2' with parameters:
       | response      | level 2 |
-      | root_response | true    |
+      | default | true    |
     And I hit 'http://localhost:7001/mirage/set/level1/level2/level3' with parameters:
       | response | level 3 |
     And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4' with parameters:
       | pattern | a pattern that wont be matched |
     And I hit 'http://localhost:7001/mirage/set/level1/level2/level3/level4/level5' with parameters:
       | response      | level 5 |
-      | root_response | true    |
+      | default | true    |
 
     When I hit 'http://localhost:7001/mirage/get/level1/level2/level3/level4'
     Then 'level 2' should be returned

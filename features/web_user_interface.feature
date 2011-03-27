@@ -6,7 +6,7 @@ Feature: Mirage's home page allows you to see what response are currently being 
   Background: There are already a couple of responses hosted on he Mirage server
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response      | hello |
-      | root_response | true  |
+      | default | true  |
     And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
       | response | goodbye |
 

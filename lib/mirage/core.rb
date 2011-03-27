@@ -14,16 +14,16 @@ module Mirage
     attr_reader :response_id, :delay, :name, :pattern
     attr_accessor :response_id
 
-    def initialize name, value, pattern=nil, delay=0, root_response=false
-      @name, @value, @pattern, @response_id, @delay, @root_response = name, value, pattern, @@id_count+=1, delay, root_response
+    def initialize name, value, pattern=nil, delay=0, default=false
+      @name, @value, @pattern, @response_id, @delay, @default = name, value, pattern, @@id_count+=1, delay, default
     end
 
     def self.reset_count
       @@id_count = 0
     end
 
-    def root_response?
-      @root_response
+    def default?
+      @default
     end
 
     def file?
@@ -71,7 +71,7 @@ module Mirage
 
         responses.each do |pattern, response|
           pattern = pattern.is_a?(Regexp) ? pattern.source : pattern
-          @responses["#{name}#{'/*' if response.root_response?}: #{pattern}"] = response
+          @responses["#{name}#{'/*' if response.default?}: #{pattern}"] = response
         end
       end
     end
@@ -91,9 +91,9 @@ module Mirage
       delay = (request['delay']||0)
       pattern = request['pattern'] ? /#{request['pattern']}/ : :default
       name = args.join('/')
-      is_root_response = request['root_response'] == 'true'
+      is_default = request['default'] == 'true'
 
-      response = MockResponse.new(name, (request[:file]||response_value), pattern, delay.to_f, is_root_response)
+      response = MockResponse.new(name, (request[:file]||response_value), pattern, delay.to_f, is_default)
 
       stored_responses = RESPONSES[name]||={}
 
@@ -113,11 +113,11 @@ module Mirage
       if stored_responses
         record = find_response(body, query_string, stored_responses)
       else
-        root_responses, record = find_root_responses(name), nil
+        default_responses, record = find_default_responses(name), nil
 
-        until record  || root_responses.empty?
-          record = find_response(body, query_string, root_responses.delete_at(0))
-          record = record.root_response? ? record : nil
+        until record  || default_responses.empty?
+          record = find_response(body, query_string, default_responses.delete_at(0))
+          record = record.default? ? record : nil
         end
       end
 
@@ -183,7 +183,7 @@ module Mirage
       respond('response or file parameter required', 500)
     end
 
-    def find_root_responses(name)
+    def find_default_responses(name)
       matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
       matches.collect { |key| RESPONSES[key] }
     end
