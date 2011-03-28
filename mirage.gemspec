@@ -14,7 +14,9 @@ Thanks you for installing mirage-#{s.version}.
 
 Run Mirage with:
 
-mirage start
+mirage start                                   
+
+For more information go to: https://github.com/lashd/mirage/wiki
 ===============================================================================
 }
   
