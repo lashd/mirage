@@ -15,7 +15,7 @@
 <?r unless @responses.empty? ?>
 <table border="1" width='100%'>
     <?r @responses.each do |key, response| ?>
-        <tr><td><a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a></td><td><a id='check_response_#{response.response_id}' href="/mirage/check/#{response.response_id}">check</a></td></tr>
+        <tr><td><a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a></td><td><a id='check_response_#{response.response_id}' href="/mirage/check_request/#{response.response_id}">check</a></td></tr>
     <?r end ?>
 </table>
 <?r end ?>

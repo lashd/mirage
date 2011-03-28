@@ -147,15 +147,15 @@ module Mirage
       end
     end
 
-    def check id
+    def check_request id
       REQUESTS[id.to_i] || respond("Nothing stored for: #{id}", 404)
     end
 
-    def snapshot
+    def save
       SNAPSHOT.clear and SNAPSHOT.replace(RESPONSES.deep_clone)
     end
 
-    def rollback
+    def revert
       RESPONSES.clear and RESPONSES.replace(SNAPSHOT.deep_clone)
     end
 

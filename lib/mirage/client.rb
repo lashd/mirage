@@ -95,21 +95,21 @@ module Mirage
     # request did not have any content in its body then what ever was in the request query string is returned instead
     #
     #   Example:
-    #   Client.new.check(response_id) => Tracked request as a String
-    def check response_id
-      response(http_get("#{@url}/check/#{response_id}"))
+    #   Client.new.check_request(response_id) => Tracked request as a String
+    def check_request response_id
+      response(http_get("#{@url}/check_request/#{response_id}"))
     end
 
-    # Snapshot the state of the Mirage server so that it can be rolled back to that exact state at a later time.
-    def snapshot
-      http_post("#{@url}/snapshot").code == 200
+    # Save the state of the Mirage server so that it can be reverted back to that exact state at a later time.
+    def save
+      http_post("#{@url}/save").code == 200
     end
 
 
-    # Roll the state of Mirage back to that stored in the snapshot
+    # Revert the state of Mirage back to the state that was last saved
     # If there is no snapshot to rollback to, nothing happens
-    def rollback
-      http_post("#{@url}/rollback").code == 200
+    def revert
+      http_post("#{@url}/revert").code == 200
     end
 
 

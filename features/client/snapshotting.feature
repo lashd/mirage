@@ -12,10 +12,10 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
       | response | The default greeting |
 
 
-  Scenario: Taking a snapshot and rolling it back
+  Scenario: saving and reverting
     Given I run
     """
-    Mirage::Client.new.snapshot
+    Mirage::Client.new.save
     """
     And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
       | response | Goodye |
@@ -25,7 +25,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
 
     When I run
     """
-    Mirage::Client.new.rollback
+    Mirage::Client.new.revert
     """
     And I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned

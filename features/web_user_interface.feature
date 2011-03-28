@@ -28,12 +28,3 @@ Feature: Mirage's home page allows you to see what response are currently being 
     Given I goto 'http://localhost:7001/mirage'
     When  I click 'check_response_1'
     Then I should see 'Yo!'
-
-  Scenario: Using the home page to check if a request has been made
-    Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
-    """
-    Yo!
-    """
-    Given I goto 'http://localhost:7001/mirage'
-    When  I click 'check_response_1'
-    Then I should see 'Yo!'
