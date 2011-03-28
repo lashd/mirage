@@ -40,20 +40,22 @@ module Mirage
     #   Mirage::Client.new.get('greeting', :param1 => 'value1', param2=>'value2')
     #
     #   Getting a response, passing a content in the body of the request
-    #   Mirage::Client.new.get('greeting', :body => 'content')
+    #   Mirage::Client.new.get('greeting',  'content')
 
-    def get endpoint, params={}
-      response(http_get("#{@url}/get/#{endpoint}", params))
+    def get endpoint, body_or_params={}
+      body_or_params = {:body => body_or_params} if body_or_params.is_a?(String)
+      response(http_get("#{@url}/get/#{endpoint}", body_or_params))
     end
 
     # Set a text or file based response, to be hosted at a given end point optionally with a given pattern and delay
-    # Client.set(endpoint, params) => unique id that can be used to call back to the server
+    # Client.set(endpoint, response, params) => unique id that can be used to call back to the server
     #
     #  Examples:
-    #  Client.set('greeting', :response => 'hello':)
-    #  Client.set('greeting', :response => 'hello', :pattern => 'regex or plain text':)
-    #  Client.set('greeting', :response => 'hello', :delay => 5) # number of seconds
-    def set endpoint, params
+    #  Client.set('greeting', 'hello':)
+    #  Client.set('greeting', 'hello', :pattern => 'regex or plain text':)
+    #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
+    def set endpoint, response, params={}
+      params[:response] = response
       response(http_post("#{@url}/set/#{endpoint}", params))
     end
 

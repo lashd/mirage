@@ -17,6 +17,22 @@ Feature: the Mirage client provides a method for getting responses
     Mirage::Client.new.get('greeting').should == 'hello'
     """
 
+  Scenario: getting a response with parameters
+    Given I run
+    """
+    Mirage::Client.new.get('greeting', :firstname => 'leon', :surname => 'davis').should == 'hello'
+    """
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then 'firstname=leon&surname=davis' should be returned
+
+  Scenario: getting a response with a request body
+    Given I run
+    """
+    Mirage::Client.new.get('greeting','<greetingRequest></greetingRequest>').should == 'hello'
+    """
+    And I hit 'http://localhost:7001/mirage/check/1'
+    Then '<greetingRequest></greetingRequest>' should be returned
+
   Scenario: getting a response that does not exist
     Given I run
     """

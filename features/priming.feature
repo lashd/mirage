@@ -12,8 +12,8 @@ Feature: Mirage can be primed with a set of responses.
     Given the file 'responses/default_greetings.rb' contains:
     """
     Mirage.prime do |mirage|
-      mirage.set('greeting', :response => 'hello')
-      mirage.set('leaving', :response => 'goodbye')
+      mirage.set('greeting', 'hello')
+      mirage.set('leaving', 'goodbye')
     end
     """
     And I run 'mirage start'
@@ -27,7 +27,7 @@ Feature: Mirage can be primed with a set of responses.
     Given the file './custom_responses_location/default_greetings.rb' contains:
     """
     Mirage.prime do |mirage|
-      mirage.set('greeting', :response => 'hello')
+      mirage.set('greeting', 'hello')
     end
     """
     And I run 'mirage start -d ./custom_responses_location'
@@ -39,7 +39,7 @@ Feature: Mirage can be primed with a set of responses.
     Given the file '/tmp/responses/default_greetings.rb' contains:
     """
     Mirage.prime do |mirage|
-      mirage.set('greeting', :response => 'hello')
+      mirage.set('greeting', 'hello')
     end
     """
     And I run 'mirage start -d /tmp/responses'
@@ -52,7 +52,7 @@ Feature: Mirage can be primed with a set of responses.
     Given the file 'responses/default_greetings.rb' contains:
     """
     Mirage.prime do |mirage|
-      mirage.set('greeting', :response => 'hello')
+      mirage.set('greeting', 'hello')
     end
     """
     And I run 'mirage start'
