@@ -93,7 +93,7 @@ module Mirage
       name = args.join('/')
       is_default = request['default'] == 'true'
 
-      response = MockResponse.new(name, (request[:file]||response_value), pattern, delay.to_f, is_default)
+      response = MockResponse.new(name, response_value, pattern, delay.to_f, is_default)
 
       stored_responses = RESPONSES[name]||={}
 

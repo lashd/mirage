@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mirage (0.1.5)
+    mirage (0.1.6)
       mechanize (>= 1.0.0)
       rack (~> 1.1.0)
       ramaze (>= 2011.01.30)
@@ -19,9 +19,12 @@ GEM
     diff-lcs (1.1.2)
     gherkin (2.3.5)
       json (>= 1.4.6)
+    gherkin (2.3.5-java)
+      json (>= 1.4.6)
     innate (2011.01)
       rack (>= 1.1.0)
     json (1.5.1)
+    json (1.5.1-java)
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
     nokogiri (1.4.4)
@@ -40,6 +43,7 @@ GEM
     term-ansicolor (1.0.5)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES

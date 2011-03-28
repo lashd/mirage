@@ -94,8 +94,8 @@ When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with param
   parameters = {}
   table.raw.each do |row|
     parameter, value = row[0].to_sym, row[1]
-    value = (parameter == :file ? File.open(value) : value)
-    parameters[parameter.to_sym]=value
+    value = File.exists?(value) ? File.open(value) : value
+    parameters[parameter]=value
   end
 
   @response = hit_mirage(url, parameters)

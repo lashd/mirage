@@ -73,7 +73,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario: Setting a file as a response
     Given I run
     """
-    Mirage::Client.new.set('download', :file => File.open('features/resources/test.zip'))
+    Mirage::Client.new.set('download', :response => File.open('features/resources/test.zip'))
     """
     When I hit 'http://localhost:7001/mirage/get/download'
     Then the response should be a file the same as 'features/resources/test.zip'
