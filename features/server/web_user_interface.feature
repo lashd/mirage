@@ -2,6 +2,8 @@ Feature: Mirage's home page allows you to see what response are currently being 
   From this page you can:
   - Peek at a responses content
   - Track the response to see if a request has been made to it
+  
+  #TODO tests needed for displaying pattern and delay values
 
   Background: There are already a couple of responses hosted on he Mirage server
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:

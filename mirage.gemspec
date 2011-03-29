@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'mirage'
-  s.version = '1.0.1'
+  s.version = '1.0.2'
   s.authors = ["Leon Davis"]
   s.homepage = 'https://github.com/lashd/mirage'
   s.description = 'Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.'

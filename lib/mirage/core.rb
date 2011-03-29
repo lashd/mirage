@@ -67,11 +67,11 @@ module Mirage
       @responses = {}
 
       RESPONSES.each do |name, responses|
-        @responses[name]=responses.default unless responses.default.nil?
-
         responses.each do |pattern, response|
-          pattern = pattern.is_a?(Regexp) ? pattern.source : pattern
-          @responses["#{name}#{'/*' if response.default?}: #{pattern}"] = response
+          pattern = pattern.is_a?(Regexp) ? "pattern = #{pattern.source}" : ''
+          delay = response.delay > 0 ? "delay = #{response.delay}" : ''
+          pattern << ' ,' unless pattern.empty? || delay.empty?
+          @responses["#{name}#{'/*' if response.default?}: #{pattern} #{delay}"] = response
         end
       end
     end
@@ -79,8 +79,7 @@ module Mirage
     def peek response_id
       peeked_response = nil
       RESPONSES.values.each do |responses|
-        peeked_response = responses[:default] if responses[:default] && responses[:default].response_id == response_id.to_i
-        peeked_response = responses.values.find { |response| response.response_id == response_id.to_i } if peeked_response.nil?
+        peeked_response = responses.values.find { |response| response.response_id == response_id.to_i }
         break unless peeked_response.nil?
       end
       respond("Can not peek reponse, id:#{response_id} does not exist}", 404) unless peeked_response
@@ -89,7 +88,7 @@ module Mirage
 
     def set *args
       delay = (request['delay']||0)
-      pattern = request['pattern'] ? /#{request['pattern']}/ : :default
+      pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
       name = args.join('/')
       is_default = request['default'] == 'true'
 
@@ -173,8 +172,8 @@ module Mirage
 
     private
     def find_response(body, query_string, stored_responses)
-      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :default }.find { |pattern| body =~ pattern || query_string =~ pattern }
-      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:default]
+      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| body =~ pattern || query_string =~ pattern }
+      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:basic]
       record
     end
 

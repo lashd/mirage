@@ -9,8 +9,13 @@
 <body>
 <h1>Welcome to Mirage</h1>
 
-<p>Below are any responses you are currently hosting. Click the response itself to peek at it and click check to view the last request that triggered it. <br/>
-    Note: if requests or responses contain xml, you will need to view page source to see it properly.</p>
+<p>Below are any responses you are currently hosting. Click the response itself to peek at it and click 'track' to view the last request that triggered it.<br/> 
+    <br/>
+    Patterns and delays are shown for responses that have them.<br/>
+    <br/>
+    Responses with '*' at the end are default responses. I.e. they will be returned, where appropriate, for requests to a sub endpoint if a response is not found at that level.<br/>
+    <br/>
+    <strong>Note:</strong> if requests or responses contain xml, you will need to view page source to see it properly.</p>
 
 <?r unless @responses.empty? ?>
 <table border="1" width='100%'>
