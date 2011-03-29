@@ -22,7 +22,7 @@ Feature: the Mirage client provides a method for getting responses
     """
     Mirage::Client.new.get('greeting', :firstname => 'leon', :surname => 'davis').should == 'hello'
     """
-    And I hit 'http://localhost:7001/mirage/check_request/1'
+    And I hit 'http://localhost:7001/mirage/track/1'
     Then 'firstname=leon&surname=davis' should be returned
 
   Scenario: getting a response with a request body
@@ -30,7 +30,7 @@ Feature: the Mirage client provides a method for getting responses
     """
     Mirage::Client.new.get('greeting','<greetingRequest></greetingRequest>').should == 'hello'
     """
-    And I hit 'http://localhost:7001/mirage/check_request/1'
+    And I hit 'http://localhost:7001/mirage/track/1'
     Then '<greetingRequest></greetingRequest>' should be returned
 
   Scenario: getting a response that does not exist

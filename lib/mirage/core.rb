@@ -147,7 +147,7 @@ module Mirage
       end
     end
 
-    def check_request id
+    def track id
       REQUESTS[id.to_i] || respond("Nothing stored for: #{id}", 404)
     end
 

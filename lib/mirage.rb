@@ -4,6 +4,7 @@ require 'mirage/core'
 require 'mirage/client'
 
 module Mirage
+  # When mirage starts it loads any ruby files found in the responses directory. Use this method to get hold of a client configured for the running server.
   def self.prime
     yield @@client
   end
