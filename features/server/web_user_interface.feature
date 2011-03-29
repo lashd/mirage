@@ -1,7 +1,7 @@
 Feature: Mirage's home page allows you to see what response are currently being hosted.
   From this page you can:
   - Peek at a responses content
-  - Check the response to see if a request has been made to it
+  - Track the response to see if a request has been made to it
 
   Background: There are already a couple of responses hosted on he Mirage server
     Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
@@ -20,11 +20,11 @@ Feature: Mirage's home page allows you to see what response are currently being 
     When  I click 'peek_response_1'
     Then I should see 'hello'
 
-  Scenario: Using the home page to check if a request has been made
+  Scenario: Using the home page to track if a request has been made
     Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Yo!
     """
     Given I goto 'http://localhost:7001/mirage'
-    When  I click 'check_response_1'
+    When  I click 'track_response_1'
     Then I should see 'Yo!'

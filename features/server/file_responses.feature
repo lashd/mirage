@@ -1,5 +1,6 @@
 Feature: Mirage can also be used to host files.
 
+  #TODO - generate zip file or move resources directory
   Scenario: A file is set as a response
     Given I hit 'http://localhost:7001/mirage/set/some/location/download' with parameters:
       | response | features/resources/test.zip |

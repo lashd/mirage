@@ -16,7 +16,7 @@ Feature: After a response has been served from Mirage, the content of the reques
       | response | Hello |
 
 
-  Scenario: Querying a response that was triggered by a request that had content in the body
+  Scenario: Tracking a response that was triggered by a request that had content in the body
     Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """
     Hello MockServer
@@ -25,7 +25,7 @@ Feature: After a response has been served from Mirage, the content of the reques
     Then 'Hello MockServer' should be returned
 
 
-  Scenario: Querying a response that was triggered by a request with a query string
+  Scenario: Tracking a response that was triggered by a request with a query string
     Given I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
       | surname   | Davis |
       | firstname | Leon  |
@@ -33,7 +33,7 @@ Feature: After a response has been served from Mirage, the content of the reques
     Then 'surname=Davis&firstname=Leon' should be returned
 
 
-  Scenario: Querying a response that has not been served yet
+  Scenario: Tracking a response that has not been served yet
     Given I hit 'http://localhost:7001/mirage/track/1'
     Then a 404 should be returned
 
