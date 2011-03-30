@@ -36,6 +36,9 @@ module Mirage
     # If a response is not found a ResponseNotFound exception is thrown
     #
     #   Examples:
+    #   Getting a response without any parameters or body content
+    #   Mirage::Client.get(endpoint)
+    #
     #   Getting a response, passing request parameters
     #   Mirage::Client.new.get('greeting', :param1 => 'value1', param2=>'value2')
     #
