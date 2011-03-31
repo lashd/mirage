@@ -89,7 +89,7 @@ then
 else
     run_build_for_ruby 'ruby-1.8.6'
     run_build_for_ruby 'ruby-1.8.7'
-    run_build_for_ruby 'ruby-1.9.1'
+    run_build_for_ruby 'ruby-1.9.1-p378'
     run_build_for_ruby 'ruby-1.9.2'
     run_build_for_ruby 'jruby'
 fi

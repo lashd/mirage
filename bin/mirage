@@ -46,13 +46,6 @@ elsif ARGV.include?('stop')
       puts "killing #{id}"
       `kill -9 #{id}`
     end
-#    process_id = `ps aux | grep "Mirage Server" | grep -v grep`.split(' ')[1]
-#
-#    if process_id
-#      puts "killing #{process_id}"
-#      `kill -9 #{process_id}`
-#    end
-
   rescue
     puts 'Mirage is not running'
   end
