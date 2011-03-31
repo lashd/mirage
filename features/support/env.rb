@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../../lib")
 require 'rubygems'
-require 'bundler/setup'
-Bundler.setup(:test)
+#require 'bundler/setup'
+#Bundler.setup(:test)
 require 'mirage'
 require 'cucumber'
 require 'rspec'
@@ -36,12 +36,12 @@ end
 
 module Regression
   def stop_mirage
-    `export RUBYOPT='' && cd #{SCRATCH} && mirage stop`
+    system "export RUBYOPT='' && cd #{SCRATCH} && mirage stop"
   end
 
   def start_mirage
-    `truncate mirage.log --size 0`
-    `export RUBYOPT='' && cd #{SCRATCH} && mirage start`
+    system "truncate mirage.log --size 0"
+    system "export RUBYOPT='' && cd #{SCRATCH} && mirage start"
   end
 end
 
@@ -57,7 +57,7 @@ module IntelliJ
 
   def start_mirage
     puts "starting mirage"
-    `truncate mirage.log --size 0`
+    system "truncate mirage.log --size 0"
     system "cd #{SCRATCH} && ../bin/mirage start"
 
     wait_until do
@@ -81,8 +81,8 @@ Before do
     start_mirage
   end
   
-  `cd #{SCRATCH}/ && ls | grep -v mirage.log | xargs rm -rf`
-  `truncate -s 0 #{SCRATCH}/mirage.log`
+  system "cd #{SCRATCH}/ && ls | grep -v mirage.log | xargs rm -rf"
+  system "truncate -s 0 #{SCRATCH}/mirage.log"
 end
 
 at_exit do

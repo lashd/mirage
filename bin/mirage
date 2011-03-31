@@ -15,8 +15,10 @@ def start_mirage(args, mirage)
 end
 
 def mirage_process_ids
-  mirage_cmdline_files = Dir['/proc/*/cmdline'].find_all { |cmdline_file| File.read(cmdline_file) =~ /Mirage Server|start_mirage/ }
-  mirage_cmdline_files.collect{|mirage_cmdline_file| File.read("#{File.dirname(mirage_cmdline_file)}/stat").split(' ').first.to_i }
+  process_ids = []
+  process_ids <<  `ps aux | grep "Mirage Server" | grep -v grep`.split(' ')[1]
+  process_ids <<  `ps aux | grep "start_mirage" | grep -v grep`.split(' ')[1]
+  return process_ids.compact
 end
 
 if ARGV.include?('start')
@@ -42,8 +44,14 @@ elsif ARGV.include?('stop')
   begin
     mirage_process_ids.each do |id|
       puts "killing #{id}"
-      Process.kill(9, id)
+      `kill -9 #{id}`
     end
+#    process_id = `ps aux | grep "Mirage Server" | grep -v grep`.split(' ')[1]
+#
+#    if process_id
+#      puts "killing #{process_id}"
+#      `kill -9 #{process_id}`
+#    end
 
   rescue
     puts 'Mirage is not running'
