@@ -37,7 +37,7 @@ end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "../bin/"
-  @commandline_output = normalise(IO.popen("export RUBYOPT='' && cd #{SCRATCH} && #{path}#{command}").read)
+  @commandline_output = normalise(IO.popen("cd #{SCRATCH} && #{path}#{command}").read)
 end
 
 Given /^Mirage (is|is not) running$/ do |running|

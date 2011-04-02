@@ -36,12 +36,12 @@ end
 
 module Regression
   def stop_mirage
-    system "export RUBYOPT='' && cd #{SCRATCH} && mirage stop"
+    system "cd #{SCRATCH} && mirage stop"
   end
 
   def start_mirage
     system "truncate mirage.log --size 0"
-    system "export RUBYOPT='' && cd #{SCRATCH} && mirage start"
+    system "cd #{SCRATCH} && mirage start"
   end
 end
 

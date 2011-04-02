@@ -1,7 +1,5 @@
 $LOAD_PATH.unshift('lib')
 require 'rubygems'
-require 'bundler/setup'
-
 require 'mirage/client'
 require 'rake'
 require 'open-uri'
@@ -10,7 +8,7 @@ require 'cucumber/rake/task'
 require 'mechanize'
 
 def run_command command
-  system "export RUBYOPT='' && #{command}"
+  system "#{command}"
 end
 
 task :gem => :clean do
