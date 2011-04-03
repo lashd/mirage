@@ -11,12 +11,11 @@ def start_mirage(args, mirage)
   puts "Starting Mirage"
 
   if windows?
-    command = ["cmd", "/C", "start",  "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"].concat(args)
-    process = ChildProcess.build(*command)
-    process.start
+    command = ["cmd", "/C", "start",  "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
   else
-    system "(#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
+   command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
   end
+  ChildProcess.build(*(command.concat(args))).start
 
   wait_until do
     mirage.running?
@@ -30,7 +29,7 @@ def stop_mirage
     `taskkill /F /T /PID #{process_id}` if process_id
   else
     begin
-      ["Mirage Server", 'start_mirage'].each do |process_name|
+      ["Mirage Server", 'mirage start', 'start_mirage'].each do |process_name|
         process_id = `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
         system "kill -9 #{process_id}" if process_id
       end

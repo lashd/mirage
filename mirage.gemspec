@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
 
   windows = ENV['OS'] == 'Windows_NT'
   s.name = 'mirage'
-  s.version = '1.1.0'
+  s.version = '1.2.0'
   s.authors = ["Leon Davis"]
   s.homepage = 'https://github.com/lashd/mirage'
   s.description = 'Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.'
@@ -28,7 +28,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
   s.add_dependency 'ramaze', ">= 2011.01.30"
   s.add_dependency "mechanize", ">= 1.0.0"
 
-  s.add_dependency 'childprocess' if windows
+  s.add_dependency 'childprocess'
   s.add_dependency 'jruby-openssl' if RUBY_PLATFORM == 'java'
 
 
