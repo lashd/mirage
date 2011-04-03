@@ -2,15 +2,18 @@
 require 'rubygems'
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage'
+require 'childprocess'
 include Mirage::Util
-RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
+RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
 
 
 def start_mirage(args, mirage)
   puts "Starting Mirage"
 
   if windows?
-    system "#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage_on_windows.rb #{args.join(' ')}"
+    command = ["cmd", "/C", "start",  "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"].concat(args)
+    process = ChildProcess.build(*command)
+    process.start
   else
     system "(#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
   end

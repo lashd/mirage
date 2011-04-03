@@ -36,7 +36,7 @@ module Mirage
     end
 
     def windows?
-      RUBY_PLATFORM =~ /(mswin|mingw)/i
+      ENV['OS'] == 'Windows_NT'
     end
   end
 
