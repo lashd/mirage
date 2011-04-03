@@ -1,11 +1,8 @@
 $LOAD_PATH.unshift('lib')
 require 'rubygems'
-require 'mirage/client'
 require 'rake'
-require 'open-uri'
 require 'cucumber'
 require 'cucumber/rake/task'
-require 'mechanize'
 
 def run_command command
   system "#{command}"
@@ -23,19 +20,7 @@ Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "mode=regression features --format pretty"
 end
 
-task :start_mirage => :stop_mirage do
-  run_command "mirage start"
-  task.reenable
-end
-
-task :stop_mirage do |task|
-  run_command "mirage stop"
-  task.reenable
-end
-
-
 task :clean do |task|
-
   if run_command "gem list -i mirage"
     puts "cleaning"
     run_command "gem uninstall -x mirage"
@@ -45,4 +30,4 @@ task :clean do |task|
 end
 
 
-task :default => [:install, :start_mirage, :features, :stop_mirage, :clean]
+task :default => [:install,:features,:clean]

@@ -37,7 +37,7 @@ end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "../bin/"
-  @commandline_output = normalise(IO.popen("cd #{SCRATCH} && #{path}#{command}").read)
+  @commandline_output = normalise(run("#{path}#{command}"))
 end
 
 Given /^Mirage (is|is not) running$/ do |running|
@@ -62,9 +62,9 @@ Given /^the file '(.*)' contains:$/ do |file_path, content|
   file_path = "#{SCRATCH}/#{file_path}" unless file_path =~ /^\//
 
   FileUtils.rm_rf(file_path) if File.exists?(file_path)
-  directory = File.dirname(file_path)
-  FileUtils.mkdir_p(directory)
-  file = File.new("#{directory}/#{File.basename(file_path)}", 'w')
+  FileUtils.mkdir_p(File.dirname(file_path))
+
+  file = File.new("#{file_path}", 'w')
   file.write(content)
   file.close
 end
@@ -94,7 +94,7 @@ When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with param
   parameters = {}
   table.raw.each do |row|
     parameter, value = row[0].to_sym, row[1]
-    value = File.exists?(value) ? File.open(value) : value
+    value = File.exists?(value) ? File.open(value, 'rb') : value
     parameters[parameter]=value
   end
 
@@ -113,15 +113,19 @@ Then /^'(.*)' should exist$/ do |path|
   File.exists?("#{SCRATCH}/#{path}").should == true
 end
 
-Then /^'(.*)' should contain '(.*)'$/ do |file, content|
-  fail("#{content} not found in: #{File.read(file)}") unless File.read("#{SCRATCH}/#{file}").index(content)
+Then /^mirage.log should contain '(.*)'$/ do |content|
+  log_file_content = @mirage_log_file.readlines.to_s
+  fail("#{content} not found in mirage.log: #{log_file_content}") unless log_file_content.index(content)
 end
+
 Given /^I goto '(.*)'$/ do |url|
   @page = Mechanize.new.get url
 end
+
 Then /^I should see '(.*)'$/ do |text|
   @page.body.index(text).should_not == nil
 end
+
 When /^I click '(.*)'$/ do |thing|
-  @page = @page.links.find{|link| link.attributes['id'] == thing}.click
+  @page = @page.links.find { |link| link.attributes['id'] == thing }.click
 end

@@ -1,4 +1,6 @@
 Gem::Specification.new do |s|
+
+  windows = RUBY_PLATFORM =~ /(mswin|mingw)/i
   s.name = 'mirage'
   s.version = '1.1.0'
   s.authors = ["Leon Davis"]
@@ -25,6 +27,8 @@ For more information go to: https://github.com/lashd/mirage/wiki
   s.add_dependency 'rack', "~> 1.1.0"
   s.add_dependency 'ramaze', ">= 2011.01.30"
   s.add_dependency "mechanize", ">= 1.0.0"
+
+  s.add_dependency 'win32-process' if windows
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'cucumber'

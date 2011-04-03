@@ -8,22 +8,38 @@ RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
 def start_mirage(args, mirage)
   puts "Starting Mirage"
-  system "(#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
+
+  if windows?
+    system "#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage_on_windows.rb #{args.join(' ')}"
+  else
+    system "(#{RUBY_CMD} #{File.dirname(__FILE__)}/../lib/start_mirage.rb #{args.join(' ')}) > /dev/null 2>&1 &"
+  end
+
   wait_until do
     mirage.running?
   end
 end
 
-def mirage_process_ids
-  process_ids = []
-  process_ids <<  `ps aux | grep "Mirage Server" | grep -v grep`.split(' ')[1]
-  process_ids <<  `ps aux | grep "start_mirage" | grep -v grep`.split(' ')[1]
-  return process_ids.compact
+
+def stop_mirage
+  if windows?
+    process_id = `tasklist /V | findstr "mirage\\ server"`.split(' ')[1]
+    `taskkill /F /T /PID #{process_id}` if process_id
+  else
+    begin
+      ["Mirage Server", 'mirage_server'].each do |process_name|
+        process_id = `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
+        system "kill -9 #{process_id}" if process_id
+      end
+    rescue
+      puts 'Mirage is not running'
+    end
+  end
 end
 
 if ARGV.include?('start')
 
-  options =  parse_options(ARGV)
+  options = parse_options(ARGV)
   mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
 
   if mirage_client.running?
@@ -38,17 +54,9 @@ if ARGV.include?('start')
     puts "WARN: #{e.message}"
   end
 
-
 elsif ARGV.include?('stop')
-  puts "Stoping Mirage"
-  begin
-    mirage_process_ids.each do |id|
-      puts "killing #{id}"
-      `kill -9 #{id}`
-    end
-  rescue
-    puts 'Mirage is not running'
-  end
+  puts "Stopping Mirage"
+  stop_mirage
 else
   parse_options ['--help']
   exit 1

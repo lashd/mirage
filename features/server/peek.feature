@@ -12,9 +12,10 @@ Feature: If you want to see the content of a particular response without trigger
 
   Scenario: Peeking a file based response
     Given I hit 'http://localhost:7001/mirage/set/download' with parameters:
-      | response | features/resources/test.zip |
+      | response | README.md |
+
     When I hit 'http://localhost:7001/mirage/peek/1'
-    Then the response should be a file the same as 'features/resources/test.zip'
+    Then the response should be a file the same as 'README.md'
 
 
   Scenario: Peeking a response that does not exist

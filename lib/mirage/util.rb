@@ -2,7 +2,7 @@ require 'optparse'
 module Mirage
   module Util
     
-    def wait_until time=30
+    def wait_until time=45
       start_time = Time.now
       until Time.now >= start_time + time
         sleep 0.1
@@ -28,12 +28,15 @@ module Mirage
       begin
         opt_parser.parse args
       rescue
-        puts "mirage start|stop [OPTIONS]"
         puts opt_parser
         exit 1
       end
 
       options
+    end
+
+    def windows?
+      RUBY_PLATFORM =~ /(mswin|mingw)/i
     end
   end
 

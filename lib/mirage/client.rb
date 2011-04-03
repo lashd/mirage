@@ -22,6 +22,7 @@ module Mirage
 
   class Client
     include ::Mirage::Web
+    attr_reader :url
 
     # Creates an instance of the MIrage client that can be used to interact with the Mirage Server
     #
@@ -58,7 +59,7 @@ module Mirage
     #  Client.set('greeting', 'hello', :pattern => 'regex or plain text':)
     #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
     def set endpoint, response, params={}
-      params[:response] = response
+      params[:response] = response.is_a?(File) ? File.open(response.path, 'rb') : response
       response(http_post("#{@url}/set/#{endpoint}", params))
     end
 

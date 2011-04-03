@@ -91,6 +91,7 @@ module Mirage
       pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
       name = args.join('/')
       is_default = request['default'] == 'true'
+      the_request = request
 
       response = MockResponse.new(name, response_value, pattern, delay.to_f, is_default)
 
@@ -196,7 +197,8 @@ module Mirage
     def send_response(response, body='', request={}, query_string='')
       if response.file?
         tempfile, filename, type = response.value.values_at(:tempfile, :filename, :type)
-        send_file(tempfile.path, type, "Content-Disposition: attachment; filename=#{filename}")
+        tempfile.binmode
+        send_file(tempfile.path, type, "Content-Length: #{tempfile.size}; Content-Disposition: attachment; filename=#{filename}")
       else
         response.value(body, request, query_string)
       end
