@@ -13,7 +13,7 @@ $log_file_marker = 0
 module CommandLine
   def execute command
     command_line_output_path = "#{SCRATCH}/commandline_output.txt"
-    system "cd #{SCRATCH} & #{command} > #{File.basename(command_line_output_path)}"
+    system "cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
     File.read(command_line_output_path)
   end
 end
@@ -46,11 +46,11 @@ module Regression
   include CommandLine
 
   def stop_mirage
-    system "cd #{SCRATCH} & mirage stop"
+    system "cd #{SCRATCH} && mirage stop"
   end
 
   def start_mirage
-    system "cd #{SCRATCH} & mirage start"
+    system "cd #{SCRATCH} && mirage start"
   end
 
   def run command
@@ -63,12 +63,12 @@ module IntelliJ
   include Mirage::Util
 
   def stop_mirage
-    system "cd #{SCRATCH} & #{RUBY_CMD}  ../bin/mirage stop"
+    system "cd #{SCRATCH} && #{RUBY_CMD}  ../bin/mirage stop"
   end
 
   def start_mirage
     puts "starting mirage"
-    system "cd #{SCRATCH} & #{RUBY_CMD} ../bin/mirage start"
+    system "cd #{SCRATCH} && #{RUBY_CMD} ../bin/mirage start"
   end
 
   def run command
