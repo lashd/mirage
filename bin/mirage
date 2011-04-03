@@ -27,7 +27,7 @@ def stop_mirage
     `taskkill /F /T /PID #{process_id}` if process_id
   else
     begin
-      ["Mirage Server", 'mirage_server'].each do |process_name|
+      ["Mirage Server", 'start_mirage'].each do |process_name|
         process_id = `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
         system "kill -9 #{process_id}" if process_id
       end
