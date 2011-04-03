@@ -24,11 +24,11 @@ For more information go to: https://github.com/lashd/mirage/wiki
   
   s.has_rdoc = 'true' 
 
-  s.add_dependency 'rack', "~> 1.1.0"
-  s.add_dependency 'ramaze', ">= 2011.01.30"
-  s.add_dependency "mechanize", ">= 1.0.0"
-
-  s.add_dependency 'childprocess'
+  s.add_dependency 'rack', '~> 1.1.0'
+  s.add_dependency 'ramaze', '>= 2011.01.30'
+  s.add_dependency 'mechanize', '>= 1.0.0'
+  s.add_dependency 'childprocess', '~> 0.1'
+  
   s.add_dependency 'jruby-openssl' if RUBY_PLATFORM == 'java'
 
 
