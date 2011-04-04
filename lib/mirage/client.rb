@@ -60,6 +60,7 @@ module Mirage
     #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
     def set endpoint, response, params={}
       params[:response] = response.is_a?(File) ? File.open(response.path, 'rb') : response
+      params[:pattern] = params[:pattern].source if params[:pattern].is_a?(Regexp)
       response(http_post("#{@url}/set/#{endpoint}", params))
     end
 

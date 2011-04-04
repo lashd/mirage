@@ -1,6 +1,8 @@
 Feature: the Mirage client provides methods for setting responses and loading default responses.
   There is no need to escape any parameters before using the client api as this is done for you.
 
+  Patterns can be either a string or regex object.
+
   Background:
     Given the following gems are required to run the Mirage client test code:
     """
@@ -8,6 +10,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
     require 'rspec'
     require 'mirage'
     """
+    
 
   Scenario: Setting a basic response
     Given I run
@@ -16,11 +19,12 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
+    
 
-  Scenario: Setting a response with a pattern
+  Scenario Outline: Setting a response with a pattern
     Given I run
     """
-    Mirage::Client.new.set('greeting', 'Hello Leon', :pattern => '.*?>leon</name>')
+    Mirage::Client.new.set('greeting', 'Hello Leon', :pattern => <pattern>)
     """
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
@@ -31,6 +35,11 @@ Feature: the Mirage client provides methods for setting responses and loading de
      </greetingRequest>
     """
     Then 'Hello Leon' should be returned
+  Examples:
+    | pattern              |
+    | /.*?>leon<\\/name>/ |
+    | 'leon'              |
+    
 
   Scenario: Priming Mirage
     Given Mirage is not running
