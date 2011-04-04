@@ -1,9 +1,10 @@
 require 'rubygems'
 $0='Mirage Server'
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
+$LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'mirage'
 include Mirage::Util
 
+#puts "ARGV is " + ARGV
 options = parse_options(ARGV)
 
 DEFAULT_RESPONSES_DIR = "#{options[:defaults_directory]}"
