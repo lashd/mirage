@@ -54,6 +54,7 @@ Gem::Specification.new do |s|
     "lib/mirage/web.rb",
     "lib/start_mirage.rb",
     "lib/view/mirage/index.xhtml",
+    "mirage.gemspec",
     "rakefile"
   ]
   s.homepage = %q{https://github.com/lashd/mirage}
