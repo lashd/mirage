@@ -67,7 +67,6 @@ module IntelliJ
   end
 
   def start_mirage
-    puts "starting mirage"
     system "cd #{SCRATCH} && #{RUBY_CMD} ../bin/mirage start"
   end
 
