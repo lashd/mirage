@@ -31,17 +31,6 @@ mirage start
 For more information go to: https://github.com/lashd/mirage/wiki
 ===============================================================================
 }
-  
-#  bundle = Bundler.load
-#  
-#  bundle.dependencies_for(:default).each do |dependency|
-#    gem.add_dependency dependency.name, dependency.requirement.to_s
-#  end
-#  
-#  bundle.dependencies_for(:development).each do |dependency|
-#    gem.add_development_dependency dependency.name, dependency.requirement.to_s
-#  end
-  
 end
 Jeweler::RubygemsDotOrgTasks.new
 
