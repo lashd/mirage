@@ -80,6 +80,7 @@ end
 
 World(Web)
 
+
 Before do
   FileUtils.mkdir_p(SCRATCH)
   $mirage = Mirage::Client.new
