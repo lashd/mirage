@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mirage}
-  s.version = "1.3.0"
+  s.version = "1.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
@@ -61,7 +61,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.post_install_message = %q{
 ===============================================================================
-Thanks you for installing mirage-.   
+Thanks you for installing mirage.   
 
 Run Mirage with:
 
@@ -72,7 +72,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
 }
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.6.1}
-  s.summary = %q{mirage-}
+  s.summary = %q{Mirage is a easy mock server for testing your applications}
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
