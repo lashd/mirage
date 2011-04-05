@@ -98,6 +98,7 @@ Before do
   @mirage_log_file.seek(0,IO::SEEK_END)
 end
 
+
 at_exit do
   stop_mirage if $mirage.running?
 end
