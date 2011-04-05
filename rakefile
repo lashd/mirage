@@ -1,29 +1,61 @@
 $LOAD_PATH.unshift('lib')
 require 'rubygems'
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
 require 'rake'
+
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  gem.name = "mirage"
+  gem.homepage = "https://github.com/lashd/mirage"
+  gem.license = "MIT"
+  gem.summary = "mirage-#{gem.version}"
+  gem.description = 'Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.'
+  gem.authors = ["Leon Davis"]
+  gem.executables = ['mirage']
+  gem.post_install_message = %{
+===============================================================================
+Thanks you for installing mirage-#{gem.version}.   
+
+Run Mirage with:
+
+mirage start                                   
+
+For more information go to: https://github.com/lashd/mirage/wiki
+===============================================================================
+}
+  
+  bundle = Bundler.load
+  
+  bundle.dependencies_for(:default).each do |dependency|
+    gem.add_dependency dependency.name, dependency.requirement.to_s
+  end
+  
+  bundle.dependencies_for(:development).each do |dependency|
+    gem.add_development_dependency dependency.name, dependency.requirement.to_s
+  end
+  
+end
+Jeweler::RubygemsDotOrgTasks.new
+
+
 require 'cucumber'
 require 'cucumber/rake/task'
-
-def run_command command
-  system "#{command}"
-end
-
-task :gem => :clean do
-  run_command 'gem build mirage.gemspec'
-end
-
-task :install => :gem do
-  run_command "gem install mirage"
-end
-
 Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "mode=regression features --format pretty"
 end
 
 task :clean do |task|
-  if run_command "gem list -i mirage"
+  if system "gem list -i mirage"
     puts "cleaning"
-    run_command "gem uninstall -x mirage"
+    system "gem uninstall -x mirage"
   end
   Dir['*.gem'].each{|gem| FileUtils.rm_f(gem)}
   task.reenable

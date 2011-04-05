@@ -13,7 +13,7 @@ $log_file_marker = 0
 module CommandLine
   def execute command
     command_line_output_path = "#{SCRATCH}/commandline_output.txt"
-    system "cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
+    system "export RUBYOPT='' && cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
     File.read(command_line_output_path)
   end
 end
@@ -46,11 +46,11 @@ module Regression
   include CommandLine
 
   def stop_mirage
-    system "cd #{SCRATCH} && mirage stop"
+    system "export RUBYOPT='' && cd #{SCRATCH} && mirage stop"
   end
 
   def start_mirage
-    system "cd #{SCRATCH} && mirage start"
+    system "export RUBYOPT='' && cd #{SCRATCH} && mirage start"
   end
 
   def run command
