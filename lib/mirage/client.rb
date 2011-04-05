@@ -56,7 +56,8 @@ module Mirage
     #
     #  Examples:
     #  Client.set('greeting', 'hello':)
-    #  Client.set('greeting', 'hello', :pattern => 'regex or plain text':)
+    #  Client.set('greeting', 'hello', :pattern => /regexp/)
+    #  Client.set('greeting', 'hello', :pattern => 'text')
     #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
     def set endpoint, response, params={}
       params[:response] = response.is_a?(File) ? File.open(response.path, 'rb') : response
