@@ -13,16 +13,9 @@ module Mirage
     def http_get url, params={}
       uri = URI.parse(url)
       if params[:body]
-        response = Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Get.new(uri.path)
-          request.body=params[:body]
-          http.request(request)
+        response = using_mechanize do |browser|
+          browser.put(url, params[:body])
         end
-
-        def response.code
-          @code.to_i
-        end
-
       else
         response = using_mechanize do |browser|
           browser.get(url, params)

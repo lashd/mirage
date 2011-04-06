@@ -39,7 +39,7 @@ module CommandLine
 
   module Linux
     def run command
-      `#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && #{command} > #{File.basename(COMAND_LINE_OUTPUT_PATH)}`
+      `#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && #{command}`
     end
   end
 end
