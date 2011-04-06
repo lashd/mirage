@@ -5,15 +5,17 @@ require 'cucumber'
 require 'rspec'
 require 'mechanize'
 
+include Mirage::Util
 SCRATCH = './scratch'
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
+EXPORT_CMD = windows? ? 'set' : 'export'
 $log_file_marker = 0
 
 
 module CommandLine
   def execute command
     command_line_output_path = "#{SCRATCH}/commandline_output.txt"
-    system "export RUBYOPT='' && cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
+    system "#{EXPORT_CMD} RUBYOPT='' && cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
     File.read(command_line_output_path)
   end
 end
@@ -46,11 +48,11 @@ module Regression
   include CommandLine
 
   def stop_mirage
-    system "export RUBYOPT='' && cd #{SCRATCH} && mirage stop"
+    system "#{EXPORT_CMD} RUBYOPT='' && cd #{SCRATCH} && mirage stop"
   end
 
   def start_mirage
-    system "export RUBYOPT='' && cd #{SCRATCH} && mirage start"
+    system "#{EXPORT_CMD} RUBYOPT='' && cd #{SCRATCH} && mirage start"
   end
 
   def run command
