@@ -91,7 +91,6 @@ module Mirage
       pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
       name = args.join('/')
       is_default = request['default'] == 'true'
-      the_request = request
 
       response = MockResponse.new(name, response_value, pattern, delay.to_f, is_default)
 
