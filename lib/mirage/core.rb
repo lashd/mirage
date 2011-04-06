@@ -188,7 +188,7 @@ module Mirage
     end
 
     def delete_response(response_id)
-      RESPONSES.each do |name, response_set|
+      RESPONSES.values.each do |response_set|
         response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
       end
     end
