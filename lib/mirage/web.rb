@@ -11,18 +11,9 @@ module Mirage
     end
 
     def http_get url, params={}
-      uri = URI.parse(url)
-      if params[:body]
-        response = using_mechanize do |browser|
-          browser.put(url, params[:body])
-        end
-      else
-        response = using_mechanize do |browser|
-          browser.get(url, params)
-        end
+      using_mechanize do |browser|
+        params[:body] ? browser.put(url, params[:body]) : browser.get(url, params)  
       end
-
-      response
     end
 
     def http_post url, params={}
