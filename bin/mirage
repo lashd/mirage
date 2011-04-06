@@ -7,7 +7,7 @@ include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
 
 
-def start_mirage(args, mirage)
+def start_mirage(args)
   puts "Starting Mirage"
 
   if windows?
@@ -16,12 +16,15 @@ def start_mirage(args, mirage)
    command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
   end
   ChildProcess.build(*(command.concat(args))).start
-
-  wait_until do
-    mirage.running?
-  end
+  Mirage::Client.new "http://localhost:#{parse_options(ARGV)[:port]}/mirage"
 end
 
+
+def mirage_process_ids
+  ["Mirage Server", 'start_mirage'].collect do |process_name|
+    `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
+  end.find_all{|process_id| process_id != $$.to_s}.compact
+end
 
 def stop_mirage
   if windows?
@@ -29,9 +32,8 @@ def stop_mirage
     `taskkill /F /T /PID #{process_id}` if process_id
   else
     begin
-      ["Mirage Server", 'mirage start', 'start_mirage'].each do |process_name|
-        process_id = `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
-        system "kill -9 #{process_id}" if process_id
+      mirage_process_ids.each do |process_id|
+        system "kill -9 #{process_id}"  
       end
     rescue
       puts 'Mirage is not running'
@@ -40,16 +42,17 @@ def stop_mirage
 end
 
 if ARGV.include?('start')
-
-  options = parse_options(ARGV)
-  mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
-
-  if mirage_client.running?
-    puts "Mirage already running"
+  
+  unless mirage_process_ids.empty?
+    puts "Mirage is already running"
     exit 1
   end
 
-  start_mirage(ARGV, mirage_client)
+  mirage_client = start_mirage(ARGV)
+  wait_until do
+    mirage_client.running?
+  end
+  
   begin
     mirage_client.prime
   rescue Mirage::InternalServerException => e
