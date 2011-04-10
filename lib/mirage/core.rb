@@ -91,7 +91,6 @@ module Mirage
       pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
       name = args.join('/')
       is_default = request['default'] == 'true'
-      the_request = request
 
       response = MockResponse.new(name, response_value, pattern, delay.to_f, is_default)
 
@@ -189,7 +188,7 @@ module Mirage
     end
 
     def delete_response(response_id)
-      RESPONSES.each do |name, response_set|
+      RESPONSES.values.each do |response_set|
         response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
       end
     end
