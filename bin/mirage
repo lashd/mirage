@@ -11,9 +11,9 @@ def start_mirage(args)
   puts "Starting Mirage"
 
   if windows?
-    command = ["cmd", "/C", "start",  "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
+    command = ["cmd", "/C", "start", "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
   else
-   command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
+    command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/start_mirage.rb"]
   end
   ChildProcess.build(*(command.concat(args))).start
   Mirage::Client.new "http://localhost:#{parse_options(ARGV)[:port]}/mirage"
@@ -21,28 +21,25 @@ end
 
 
 def mirage_process_ids
-  ["Mirage Server", 'start_mirage'].collect do |process_name|
-    `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
-  end.find_all{|process_id| process_id != $$.to_s}.compact
+  if windows?
+    [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
+  else
+    ["Mirage Server", 'start_mirage'].collect do |process_name|
+      `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
+    end.find_all { |process_id| process_id != $$.to_s }.compact
+  end
 end
 
 def stop_mirage
   if windows?
-    process_id = `tasklist /V | findstr "mirage\\ server"`.split(' ')[1]
-    `taskkill /F /T /PID #{process_id}` if process_id
+    mirage_process_ids.each{|process_id| system "taskkill /F /T /PID #{process_id}"}
   else
-    begin
-      mirage_process_ids.each do |process_id|
-        system "kill -9 #{process_id}"  
-      end
-    rescue
-      puts 'Mirage is not running'
-    end
+    mirage_process_ids.each{|process_id| system "kill -9 #{process_id}"}
   end
 end
 
 if ARGV.include?('start')
-  
+
   unless mirage_process_ids.empty?
     puts "Mirage is already running"
     exit 1
@@ -52,7 +49,7 @@ if ARGV.include?('start')
   wait_until do
     mirage_client.running?
   end
-  
+
   begin
     mirage_client.prime
   rescue Mirage::InternalServerException => e
