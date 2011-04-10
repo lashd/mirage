@@ -8,14 +8,13 @@ require 'mechanize'
 include Mirage::Util
 SCRATCH = './scratch'
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
-EXPORT_CMD = windows? ? 'set' : 'export'
+BLANK_RUBYOPT_CMD = windows? ? 'set RUBYOPT=' : "export RUBYOPT=''"
 $log_file_marker = 0
-
 
 module CommandLine
   def execute command
     command_line_output_path = "#{SCRATCH}/commandline_output.txt"
-    system "#{EXPORT_CMD} RUBYOPT='' && cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
+    system "#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
     File.read(command_line_output_path)
   end
 end
@@ -48,11 +47,11 @@ module Regression
   include CommandLine
 
   def stop_mirage
-    system "#{EXPORT_CMD} RUBYOPT='' && cd #{SCRATCH} && mirage stop"
+    system "#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && mirage stop"
   end
 
   def start_mirage
-    system "#{EXPORT_CMD} RUBYOPT='' && cd #{SCRATCH} && mirage start"
+    system "#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && mirage start"
   end
 
   def run command
@@ -93,11 +92,13 @@ Before do
   end
 
   Dir["#{SCRATCH}/*"].each do |file|
-      FileUtils.rm_rf(file) unless file == "#{SCRATCH}/mirage.log"
+    FileUtils.rm_rf(file) unless file == "#{SCRATCH}/mirage.log"
   end
 
-  @mirage_log_file = File.open("#{SCRATCH}/mirage.log")
-  @mirage_log_file.seek(0,IO::SEEK_END)
+  if File.exists? "#{SCRATCH}/mirage.log"
+    @mirage_log_file = File.open("#{SCRATCH}/mirage.log")
+    @mirage_log_file.seek(0, IO::SEEK_END)
+  end
 end
 
 
