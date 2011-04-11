@@ -11,7 +11,7 @@ Feature: Mirage is started from the command line.
 
 
   Scenario: Starting with help option
-    Given I run 'mirage start --help'
+    Given I run 'mirage --help'
     Then the usage information should be displayed
 
 

@@ -4,18 +4,43 @@ require 'mirage'
 require 'cucumber'
 require 'rspec'
 require 'mechanize'
+require 'childprocess'
+
+ENV['RUBYOPT'] =''
 
 include Mirage::Util
 SCRATCH = './scratch'
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
+
+
 BLANK_RUBYOPT_CMD = windows? ? 'set RUBYOPT=' : "export RUBYOPT=''"
-$log_file_marker = 0
+
+if 'regression' == ENV['mode']
+  MIRAGE_CMD = windows? ? `where mirage.bat`.chomp : 'mirage'
+else
+  MIRAGE_CMD = "#{RUBY_CMD} ../bin/mirage"
+end
 
 module CommandLine
-  def execute command
-    command_line_output_path = "#{SCRATCH}/commandline_output.txt"
-    system "#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && #{command} > #{File.basename(command_line_output_path)}"
-    File.read(command_line_output_path)
+  COMAND_LINE_OUTPUT_PATH = "#{File.dirname(__FILE__)}/../../#{SCRATCH}/commandline_output.txt"
+  module Windows
+    def run command
+      command = "#{MIRAGE_CMD} #{command.split(' ').drop(1).join(' ')}" if command =~ /^mirage/
+      command = "#{command} > #{COMAND_LINE_OUTPUT_PATH}"
+      Dir.chdir(SCRATCH)
+      `#{BLANK_RUBYOPT_CMD}`
+      process = ChildProcess.build(*(command.split(' ')))
+      process.start
+      sleep 0.5 until process.exited?
+      Dir.chdir('../')
+      File.read(COMAND_LINE_OUTPUT_PATH)
+    end
+  end
+
+  module Linux
+    def run command
+      `#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && #{command} > #{File.basename(COMAND_LINE_OUTPUT_PATH)}`
+    end
   end
 end
 
@@ -46,40 +71,52 @@ end
 module Regression
   include CommandLine
 
-  def stop_mirage
-    system "#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && mirage stop"
-  end
-
-  def start_mirage
-    system "#{BLANK_RUBYOPT_CMD} && cd #{SCRATCH} && mirage start"
-  end
-
   def run command
     execute(command)
   end
 end
 
+module Mirage
+  module Runner
+    include Mirage::Util
+
+    def stop_mirage
+      system "cd #{SCRATCH} && #{MIRAGE_CMD} stop"
+    end
+
+    def start_mirage
+      if windows?
+
+        puts "starting mirage"
+        Dir.chdir(SCRATCH)
+        process = ChildProcess.build(MIRAGE_CMD, "start")
+        process.start
+        sleep 0.5 until process.exited?
+        Dir.chdir '../'
+        puts "finished starting mirage"
+      else
+        system "cd #{SCRATCH} && #{MIRAGE_CMD} start"
+      end
+    end
+  end
+end
+
+
 module IntelliJ
   include CommandLine
   include Mirage::Util
-
-  def stop_mirage
-    system "cd #{SCRATCH} && #{RUBY_CMD}  ../bin/mirage stop"
-  end
-
-  def start_mirage
-    system "cd #{SCRATCH} && #{RUBY_CMD} ../bin/mirage start"
-  end
 
   def run command
     execute "#{RUBY_CMD} #{command}"
   end
 end
 
-'regression' == ENV['mode'] ? World(Regression) : World(IntelliJ)
-'regression' == ENV['mode'] ? include(Regression) : include(IntelliJ)
+include Mirage::Runner
 
 World(Web)
+World(Mirage::Runner)
+windows? ? World(CommandLine::Windows) : World(CommandLine::Linux)
+
 
 
 Before do
