@@ -9,14 +9,14 @@ Feature: Having set up the Mirage with a number of defaults, your tests may cont
 
 
   Scenario: Saving Mirage and reverting it
-    Given  I hit 'http://localhost:7001/mirage/save'
+    Given  I post to 'http://localhost:7001/mirage/save'
     And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
       | response | Goodye |
 
     And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
       | response | Changed |
 
-    And I hit 'http://localhost:7001/mirage/revert'
+    And I post to 'http://localhost:7001/mirage/revert'
 
     When I hit 'http://localhost:7001/mirage/get/leaving'
     Then a 404 should be returned

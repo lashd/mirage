@@ -1,14 +1,21 @@
-require 'ramaze'
-require 'ramaze/helper/send_file'
-
+require 'sinatra/base'
 class Object
   def deep_clone
     Marshal.load(Marshal.dump(self))
   end
 end
 
+
 module Mirage
 
+
+end
+
+class MirageServer < Sinatra::Base
+  
+  
+  
+  
   class MockResponse
     @@id_count = 0
     attr_reader :response_id, :delay, :name, :pattern
@@ -57,151 +64,202 @@ module Mirage
     end
   end
 
+  RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
 
-  class MirageServer < Ramaze::Controller
-    include Ramaze::Helper::SendFile
-    map '/mirage'
-    RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
+  configure do
+    require 'logger'
+    enable :logging
+    log_file = File.open('mirage.log', 'a')
+    log_file.sync=true
+    use Rack::CommonLogger, log_file
+  end
+  
+  set :views, File.dirname(__FILE__) + '/../views'
 
-    def index
-      @responses = {}
+  get '/mirage' do
+    @responses = {}
 
-      RESPONSES.each do |name, responses|
-        responses.each do |pattern, response|
-          pattern = pattern.is_a?(Regexp) ? "pattern = #{pattern.source}" : ''
-          delay = response.delay > 0 ? "delay = #{response.delay}" : ''
-          pattern << ' ,' unless pattern.empty? || delay.empty?
-          @responses["#{name}#{'/*' if response.default?}: #{pattern} #{delay}"] = response
-        end
+    RESPONSES.each do |name, responses|
+      responses.each do |pattern, response|
+        pattern = pattern.is_a?(Regexp) ? "pattern = #{pattern.source}" : ''
+        delay = response.delay > 0 ? "delay = #{response.delay}" : ''
+        pattern << ' ,' unless pattern.empty? || delay.empty?
+        @responses["#{name}#{'/*' if response.default?}: #{pattern} #{delay}"] = response
       end
     end
+    erb :index
+  end
 
-    def peek response_id
-      peeked_response = nil
-      RESPONSES.values.each do |responses|
-        peeked_response = responses.values.find { |response| response.response_id == response_id.to_i }
-        break unless peeked_response.nil?
-      end
-      respond("Can not peek reponse, id:#{response_id} does not exist}", 404) unless peeked_response
-      send_response(peeked_response)
+  get '/mirage/peek/:response_id' do
+    peeked_response = nil
+    response_id = params['response_id']
+    RESPONSES.values.each do |responses|
+      peeked_response = responses.values.find { |response| response.response_id == response_id.to_i }
+      break unless peeked_response.nil?
+    end
+    return 404 unless peeked_response
+    send_response(peeked_response)
+  end
+
+  get '/mirage/set/*' do |name|
+    set_response name
+  end
+
+  post '/mirage/set/*' do |name|
+    set_response name
+  end
+
+
+  def set_response name
+    delay = (request['delay']||0)
+    pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
+    is_default = request['default'] == 'true'
+
+#      response_value =  request['response'] unless request['response'].nil?
+    value = response_value
+    if value.nil?
+      return 500
     end
 
-    def set *args
-      delay = (request['delay']||0)
-      pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
-      name = args.join('/')
-      is_default = request['default'] == 'true'
+    response = MockResponse.new(name, value, pattern, delay.to_f, is_default)
 
-      response = MockResponse.new(name, response_value, pattern, delay.to_f, is_default)
+    stored_responses = RESPONSES[name]||={}
 
-      stored_responses = RESPONSES[name]||={}
+    old_response = stored_responses.delete(pattern)
+    stored_responses[pattern] = response
 
-      old_response = stored_responses.delete(pattern)
-      stored_responses[pattern] = response
-
-      # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
-      response.response_id = old_response.response_id if old_response
-      response.response_id
-    end
-
-    def get *args
-      body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
-      name = args.join('/')
-      stored_responses = RESPONSES[name]
-
-      if stored_responses
-        record = find_response(body, query_string, stored_responses)
-      else
-        default_responses, record = find_default_responses(name), nil
-
-        until record  || default_responses.empty?
-          record = find_response(body, query_string, default_responses.delete_at(0))
-          record = record.default? ? record : nil
-        end
-      end
-
-      respond('Response not found', 404) unless record
-      REQUESTS[record.response_id] = body.empty? ? query_string : body
-
-      sleep record.delay
-      send_response(record, body, request, query_string)
-    end
-
-    def clear datatype=nil, response_id=nil
-      response_id = response_id.to_i
-      case datatype
-        when 'requests' then
-          REQUESTS.clear
-        when 'responses' then
-          RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
-        when /\d+/ then
-          response_id = datatype.to_i
-          delete_response(response_id)
-          REQUESTS.delete(response_id)
-        when 'request'
-          REQUESTS.delete(response_id)
-        when nil
-          [REQUESTS, RESPONSES].each { |map| map.clear }
-          MockResponse.reset_count
-      end
-    end
-
-    def track id
-      REQUESTS[id.to_i] || respond("Nothing stored for: #{id}", 404)
-    end
-
-    def save
-      SNAPSHOT.clear and SNAPSHOT.replace(RESPONSES.deep_clone)
-    end
-
-    def revert
-      RESPONSES.clear and RESPONSES.replace(SNAPSHOT.deep_clone)
-    end
-
-    def prime
-      clear
-      Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
-        begin
-          load default
-        rescue Exception
-          respond("Unable to load default responses from: #{default}", 500)
-        end
-
-      end
-    end
-
-    private
-    def find_response(body, query_string, stored_responses)
-      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| body =~ pattern || query_string =~ pattern }
-      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:basic]
-      record
-    end
-
-    def response_value
-      return request['response'] unless request['response'].nil?
-      respond('response or file parameter required', 500)
-    end
-
-    def find_default_responses(name)
-      matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
-      matches.collect { |key| RESPONSES[key] }
-    end
-
-    def delete_response(response_id)
-      RESPONSES.values.each do |response_set|
-        response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
-      end
-    end
-
-    def send_response(response, body='', request={}, query_string='')
-      if response.file?
-        tempfile, filename, type = response.value.values_at(:tempfile, :filename, :type)
-        tempfile.binmode
-        send_file(tempfile.path, type, "Content-Length: #{tempfile.size}; Content-Disposition: attachment; filename=#{filename}")
-      else
-        response.value(body, request, query_string)
-      end
-    end
+    # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
+    response.response_id = old_response.response_id if old_response
+    response.response_id.to_s
 
   end
+
+
+  def get_response name
+    body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
+    stored_responses = RESPONSES[name]
+
+    if stored_responses
+      record = find_response(body, query_string, stored_responses)
+    else
+      default_responses, record = find_default_responses(name), nil
+
+      until record || default_responses.empty?
+        record = find_response(body, query_string, default_responses.delete_at(0))
+        record = record.default? ? record : nil
+      end
+    end
+
+    return 404 unless record
+    REQUESTS[record.response_id] = body.empty? ? query_string : body
+
+    sleep record.delay
+    send_response(record, body, request, query_string)
+  end
+
+  get '/mirage/get/*' do |name|
+    get_response(name)
+  end
+
+  post '/mirage/get/*' do |name|
+    get_response(name)
+  end
+
+  error do
+    erb request.env['sinatra.error'].message
+  end
+
+  post '/mirage/prime' do
+    [REQUESTS, RESPONSES].each { |map| map.clear }
+
+    Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
+      begin
+        load default
+      rescue Exception
+        raise "Unable to load default responses from: #{default}"
+      end
+
+    end
+  end
+  
+  
+
+  def clear(datatype=nil, response_id=nil)
+    case datatype
+      when 'requests' then
+        REQUESTS.clear
+      when 'responses' then
+        RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
+      when /\d+/ then
+        response_id = datatype.to_i
+        delete_response(response_id)
+        REQUESTS.delete(response_id)
+      when 'request'
+        REQUESTS.delete(response_id)
+      when nil || ''
+        [REQUESTS, RESPONSES].each { |map| map.clear }
+        MockResponse.reset_count
+    end
+  end
+
+  get '/mirage/clear/*' do
+    datatype, response_id = params[:splat][0], params[:splat][1].to_i
+    puts "datatype is: #{datatype}"
+    clear(datatype, response_id)
+  end
+
+  get '/mirage/clear' do
+    clear
+  end
+
+  get '/mirage/track/:id' do
+    id = params[:id]
+    REQUESTS[id.to_i] || 404
+  end
+
+  post '/mirage/save' do
+    SNAPSHOT.clear and SNAPSHOT.replace(RESPONSES.deep_clone)
+  end
+
+  post '/mirage/revert' do
+    RESPONSES.clear and RESPONSES.replace(SNAPSHOT.deep_clone)
+  end
+
+
+  private
+
+  def find_response(body, query_string, stored_responses)
+    pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| body =~ pattern || query_string =~ pattern }
+    record = pattern_match ? stored_responses[pattern_match] : stored_responses[:basic]
+    record
+  end
+
+  def response_value
+    return request['response'] unless request['response'].nil?
+#    respond('response or file parameter required', 500)
+  end
+
+  def find_default_responses(name)
+    matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
+    matches.collect { |key| RESPONSES[key] }
+  end
+
+  def delete_response(response_id)
+    RESPONSES.values.each do |response_set|
+      response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
+    end
+  end
+
+  def send_response(response, body='', request={}, query_string='')
+    if response.file?
+      tempfile, filename, type = response.value.values_at(:tempfile, :filename, :type)
+      tempfile.binmode
+      send_file(tempfile.path, :type => type)
+    else
+      response.value(body, request, query_string)
+    end
+  end
+
+#  run! :port => 7001
+
 end

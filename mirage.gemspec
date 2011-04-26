@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = %q{2011-04-06}
+  s.date = %q{2011-04-25}
   s.default_executable = %q{mirage}
   s.description = %q{Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.}
   s.executables = ["mirage"]
@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
     "lib/mirage/util.rb",
     "lib/mirage/web.rb",
     "lib/start_mirage.rb",
-    "lib/view/mirage/index.xhtml",
+    "lib/views/index.erb",
     "mirage.gemspec",
     "rakefile"
   ]
@@ -79,7 +79,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rack>, ["~> 1.1.0"])
-      s.add_runtime_dependency(%q<ramaze>, [">= 2011.01.30"])
+      s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<mechanize>, [">= 1.0.0"])
       s.add_runtime_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_development_dependency(%q<rake>, [">= 0"])
@@ -89,7 +89,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
       s.add_development_dependency(%q<bundler>, [">= 0"])
     else
       s.add_dependency(%q<rack>, ["~> 1.1.0"])
-      s.add_dependency(%q<ramaze>, [">= 2011.01.30"])
+      s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<mechanize>, [">= 1.0.0"])
       s.add_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_dependency(%q<rake>, [">= 0"])
@@ -100,7 +100,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
     end
   else
     s.add_dependency(%q<rack>, ["~> 1.1.0"])
-    s.add_dependency(%q<ramaze>, [">= 2011.01.30"])
+    s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<mechanize>, [">= 1.0.0"])
     s.add_dependency(%q<childprocess>, ["~> 0.1"])
     s.add_dependency(%q<rake>, [">= 0"])

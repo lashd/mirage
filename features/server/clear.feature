@@ -19,7 +19,7 @@ Feature: Responses and requests can be cleared.
 
 
   Scenario: Clearing all responses
-    Given I hit 'http://localhost:7001/mirage/clear'
+    Given I hit 'http://localhost:7001/mirage/clear/'
 
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then a 404 should be returned
@@ -50,7 +50,7 @@ Feature: Responses and requests can be cleared.
     """
     Say 'Goodbye' to me
     """
-    And I hit 'http://localhost:7001/mirage/clear'
+    And I hit 'http://localhost:7001/mirage/clear/'
 
     When I hit 'http://localhost:7001/mirage/check/1'
     Then a 404 should be returned

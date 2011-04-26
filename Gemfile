@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem 'rack', '~> 1.1.0'
-gem 'ramaze', '>= 2011.01.30'
+gem 'sinatra'
 gem 'mechanize', '>= 1.0.0'
 gem 'childprocess', '~> 0.1'
 

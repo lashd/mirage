@@ -89,6 +89,10 @@ When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, response_id|
   @response = hit_mirage(url)
 end
 
+When /^I post to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, operation|
+  @response = http_post(url)
+end
+
 When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |http_method, url, endpoint, table|
 
   parameters = {}

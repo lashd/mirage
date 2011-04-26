@@ -83,7 +83,7 @@ module Mirage
     def clear thing=nil
       case thing
         when NilClass then
-          http_get("#{@url}/clear")
+          http_get("#{@url}/clear/")
         when Fixnum then
           http_get("#{@url}/clear/#{thing}")
         when :requests then

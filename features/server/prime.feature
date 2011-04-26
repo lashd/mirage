@@ -60,7 +60,7 @@ Feature: Mirage can be primed with a set of responses.
     And I hit 'http://localhost:7001/mirage/set/a_new_response' with parameters:
       | response | new response |
 
-    When I hit 'http://localhost:7001/mirage/prime'
+    When I post to 'http://localhost:7001/mirage/prime'
     When I hit 'http://localhost:7001/mirage/get/greeting'
     Then 'hello' should be returned
     When I hit 'http://localhost:7001/mirage/get/a_new_response'
@@ -82,7 +82,7 @@ Feature: Mirage can be primed with a set of responses.
     """
     A file with a mistake in it
     """
-    And I hit 'http://localhost:7001/mirage/prime'
+    And I post to 'http://localhost:7001/mirage/prime'
     Then a 500 should be returned
 
 

@@ -17,12 +17,12 @@
     <br/>
     <strong>Note:</strong> if requests or responses contain xml, you will need to view page source to see it properly.</p>
 
-<?r unless @responses.empty? ?>
+<% unless @responses.empty? %>
 <table border="1" width='100%'>
-    <?r @responses.each do |key, response| ?>
-        <tr><td><a id='peek_response_#{response.response_id}' href="/mirage/peek/#{response.response_id}">#{key}</a></td><td><a id='track_response_#{response.response_id}' href="/mirage/track/#{response.response_id}">track</a></td></tr>
-    <?r end ?>
+    <% @responses.each do |key, response| %>
+        <tr><td><a id='peek_response_<%=response.response_id%>' href="/mirage/peek/<%=response.response_id%>"><%=key%></a></td><td><a id='track_response_<%=response.response_id%>' href="/mirage/track/<%=response.response_id%>">track</a></td></tr>
+    <% end %>
 </table>
-<?r end ?>
+<% end %>
 </body>
 </html>

@@ -12,7 +12,7 @@ module Mirage
 
     def http_get url, params={}
       using_mechanize do |browser|
-        params[:body] ? browser.put(url, params[:body]) : browser.get(url, params)  
+        params[:body] ? browser.post(url, params[:body]) : browser.get(url, params)  
       end
     end
 
