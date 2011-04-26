@@ -11,7 +11,7 @@ Feature: Mirage can be configured with endpoints that when request returned defi
     { "response" : "Hello, how are you?" }
     """
 
-    When I send GET to 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/greeting'
     Then 'Hello, how are you?' should be returned
 
   Scenario: A response hosted on a longer url
@@ -19,7 +19,7 @@ Feature: Mirage can be configured with endpoints that when request returned defi
     """
     { "response" : "Hello to me" }
     """
-    When I send GET to 'http://localhost:7001/mirage/get/say/hello/to/me'
+    When I send GET to 'http://localhost:7001/mirage/say/hello/to/me'
     Then 'Hello to me' should be returned
 
 
@@ -43,5 +43,5 @@ Feature: Mirage can be configured with endpoints that when request returned defi
 
 
   Scenario: Getting a response that does not exist
-    When I send GET to 'http://localhost:7001/mirage/get/response_that_does_not_exist'
+    When I send GET to 'http://localhost:7001/mirage/response_that_does_not_exist'
     Then a 404 should be returned

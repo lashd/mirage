@@ -173,11 +173,11 @@ module Mirage
       send_response(record, body, request, query_string)
     end
 
-    get '/mirage/get/*' do |name|
+    get '/mirage/*' do |name|
       get_response(name)
     end
 
-    post '/mirage/get/*' do |name|
+    post '/mirage/*' do |name|
       get_response(name)
     end
 

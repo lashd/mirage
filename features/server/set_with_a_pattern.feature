@@ -14,7 +14,7 @@ Feature: Mirage can be configured to return particular responses conditionally b
     """
     { "response" : "Hello Leon, how are you?", "pattern" : "<name>leon</name>" }
     """
-    When I send POST to 'http://localhost:7001/mirage/get/greeting' with request entity
+    When I send POST to 'http://localhost:7001/mirage/greeting' with request entity
     """
      <greetingRequest>
       <name>leon</name>
@@ -29,7 +29,7 @@ Feature: Mirage can be configured to return particular responses conditionally b
     { "response" : "Hello Leon, how are you?", "pattern" : ".*?leon<\/name>" }
     """
 
-    When I send POST to 'http://localhost:7001/mirage/get/greeting' with request entity
+    When I send POST to 'http://localhost:7001/mirage/greeting' with request entity
     """
      <greetingRequest>
       <name>leon</name>
@@ -44,7 +44,7 @@ Feature: Mirage can be configured to return particular responses conditionally b
     { "response" : "Hello Leon, how are you?", "pattern" : "leon" }
     """
 
-    When I send POST to 'http://localhost:7001/mirage/get/greeting' with parameters:
+    When I send POST to 'http://localhost:7001/mirage/greeting' with parameters:
       | name | leon |
 
     Then 'Hello Leon, how are you?' should be returned
@@ -55,7 +55,7 @@ Feature: Mirage can be configured to return particular responses conditionally b
     """
     { "response" : "Hello Leon, how are you?", "pattern" : "name=[L\|l]eon" }
     """
-    When I send POST to 'http://localhost:7001/mirage/get/greeting' with parameters:
+    When I send POST to 'http://localhost:7001/mirage/greeting' with parameters:
       | name | leon |
 
     Then 'Hello Leon, how are you?' should be returned
@@ -67,7 +67,7 @@ Feature: Mirage can be configured to return particular responses conditionally b
     { "response" : "Hello Leon, how are you?", "pattern" : ".*?leon<\/name>" }
     """
 
-    When I send POST to 'http://localhost:7001/mirage/get/greeting' with request entity
+    When I send POST to 'http://localhost:7001/mirage/greeting' with request entity
     """
      <greetingRequest>
       <name>jim</name>

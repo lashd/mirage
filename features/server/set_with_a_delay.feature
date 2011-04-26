@@ -7,5 +7,5 @@ Feature: Its possible introduce a delay before responding to a client with a par
       { "response" : "Sorry it took me so long!", "delay" : "4.2" }
       """
 
-    When I send GET to 'http://localhost:7001/mirage/get/an_appology'
+    When I send GET to 'http://localhost:7001/mirage/an_appology'
     Then it should take at least '4.2' seconds

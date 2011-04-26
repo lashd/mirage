@@ -20,7 +20,7 @@ Feature: Mirage can respond with a 'default' response when a when the response r
     """
     { "response" : "level 1", "default" : "true" }
     """
-    When I send GET to 'http://localhost:7001/mirage/get/level1/level2'
+    When I send GET to 'http://localhost:7001/mirage/level1/level2'
     Then 'level 1' should be returned
 
 
@@ -46,7 +46,7 @@ Feature: Mirage can respond with a 'default' response when a when the response r
     { "response" : "level 5", "default" : "true" }
     """
 
-    When I send GET to 'http://localhost:7001/mirage/get/level1/level2/level3/level4'
+    When I send GET to 'http://localhost:7001/mirage/level1/level2/level3/level4'
     Then 'level 2' should be returned
 
 
@@ -55,5 +55,5 @@ Feature: Mirage can respond with a 'default' response when a when the response r
     """
     { "response" : "level 1" }
     """
-    When I hit 'http://localhost:7001/mirage/get/level1/level2'
+    When I hit 'http://localhost:7001/mirage/level1/level2'
     Then a 404 should be returned
