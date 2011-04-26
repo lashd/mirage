@@ -105,6 +105,29 @@ When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with param
   @response = hit_mirage(url, parameters)
 end
 
+When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with request entity$/ do |method, url, endpoint, entity|
+
+  @response = case method
+                when 'POST'
+                then
+                  post(url, entity)
+                when 'PUT'
+                then
+                  put(url, entity)
+              end
+end
+
+When /^I send (GET|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |method, url, endpoint|
+  start_time = Time.now
+  @response = case method
+                when 'GET' then
+                  get(url)
+                when 'PUT' then
+                  put(url, '')
+              end
+  @response_time = Time.now - start_time
+end
+
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
   @response = hit_mirage(url, {:body => request_body})
 end
@@ -132,4 +155,14 @@ end
 
 When /^I click '(.*)'$/ do |thing|
   @page = @page.links.find { |link| link.attributes['id'] == thing }.click
+end
+When /^I send POST to '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |url, endpoint, table|
+  parameters = {}
+  table.raw.each do |row|
+    parameter, value = row[0].to_sym, row[1]
+    value = File.exists?(value) ? File.open(value, 'rb') : value
+    parameters[parameter]=value
+  end
+
+  @response = post(url, parameters)
 end

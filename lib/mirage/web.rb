@@ -10,6 +10,25 @@ module Mirage
       end
     end
 
+    def put url, entity
+      using_mechanize do |browser|
+        browser.put(url, entity)  
+      end
+    end
+    
+    def get url
+      using_mechanize do |browser|
+        browser.get(url)  
+      end
+    end
+    
+    def post url, params={}
+      using_mechanize do |browser|
+        browser.post(url, params)
+      end
+    end
+    
+    
     def http_get url, params={}
       using_mechanize do |browser|
         params[:body] ? browser.post(url, params[:body]) : browser.get(url, params)  

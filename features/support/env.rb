@@ -48,12 +48,6 @@ end
 module Web
   include Mirage::Web
 
-  def get(url)
-    browser = Mechanize.new
-    browser.keep_alive= false
-    browser.get(url)
-  end
-
   def hit_mirage(url, parameters={})
     start_time = Time.now
     file = parameters.values.find { |value| value.is_a?(File) }

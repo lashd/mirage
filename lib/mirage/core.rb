@@ -1,4 +1,6 @@
 require 'sinatra/base'
+require 'sinatra/reloader'
+require 'json'
 class Object
   def deep_clone
     Marshal.load(Marshal.dump(self))
@@ -26,7 +28,7 @@ module Mirage
       end
 
       def default?
-        @default
+        'true' == @default
       end
 
       def file?
@@ -68,6 +70,8 @@ module Mirage
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
       use Rack::CommonLogger, log_file
+      register Sinatra::Reloader
+      also_reload "**/*.rb"
     end
 
     set :views, File.dirname(__FILE__) + '/../views'
@@ -97,13 +101,23 @@ module Mirage
       send_response(peeked_response)
     end
 
-    get '/mirage/set/*' do |name|
-      set_response name
+    put '/mirage/*' do |name|
+      response = JSON.parse(request.body.read)
+
+      pattern = response['pattern'] ? /#{response['pattern']}/ : :basic
+
+      response = MockResponse.new(name, response['response'], pattern, response['delay'].to_f, response['default'])
+
+      stored_responses = RESPONSES[name]||={}
+
+      old_response = stored_responses.delete(pattern)
+      stored_responses[pattern] = response
+
+      # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
+      response.response_id = old_response.response_id if old_response
+      response.response_id.to_s
     end
 
-    post '/mirage/set/*' do |name|
-      set_response name
-    end
 
 
     def set_response name
@@ -134,15 +148,21 @@ module Mirage
     def get_response name
       body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
       stored_responses = RESPONSES[name]
+      record = nil
 
-      if stored_responses
-        record = find_response(body, query_string, stored_responses)
-      else
+      record = find_response(body, query_string, stored_responses) if stored_responses
+        
+        
+        
+      unless record
         default_responses, record = find_default_responses(name), nil
 
         until record || default_responses.empty?
           record = find_response(body, query_string, default_responses.delete_at(0))
-          record = record.default? ? record : nil
+          if record
+            record = record.default? ? record : nil  
+          end
+          
         end
       end
 
@@ -231,7 +251,6 @@ module Mirage
 
     def response_value
       return request['response'] unless request['response'].nil?
-#    respond('response or file parameter required', 500)
     end
 
     def find_default_responses(name)
@@ -254,8 +273,5 @@ module Mirage
         response.value(body, request, query_string)
       end
     end
-
-#  run! :port => 7001
-
   end
 end
