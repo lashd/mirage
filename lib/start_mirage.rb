@@ -13,6 +13,6 @@ Mirage.client = Mirage::Client.new
 set(:show_exception, false)
 set(:raise_errors, true)
 
-MirageServer.run! :port => options[:port], :show_exceptions => false, :logging => true, :server => 'webrick'
+Mirage::MirageServer.run! :port => options[:port], :show_exceptions => false, :logging => true, :server => 'webrick'
 
 
