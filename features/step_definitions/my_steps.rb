@@ -117,13 +117,17 @@ When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with requ
               end
 end
 
-When /^I send (GET|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |method, url, endpoint|
+When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |method, url, endpoint|
   start_time = Time.now
   @response = case method
                 when 'GET' then
                   get(url)
                 when 'PUT' then
                   put(url, '')
+                when 'POST' then post(url, '')
+                when 'HEAD' then head(url)
+                when 'OPTIONS' then options(url)
+                when 'DELETE' then delete(url)
               end
   @response_time = Time.now - start_time
 end

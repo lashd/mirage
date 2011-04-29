@@ -81,19 +81,20 @@ module Mirage
     #   Client.new.clear(:requests) # Clear all tracked request information
     #   Client.new.clear(:request => response_id) # Clear the tracked request for a given response id
     def clear thing=nil
-      case thing
-        when NilClass then
-          http_get("#{@url}/clear/")
-        when Fixnum then
-          http_get("#{@url}/clear/#{thing}")
-        when :requests then
-          http_get("#{@url}/clear/requests")
-        when Hash then
-          case thing.keys.first
-            when :request then
-              http_get("#{@url}/clear/request/#{thing.values.first}")
-          end
-      end
+      delete("#{@url}/responses")
+#      case thing       
+#        when NilClass then
+#          http_get("#{@url}/clear/")
+#        when Fixnum then
+#          http_get("#{@url}/clear/#{thing}")
+#        when :requests then
+#          http_get("#{@url}/clear/requests")
+#        when Hash then
+#          case thing.keys.first
+#            when :request then
+#              http_get("#{@url}/clear/request/#{thing.values.first}")
+#          end
+#      end
     end
 
 

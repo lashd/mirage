@@ -1,3 +1,5 @@
+require 'net/http'
+require 'uri'
 module Mirage
   module Web
     class FileResponse
@@ -12,26 +14,49 @@ module Mirage
 
     def put url, entity
       using_mechanize do |browser|
-        browser.put(url, entity)  
+        browser.put(url, entity)
       end
     end
-    
+
     def get url
       using_mechanize do |browser|
-        browser.get(url)  
+        browser.get(url)
       end
     end
-    
+
     def post url, params={}
       using_mechanize do |browser|
         browser.post(url, params)
       end
     end
+
+    def delete url, params={}
+      using_mechanize do |browser|
+        browser.delete(url, params)
+      end
+    end
+
+    def head url, params={}
+#      uri = URI.parse(url)
+#      head_request = Net::HTTP::Head.new(uri.path)
+#      Net::HTTP.start(uri.host, uri.port) do |http|
+#        http.request(head_request)
+#      end
+      using_mechanize do |browser|
+        browser.head(url, params)
+      end
+    end
     
-    
+    def options url, params={}
+      using_mechanize do |browser|
+        browser.options(url, params)
+      end
+    end
+
+
     def http_get url, params={}
       using_mechanize do |browser|
-        params[:body] ? browser.post(url, params[:body]) : browser.get(url, params)  
+        params[:body] ? browser.post(url, params[:body]) : browser.get(url, params)
       end
     end
 
