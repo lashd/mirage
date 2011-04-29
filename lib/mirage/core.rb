@@ -16,7 +16,7 @@ module Mirage
 
     class MockResponse
       @@id_count = 0
-      attr_reader :response_id, :delay, :name, :pattern,:http_method
+      attr_reader :response_id, :delay, :name, :pattern, :http_method
       attr_accessor :response_id
 
       def initialize name, value, http_method, pattern=nil, delay=0, default=false
@@ -77,7 +77,7 @@ module Mirage
     set :views, File.dirname(__FILE__) + '/../views'
 
     put %r{/mirage/responses/((?!replay).)*$} do
-      name = request.route.gsub('/mirage/responses/','')
+      name = request.route.gsub('/mirage/responses/', '')
 #      [^']*
       response = JSON.parse(request.body.read)
       http_method = response['method'] || 'GET'
@@ -87,23 +87,23 @@ module Mirage
       response = MockResponse.new(name, response['response'], http_method, pattern, response['delay'].to_f, response['default'])
 
       stored_responses = RESPONSES[name]||={}
-      
+
       stored_responses[pattern] ||= {}
       old_response = stored_responses[pattern].delete(http_method)
-      stored_responses[pattern][http_method] = response 
-      
+      stored_responses[pattern][http_method] = response
+
 
       # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
       response.response_id = old_response.response_id if old_response
       response.response_id.to_s
     end
 
-    [ 'get', 'post', 'delete', 'put'].each do |http_method|
+    ['get', 'post', 'delete', 'put'].each do |http_method|
       send(http_method, '/mirage/responses/*.replay') do |name|
         get_response(name, http_method.upcase)
       end
     end
-    
+
     delete '/mirage/responses' do
       [REQUESTS, RESPONSES].each { |map| map.clear }
       MockResponse.reset_count
@@ -228,7 +228,7 @@ module Mirage
 
 
     def get_response name, http_method
-       body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
+      body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
       stored_responses = RESPONSES[name]
       record = nil
 
@@ -274,43 +274,44 @@ module Mirage
     end
 
 
-    private
+    helpers do
 
-    def find_response(body, query_string, stored_responses, http_method)
-      pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
-      
-      if pattern_match
-        record = stored_responses[pattern_match][http_method]
-      else
-        record = stored_responses[:basic]
-        record = record[http_method] if record
-      end 
+      def find_response(body, query_string, stored_responses, http_method)
+        pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
+
+        if pattern_match
+          record = stored_responses[pattern_match][http_method]
+        else
+          record = stored_responses[:basic]
+          record = record[http_method] if record
+        end
 #      record = pattern_match ? stored_responses[pattern_match] : stored_responses[:basic]
-      record
-    end
-
-    def response_value
-      return request['response'] unless request['response'].nil?
-    end
-
-    def find_default_responses(name)
-      matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
-      matches.collect { |key| RESPONSES[key] }
-    end
-
-    def delete_response(response_id)
-      RESPONSES.values.each do |response_set|
-        response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
+        record
       end
-    end
 
-    def send_response(response, body='', request={}, query_string='')
-      if response.file?
-        tempfile, filename, type = response.value.values_at(:tempfile, :filename, :type)
-        tempfile.binmode
-        send_file(tempfile.path, :type => type)
-      else
-        response.value(body, request, query_string)
+      def response_value
+        return request['response'] unless request['response'].nil?
+      end
+
+      def find_default_responses(name)
+        matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
+        matches.collect { |key| RESPONSES[key] }
+      end
+
+      def delete_response(response_id)
+        RESPONSES.values.each do |response_set|
+          response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
+        end
+      end
+
+      def send_response(response, body='', request={}, query_string='')
+        if response.file?
+          tempfile, filename, type = response.value.values_at(:tempfile, :filename, :type)
+          tempfile.binmode
+          send_file(tempfile.path, :type => type)
+        else
+          response.value(body, request, query_string)
+        end
       end
     end
   end
