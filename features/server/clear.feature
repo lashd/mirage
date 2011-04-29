@@ -10,37 +10,45 @@ Feature: Responses and requests can be cleared.
 
 
   Background: The MockServer has already got a response for greeting and leaving on it.
-    Given I post to 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Hello |
+    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
+      """
+      {"response" : "Hello"}
+      """
 
-    And I post to 'http://localhost:7001/mirage/set/leaving' with parameters:
-      | response | Goodbye |
+    And I send PUT to 'http://localhost:7001/mirage/responses/leaving' with request entity
+      """
+      {"response" : "Goodbye"}
+      """
 
 
 
   Scenario: Clearing all responses
-    Given I hit 'http://localhost:7001/mirage/clear/'
+    Given I send DELETE to 'http://localhost:7001/mirage/responses'
 
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting.replay'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/get/leaving'
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving.replay'
     Then a 404 should be returned
 
 
   Scenario: Clearing a particular response
-    Given I hit 'http://localhost:7001/mirage/clear/1'
+    Given I send DELETE to 'http://localhost:7001/mirage/responses/1'
 
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting.replay'
     Then a 404 should be returned
 
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving.replay'
+    Then 'Goodbye' should be returned
+    
+    #TODO - fix this
     When I hit 'http://localhost:7001/mirage/check/1'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/get/leaving'
-    Then 'Goodbye' should be returned
+    
 
 
+    #TODO you are here
   Scenario: Clearing all requests
     Given I hit 'http://localhost:7001/mirage/get/greeting' with request body:
     """

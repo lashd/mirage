@@ -9,58 +9,56 @@ end
 
 
 module Mirage
+  class MockResponse
+    @@id_count = 0
+    attr_reader :response_id, :delay, :name, :pattern, :http_method
+    attr_accessor :response_id
+
+    def initialize name, value, http_method, pattern=nil, delay=0, default=false
+      @name, @value, @http_method, @pattern, @response_id, @delay, @default = name, value, http_method, pattern, @@id_count+=1, delay, default
+    end
+
+    def self.reset_count
+      @@id_count = 0
+    end
+
+    def default?
+      'true' == @default
+    end
+
+    def file?
+      !@value.is_a?(String)
+    end
+
+
+    def value(body='', request_parameters={}, query_string='')
+      return @value if file?
+
+      value = @value
+      value.scan(/\$\{([^\}]*)\}/).flatten.each do |pattern|
+
+        if (parameter_match = request_parameters[pattern])
+          value = value.gsub("${#{pattern}}", parameter_match)
+        end
+
+        [body, query_string].each do |string|
+          if (string_match = find_match(string, pattern))
+            value = value.gsub("${#{pattern}}", string_match)
+          end
+        end
+
+      end
+      value
+    end
+
+    private
+    def find_match(string, regex)
+      string.scan(/#{regex}/).flatten.first
+    end
+  end
 
 
   class MirageServer < Sinatra::Base
-
-
-    class MockResponse
-      @@id_count = 0
-      attr_reader :response_id, :delay, :name, :pattern, :http_method
-      attr_accessor :response_id
-
-      def initialize name, value, http_method, pattern=nil, delay=0, default=false
-        @name, @value, @http_method, @pattern, @response_id, @delay, @default = name, value, http_method, pattern, @@id_count+=1, delay, default
-      end
-
-      def self.reset_count
-        @@id_count = 0
-      end
-
-      def default?
-        'true' == @default
-      end
-
-      def file?
-        !@value.is_a?(String)
-      end
-
-
-      def value(body='', request_parameters={}, query_string='')
-        return @value if file?
-
-        value = @value
-        value.scan(/\$\{([^\}]*)\}/).flatten.each do |pattern|
-
-          if (parameter_match = request_parameters[pattern])
-            value = value.gsub("${#{pattern}}", parameter_match)
-          end
-
-          [body, query_string].each do |string|
-            if (string_match = find_match(string, pattern))
-              value = value.gsub("${#{pattern}}", string_match)
-            end
-          end
-
-        end
-        value
-      end
-
-      private
-      def find_match(string, regex)
-        string.scan(/#{regex}/).flatten.first
-      end
-    end
 
     RESPONSES, REQUESTS, SNAPSHOT= {}, {}, {}
 
@@ -78,7 +76,6 @@ module Mirage
 
     put %r{/mirage/responses/((?!replay).)*$} do
       name = request.route.gsub('/mirage/responses/', '')
-#      [^']*
       response = JSON.parse(request.body.read)
       http_method = response['method'] || 'GET'
 
@@ -102,6 +99,12 @@ module Mirage
       send(http_method, '/mirage/responses/*.replay') do |name|
         get_response(name, http_method.upcase)
       end
+    end
+
+    delete '/mirage/responses/:response_id' do
+      response_id = params[:response_id].to_i
+      delete_response(response_id)
+      REQUESTS.delete(response_id)
     end
 
     delete '/mirage/responses' do
@@ -202,79 +205,79 @@ module Mirage
 #    end
 
 
-    def set_response name
-      delay = (request['delay']||0)
-      pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
-      is_default = request['default'] == 'true'
+    helpers do
+
+      def set_response name
+        delay = (request['delay']||0)
+        pattern = request['pattern'] ? /#{request['pattern']}/ : :basic
+        is_default = request['default'] == 'true'
 
 #      response_value =  request['response'] unless request['response'].nil?
-      value = response_value
-      if value.nil?
-        return 500
+        value = response_value
+        if value.nil?
+          return 500
+        end
+
+        response = MockResponse.new(name, value, pattern, delay.to_f, is_default)
+
+        stored_responses = RESPONSES[name]||={}
+
+        old_response = stored_responses.delete(pattern)
+        stored_responses[pattern] = response
+
+        # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
+        response.response_id = old_response.response_id if old_response
+        response.response_id.to_s
+
       end
 
-      response = MockResponse.new(name, value, pattern, delay.to_f, is_default)
 
-      stored_responses = RESPONSES[name]||={}
+      def get_response name, http_method
+        body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
+        stored_responses = RESPONSES[name]
+        record = nil
 
-      old_response = stored_responses.delete(pattern)
-      stored_responses[pattern] = response
-
-      # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
-      response.response_id = old_response.response_id if old_response
-      response.response_id.to_s
-
-    end
+        record = find_response(body, query_string, stored_responses, http_method) if stored_responses
 
 
-    def get_response name, http_method
-      body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
-      stored_responses = RESPONSES[name]
-      record = nil
+        unless record
+          default_responses, record = find_default_responses(name), nil
 
-      record = find_response(body, query_string, stored_responses, http_method) if stored_responses
+          until record || default_responses.empty?
+            record = find_response(body, query_string, default_responses.delete_at(0), http_method)
+            if record
+              record = record.default? ? record : nil
+            end
 
-
-      unless record
-        default_responses, record = find_default_responses(name), nil
-
-        until record || default_responses.empty?
-          record = find_response(body, query_string, default_responses.delete_at(0), http_method)
-          if record
-            record = record.default? ? record : nil
           end
+        end
 
+        return 404 unless record
+        REQUESTS[record.response_id] = body.empty? ? query_string : body
+
+        sleep record.delay
+        send_response(record, body, request, query_string)
+      end
+
+
+      def clear(datatype=nil, response_id=nil)
+        case datatype
+          when 'requests' then
+            REQUESTS.clear
+          when 'responses' then
+            RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
+          when /\d+/ then
+            response_id = datatype.to_i
+            delete_response(response_id)
+            REQUESTS.delete(response_id)
+          when 'request'
+            REQUESTS.delete(response_id)
+          when nil || ''
+            [REQUESTS, RESPONSES].each { |map| map.clear }
+            MockResponse.reset_count
         end
       end
 
-      return 404 unless record
-      REQUESTS[record.response_id] = body.empty? ? query_string : body
-
-      sleep record.delay
-      send_response(record, body, request, query_string)
-    end
-
-
-    def clear(datatype=nil, response_id=nil)
-      case datatype
-        when 'requests' then
-          REQUESTS.clear
-        when 'responses' then
-          RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
-        when /\d+/ then
-          response_id = datatype.to_i
-          delete_response(response_id)
-          REQUESTS.delete(response_id)
-        when 'request'
-          REQUESTS.delete(response_id)
-        when nil || ''
-          [REQUESTS, RESPONSES].each { |map| map.clear }
-          MockResponse.reset_count
-      end
-    end
-
-
-    helpers do
 
       def find_response(body, query_string, stored_responses, http_method)
         pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
@@ -299,8 +302,12 @@ module Mirage
       end
 
       def delete_response(response_id)
-        RESPONSES.values.each do |response_set|
-          response_set.each { |key, response| response_set.delete(key) if response.response_id == response_id }
+        RESPONSES.values.each do |response_sets|
+          response_sets.values.each do |response_set|
+            response_set.each do |method, response |
+              response_set.delete(method) if response.response_id == response_id
+            end
+          end
         end
       end
 
