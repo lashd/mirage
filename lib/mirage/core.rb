@@ -88,8 +88,6 @@ module Mirage
 
       stored_responses = RESPONSES[name]||={}
       
-
-#      old_response = stored_responses.delete(pattern)
       stored_responses[pattern] ||= {}
       old_response = stored_responses[pattern].delete(http_method)
       stored_responses[pattern][http_method] = response 

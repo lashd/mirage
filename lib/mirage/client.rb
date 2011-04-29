@@ -62,7 +62,9 @@ module Mirage
     def set endpoint, response, params={}
       params[:response] = response.is_a?(File) ? File.open(response.path, 'rb') : response
       params[:pattern] = params[:pattern].source if params[:pattern].is_a?(Regexp)
-      response(http_post("#{@url}/set/#{endpoint}", params))
+      
+      puts "#{@url}/responses/#{endpoint}"
+      response(put("#{@url}/responses/#{endpoint}", JSON.generate(params)))
     end
 
     # Use to look at what a response contains without actually triggering it.
