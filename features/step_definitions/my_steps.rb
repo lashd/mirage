@@ -8,16 +8,14 @@ end
 
 Then /^'(.*?)' should be returned$/ do |expected_response|
   response_text = @response.body
-  if ["1.8.6", "1.8.7"].include?(RUBY_VERSION) && response_text != expected_response
-    expected_response.length.should == response_text.length
+  if response_text != expected_response
     expected_response.split('&').each { |param_value_pair| response_text.should =~ /#{param_value_pair}/ }
-  else
-    response_text.should == expected_response
+    expected_response.length.should == response_text.length
   end
 end
 
-Then /^a (404|500) should be returned$/ do |error_code|
-  @response.code.should == error_code.to_i
+Then /^a (200|404|500) should be returned$/ do |error_code|
+  @response.code.to_i.should == error_code.to_i
 end
 
 Then /^it should take at least '(.*)' seconds$/ do |time|
@@ -49,13 +47,7 @@ Given /^Mirage (is|is not) running$/ do |running|
 end
 
 Then /^Connection should be refused to '(.*)'$/ do |url|
-
-  begin
-    get(url)
-    fail "Mirage is still running"
-  rescue Errno::ECONNREFUSED
-  end
-
+  fail "Mirage is still running" unless get(url).is_a? Errno::ECONNREFUSED
 end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|
@@ -117,20 +109,41 @@ When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with requ
               end
 end
 
-When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |method, url, endpoint|
+When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:7001\/mirage([^']*))'$/ do |method, url, endpoint|
   start_time = Time.now
   @response = case method
                 when 'GET' then
                   get(url)
                 when 'PUT' then
                   put(url, '')
-                when 'POST' then post(url, '')
-                when 'HEAD' then head(url)
-                when 'OPTIONS' then options(url)
-                when 'DELETE' then delete(url)
+                when 'POST' then
+                  post(url, '')
+                when 'HEAD' then
+                  head(url)
+                when 'OPTIONS' then
+                  options(url)
+                when 'DELETE' then
+                  delete(url)
               end
   @response_time = Time.now - start_time
 end
+
+
+When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^']*)'$/ do |url, endpoint, body|
+  start_time = Time.now
+  @response = put(url, body)
+  @response_time = Time.now - start_time
+end
+
+When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^']*)' and headers:$/ do |url, endpoint, body, table|
+  headers = {}
+  table.raw.each do |row|
+    parameter, value = row[0], row[1]
+    headers[parameter]=value
+  end
+  @response = put(url, body, headers)
+end
+
 
 When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
   @response = hit_mirage(url, {:body => request_body})
@@ -160,7 +173,8 @@ end
 When /^I click '(.*)'$/ do |thing|
   @page = @page.links.find { |link| link.attributes['id'] == thing }.click
 end
-When /^I send POST to '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |url, endpoint, table|
+When /^I send (GET|POST) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |http_method, url, endpoint, table|
+
   parameters = {}
   table.raw.each do |row|
     parameter, value = row[0].to_sym, row[1]
@@ -168,5 +182,16 @@ When /^I send POST to '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters
     parameters[parameter]=value
   end
 
-  @response = post(url, parameters)
+  @response = case http_method
+                when 'POST' then
+                  post(url, parameters)
+                when 'GET' then
+                  get(url, parameters)
+              end
+end
+Then /^the following should be returned:$/ do |text|
+  @response.body.should == text
+end
+Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: (.*)/ do |url, endpoint, path|
+  put(url, File.new(path))
 end

@@ -32,24 +32,6 @@ module Mirage
       @url = url
     end
 
-    # Get a response at the given endpoint
-    # Mirage::Client.get(endpoint) => response as a string
-    # If a response is not found a ResponseNotFound exception is thrown
-    #
-    #   Examples:
-    #   Getting a response without any parameters or body content
-    #   Mirage::Client.get(endpoint)
-    #
-    #   Getting a response, passing request parameters
-    #   Mirage::Client.new.get('greeting', :param1 => 'value1', param2=>'value2')
-    #
-    #   Getting a response, passing a content in the body of the request
-    #   Mirage::Client.new.get('greeting',  'content')
-
-    def get endpoint, body_or_params={}
-      body_or_params = {:body => body_or_params} if body_or_params.is_a?(String)
-      response(http_get("#{@url}/get/#{endpoint}", body_or_params))
-    end
 
     # Set a text or file based response, to be hosted at a given end point optionally with a given pattern and delay
     # Client.set(endpoint, response, params) => unique id that can be used to call back to the server
@@ -59,18 +41,19 @@ module Mirage
     #  Client.set('greeting', 'hello', :pattern => /regexp/)
     #  Client.set('greeting', 'hello', :pattern => 'text')
     #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
-    def set endpoint, response, params={}
-      params[:response] = response.is_a?(File) ? File.open(response.path, 'rb') : response
-      params[:pattern] = params[:pattern].source if params[:pattern].is_a?(Regexp)
+    def set endpoint, response, params={}      
+      headers = {}
+      headers['X-mirage-method'] = params[:method] if params[:method]
+      headers['X-mirage-pattern'] = params[:pattern] if params[:pattern]
       
-      puts "#{@url}/responses/#{endpoint}"
-      response(put("#{@url}/responses/#{endpoint}", JSON.generate(params)))
+      puts "#{@url}/templates/#{endpoint}"
+      response(put("#{@url}/templates/#{endpoint}",response, headers))
     end
 
     # Use to look at what a response contains without actually triggering it.
     # Client.peek(response_id) => response held on the server as a String
     def peek response_id
-      response(http_get("#{@url}/peek/#{response_id}"))
+      response(http_get("#{@url}/templates/#{response_id}"))
     end
 
     # Clear Content from Mirage
@@ -83,7 +66,19 @@ module Mirage
     #   Client.new.clear(:requests) # Clear all tracked request information
     #   Client.new.clear(:request => response_id) # Clear the tracked request for a given response id
     def clear thing=nil
-      delete("#{@url}/responses")
+      
+      case thing
+        when :requests
+          delete("#{@url}/requests")
+        when Numeric then
+          delete("#{@url}/templates/#{thing}")
+        when Hash then
+          puts "deleteing request #{thing[:request]}"
+          delete("#{@url}/requests/#{thing[:request]}") if thing[:request]
+        else NilClass
+          delete("#{@url}/templates")
+      end
+      
 #      case thing       
 #        when NilClass then
 #          http_get("#{@url}/clear/")
@@ -106,19 +101,19 @@ module Mirage
     #   Example:
     #   Client.new.track(response_id) => Tracked request as a String
     def track response_id
-      response(http_get("#{@url}/track/#{response_id}"))
+      response(get("#{@url}/requests/#{response_id}"))
     end
 
     # Save the state of the Mirage server so that it can be reverted back to that exact state at a later time.
     def save
-      http_post("#{@url}/save").code == 200
+      put("#{@url}/backup",'').code == 200
     end
 
 
     # Revert the state of Mirage back to the state that was last saved
     # If there is no snapshot to rollback to, nothing happens
     def revert
-      http_post("#{@url}/revert").code == 200
+      put("#{@url}",'').code == 200
     end
 
 
@@ -129,15 +124,15 @@ module Mirage
 
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
-      response(http_post("#{@url}/prime"))
+      response(put("#{@url}/defaults",''))
     end
 
     private
     def response response
       return Mirage::Web::FileResponse.new(response) if response.instance_of?(Mechanize::File)
-      case response.code
+      case response.code.to_i
         when 500 then
-          raise ::Mirage::InternalServerException.new(response.page.body, response.code)
+          raise ::Mirage::InternalServerException.new(response.body, response.code)
         when 404 then
           raise ::Mirage::ResponseNotFound.new(response.page.body, response.code)
         else

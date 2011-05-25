@@ -20,7 +20,7 @@
 <% unless @responses.empty? %>
 <table border="1" width='100%'>
     <% @responses.each do |key, response| %>
-        <tr><td><a id='peek_response_<%=response.response_id%>' href="/mirage/peek/<%=response.response_id%>"><%=key%></a></td><td><a id='track_response_<%=response.response_id%>' href="/mirage/track/<%=response.response_id%>">track</a></td></tr>
+        <tr><td><a id='peek_response_<%=response.response_id%>' href="/mirage/templates/<%=response.response_id%>"><%=key%></a></td><td><a id='track_response_<%=response.response_id%>' href="/mirage/requests/<%=response.response_id%>">track</a></td></tr>
     <% end %>
 </table>
 <% end %>

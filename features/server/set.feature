@@ -14,55 +14,36 @@ Feature: Mirage can be configured with responses to be returned with the correct
 
 
   Scenario: Setting a response without any selection criteria
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "Hello, how are you?" }
-    """
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello'
 
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting.replay'
-    Then 'Hello, how are you?' should be returned
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    Then 'Hello' should be returned
 
   Scenario: A response hosted on a longer url
-    Given I send PUT to 'http://localhost:7001/mirage/responses/say/hello/to/me' with request entity
-    """
-    { "response" : "Hello to me" }
-    """
-    When I send GET to 'http://localhost:7001/mirage/responses/say/hello/to/me.replay'
+    Given I send PUT to 'http://localhost:7001/mirage/templates/say/hello/to/me' with body 'Hello to me'
+
+    When I send GET to 'http://localhost:7001/mirage/responses/say/hello/to/me'
     Then 'Hello to me' should be returned
 
 
   Scenario: The same endpoint is set more than once
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "Hello" }
-    """
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello'
     Then '1' should be returned
 
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "Hi" }
-    """
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hi'
     Then '1' should be returned
 
 
   Scenario Outline: Response set to respond to different http methods
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "GET", "method" : "GET" }
-    """
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "POST", "method" : "POST" }
-    """
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "DELETE", "method" : "DELETE" }
-    """
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    { "response" : "PUT", "method" : "PUT" }
-    """
-    When I send <method> to 'http://localhost:7001/mirage/responses/greeting.replay'
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'GET' and headers:
+      | X-mirage-method | GET |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'POST' and headers:
+      | X-mirage-method | POST |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'DELETE' and headers:
+      | X-mirage-method | DELETE |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'PUT' and headers:
+      | X-mirage-method | PUT |
+    When I send <method> to 'http://localhost:7001/mirage/responses/greeting'
     Then '<method>' should be returned
   Examples:
     | method |
@@ -72,11 +53,6 @@ Feature: Mirage can be configured with responses to be returned with the correct
     | DELETE |
 
 
-  Scenario: A response is not supplied
-    Given I send PUT to 'http://localhost:7001/mirage/responses/greeting'
-    Then a 500 should be returned
-
-
   Scenario: Getting a response that does not exist
-    When I send GET to 'http://localhost:7001/mirage/responses/response_that_does_not_exist.replay'
+    When I send GET to 'http://localhost:7001/mirage/responses/response_that_does_not_exist'
     Then a 404 should be returned

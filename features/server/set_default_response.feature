@@ -12,48 +12,31 @@ Feature: Mirage can respond with a 'default' response when a when the response r
   Root responses can cause unexpected behaviour and so in order to qualify as a default reponse a client must knowingly mark it as one.
 
   Scenario: A default response is returned
-    Given I send PUT to 'http://localhost:7001/mirage/responses/level0/level1' with request entity
-    """
-    { "response" : "another level" }
-    """
-    Given I send PUT to 'http://localhost:7001/mirage/responses/level1' with request entity
-    """
-    { "response" : "level 1", "default" : "true" }
-    """
-    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2.replay'
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level0/level1' with body 'another level'
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level1' with body 'level 1' and headers:
+      | X-mirage-default | true |
+    
+    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2'
     Then 'level 1' should be returned
 
 
   Scenario: More than one potential default response exists
-    Given I send PUT to 'http://localhost:7001/mirage/responses/level1' with request entity
-    """
-    { "response" : "level 1", "default" : "true" }
-    """
-    And I send PUT to 'http://localhost:7001/mirage/responses/level1/level2' with request entity
-    """
-    { "response" : "level 2", "default" : "true" }
-    """
-    And I send PUT to 'http://localhost:7001/mirage/responses/level1/level2/level3' with request entity
-    """
-    { "response" : "level 3"}
-    """
-    And I send PUT to 'http://localhost:7001/mirage/responses/level1/level2/level3/level4' with request entity
-    """
-    { "response" : "level 4", "pattern" : "a pattern that wont be matched" }
-    """
-    And I send PUT to 'http://localhost:7001/mirage/responses/leve11/level2/level3/level4/level5' with request entity
-    """
-    { "response" : "level 5", "default" : "true" }
-    """
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level1' with body 'level 1' and headers:
+      | X-mirage-default | true |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level1/level2' with body 'level 2' and headers:
+      | X-mirage-default | true |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level1/level2/level3' with body 'level 3' and headers:
+      | X-mirage-default | false |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level1/level2/level3/level4' with body 'level 4' and headers:
+      | X-mirage-pattern | a pattern that wont be matched |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/leve11/level2/level3/level4/level5' with body 'level 5' and headers:
+      | X-mirage-default | true |
 
-    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2/level3/level4.replay'
+    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2/level3/level4'
     Then 'level 2' should be returned
 
 
   Scenario: There isnt a default response
-    Given I send PUT to 'http://localhost:7001/mirage/responses/level1' with request entity
-    """
-    { "response" : "level 1" }
-    """
-    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2.replay'
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level1' with body 'level 1'
+    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2'
     Then a 404 should be returned

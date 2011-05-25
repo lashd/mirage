@@ -9,10 +9,12 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
     """
 
   Scenario: The MockServer returns a response
-    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Hello |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
+    """
+    Hello
+    """
 
-    When I hit 'http://localhost:7001/mirage/get/greeting' with parameters:
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
       | name | leon  |
     Then I run
     """

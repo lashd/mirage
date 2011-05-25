@@ -4,22 +4,19 @@ Feature: Having set up the Mirage with a number of defaults, your tests may cont
   Mirage provides the ability to save of its current state and to revert it back to that state.
 
   Background: The MockServer has been setup with some default responses
-    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | The default greeting |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'The default greeting'
 
-
+    
   Scenario: Saving Mirage and reverting it
-    Given  I post to 'http://localhost:7001/mirage/save'
-    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
-      | response | Goodye |
+    And I send PUT to 'http://localhost:7001/mirage/backup'
+    
+    Given I send PUT to 'http://localhost:7001/mirage/templates/leaving' with body 'Goodbye'
+    And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Changed'
+    
+    And I send PUT to 'http://localhost:7001/mirage'
 
-    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Changed |
-
-    And I post to 'http://localhost:7001/mirage/revert'
-
-    When I hit 'http://localhost:7001/mirage/get/leaving'
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'The default greeting' should be returned

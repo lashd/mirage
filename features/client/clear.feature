@@ -7,36 +7,37 @@ Feature: The client can be used for clearing responses from Mirage
     require 'rspec'
     require 'mirage'
     """
-    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Hello |
+    
+    And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
+    """
+    Hello
+    """
+    And I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+      | message | hello there |
+    
+    And I send PUT to 'http://localhost:7001/mirage/templates/leaving' with request entity
+    """
+    Goodbye
+    """
+    And I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    | message | I'm going |
 
-    And I hit 'http://localhost:7001/mirage/get/greeting' with request body:
-    """
-    Hello there
-    """
-    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
-      | response | Goodbye |
-
-    And I hit 'http://localhost:7001/mirage/get/greeting' with request body:
-    """
-    I'm going
-    """
-
+    
   Scenario: Clearing everything
     When I run
     """
     Mirage::Client.new.clear
     """
-    And I hit 'http://localhost:7001/mirage/get/greeting'
+    And I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I send GET to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
 
-    And I hit 'http://localhost:7001/mirage/get/leaving'
+    And I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/check/2'
+    When I hit 'http://localhost:7001/mirage/requests/2'
     Then a 404 should be returned
 
 
@@ -45,29 +46,46 @@ Feature: The client can be used for clearing responses from Mirage
     """
     Mirage::Client.new.clear :requests
     """
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I send GET to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/check/2'
+    When I send GET to 'http://localhost:7001/mirage/requests/2'
     Then a 404 should be returned
+    
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 200 should be returned
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
+    Then a 200 should be returned
+    
 
   Scenario: Clearning a response
     Given I run
     """
-    Mirage::Client.new.clear 1
+    Mirage::Client.new.clear 1 
     """
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then a 404 should be returned
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I hit 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
+    Then a 200 should be returned
+    When I send GET to 'http://localhost:7001/mirage/requests/2'
+    Then a 200 should be returned
+    
 
   Scenario: Clearning a request
     Given I run
     """
     Mirage::Client.new.clear :request => 1
     """
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I send GET to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 200 should be returned
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
+    Then a 200 should be returned
+    When I send GET to 'http://localhost:7001/mirage/requests/2'
+    Then a 200 should be returned
 
 
 

@@ -8,8 +8,10 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     require 'rspec'
     require 'mirage'
     """
-    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | The default greeting |
+    And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
+    """
+    The default greeting
+    """
 
 
   Scenario: saving and reverting
@@ -17,18 +19,22 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     """
     Mirage::Client.new.save
     """
-    And I hit 'http://localhost:7001/mirage/set/leaving' with parameters:
-      | response | Goodye |
+    And I send PUT to 'http://localhost:7001/mirage/templates/leaving' with request entity
+    """
+    Goodbye
+    """
 
-    And I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Changed |
+    And I send PUT to 'http://localhost:7001/mirage/set/greeting' with request entity
+    """
+    Changed
+    """
 
     When I run
     """
     Mirage::Client.new.revert
     """
-    And I hit 'http://localhost:7001/mirage/get/leaving'
+    And I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'The default greeting' should be returned

@@ -17,9 +17,9 @@ Feature: Mirage can be primed with a set of responses.
     end
     """
     And I run 'mirage start'
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned
-    When I hit 'http://localhost:7001/mirage/get/leaving'
+    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then 'goodbye' should be returned
 
 
@@ -31,7 +31,7 @@ Feature: Mirage can be primed with a set of responses.
     end
     """
     And I run 'mirage start -d ./custom_responses_location'
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned
 
 
@@ -43,8 +43,8 @@ Feature: Mirage can be primed with a set of responses.
     end
     """
     And I run 'mirage start -d /tmp/responses'
-    When I hit 'http://localhost:7001/mirage/primes'
-    And I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send PUT to 'http://localhost:7001/mirage/defaults'
+    And I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned
 
 
@@ -56,14 +56,16 @@ Feature: Mirage can be primed with a set of responses.
     end
     """
     And I run 'mirage start'
-    And I hit 'http://localhost:7001/mirage/clear'
-    And I hit 'http://localhost:7001/mirage/set/a_new_response' with parameters:
-      | response | new response |
+    And I send DELETE to 'http://localhost:7001/mirage/templates'
+    And I send PUT to 'http://localhost:7001/mirage/templates/a_new_response' with request entity
+      """
+      new response
+      """
 
-    When I post to 'http://localhost:7001/mirage/prime'
-    When I hit 'http://localhost:7001/mirage/get/greeting'
+    When I send PUT to 'http://localhost:7001/mirage/defaults'
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned
-    When I hit 'http://localhost:7001/mirage/get/a_new_response'
+    When I send GET to 'http://localhost:7001/mirage/responses/a_new_response'
     Then a 404 should be returned
 
 
@@ -82,7 +84,7 @@ Feature: Mirage can be primed with a set of responses.
     """
     A file with a mistake in it
     """
-    And I post to 'http://localhost:7001/mirage/prime'
+    And I send PUT to 'http://localhost:7001/mirage/defaults'
     Then a 500 should be returned
 
 

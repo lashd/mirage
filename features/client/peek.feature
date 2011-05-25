@@ -9,8 +9,10 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     """
 
   Scenario: peeking a response
-    Given I hit 'http://localhost:7001/mirage/set/greeting' with parameters:
-      | response | Hello |
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
+    """
+    Hello
+    """
 
     When I run
     """
