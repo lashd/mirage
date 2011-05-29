@@ -250,15 +250,7 @@ module Mirage
       end
       erb :index
     end
-
-#    get '/mirage/*' do |name|
-#      get_response(name)
-#    end
-#
-#    post '/mirage/*' do |name|
-#      get_response(name)
-#    end
-
+    
     error do
       erb request.env['sinatra.error'].message
     end
@@ -275,50 +267,6 @@ module Mirage
 
       end
     end
-
-
-#    get '/mirage/peek/:response_id' do
-#      peeked_response = nil
-#      response_id = params['response_id']
-#      RESPONSES.values.each do |responses|
-#        peeked_response = responses.values.find { |response| response.response_id == response_id.to_i }
-#        break unless peeked_response.nil?
-#      end
-#      return 404 unless peeked_response
-#      send_response(peeked_response)
-#    end
-#
-#    put '/mirage/*' do |name|
-#      response = JSON.parse(request.body.read)
-#
-#      pattern = response['pattern'] ? /#{response['pattern']}/ : :basic
-#
-#      response = MockResponse.new(name, response['response'], pattern, response['delay'].to_f, response['default'])
-#
-#      stored_responses = RESPONSES[name]||={}
-#
-#      old_response = stored_responses.delete(pattern)
-#      stored_responses[pattern] = response
-#
-#      # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
-#      response.response_id = old_response.response_id if old_response
-#      response.response_id.to_s
-#    end
-#    
-#    get '/mirage/clear/*' do
-#      datatype, response_id = params[:splat][0], params[:splat][1].to_i
-#      puts "datatype is: #{datatype}"
-#      clear(datatype, response_id)
-#    end
-#
-#    get '/mirage/clear' do
-#      clear
-#    end
-#
-#    get '/mirage/track/:id' do
-#      id = params[:id]
-#      REQUESTS[id.to_i] || 404
-#    end
 #
     put '/mirage/backup' do
       MOCK_RESPONSES.backup
@@ -332,24 +280,6 @@ module Mirage
 
     helpers do
 
-
-#      def clear(datatype=nil, response_id=nil)
-#        case datatype
-#          when 'requests' then
-#            REQUESTS.clear
-#          when 'responses' then
-#            RESPONSES.clear and REQUESTS.clear and MockResponse.reset_count
-#          when /\d+/ then
-#            response_id = datatype.to_i
-#            delete_response(response_id)
-#            REQUESTS.delete(response_id)
-#          when 'request'
-#            REQUESTS.delete(response_id)
-#          when nil || ''
-#            [REQUESTS, RESPONSES].each { |map| map.clear }
-#            MockResponse.reset_count
-#        end
-#      end
 
       def response_value
         return request['response'] unless request['response'].nil?
