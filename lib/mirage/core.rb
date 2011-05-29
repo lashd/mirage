@@ -77,7 +77,6 @@ module Mirage
     end
 
     def get_response name, http_method, body, query_string
-#      body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
       stored_responses = RESPONSES[name]
       record = nil
 
@@ -96,7 +95,7 @@ module Mirage
         end
       end
 
-      return record
+      record
     end
 
     def find id
