@@ -45,6 +45,8 @@ module Mirage
       headers = {}
       headers['X-mirage-method'] = params[:method] if params[:method]
       headers['X-mirage-pattern'] = params[:pattern] if params[:pattern]
+      headers['X-mirage-file'] = true if response.is_a? File
+      
       
       puts "#{@url}/templates/#{endpoint}"
       response(put("#{@url}/templates/#{endpoint}",response, headers))

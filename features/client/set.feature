@@ -94,5 +94,5 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Mirage::Client.new.set('download', File.open('README.md'))
     """
-    When I hit 'http://localhost:7001/mirage/responses/download'
+    When I send GET to 'http://localhost:7001/mirage/responses/download'
     Then the response should be a file the same as 'README.md'

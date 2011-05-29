@@ -14,8 +14,8 @@ module Mirage
     attr_reader :response_id, :delay, :name, :pattern, :http_method
     attr_accessor :response_id
 
-    def initialize name, value, http_method, pattern=nil, delay=0, default=false
-      @name, @value, @http_method, @pattern, @response_id, @delay, @default = name, value, http_method, pattern, @@id_count+=1, delay, default
+    def initialize name, value, http_method, pattern=nil, delay=0, default=false, file=false
+      @name, @value, @http_method, @pattern, @response_id, @delay, @default, @file = name, value, http_method, pattern, @@id_count+=1, delay, default, file
     end
 
     def self.reset_count
@@ -27,7 +27,7 @@ module Mirage
     end
 
     def file?
-      @value.encoding == 'ASCII-8BIT'
+      @file == 'true'
     end
 
 
@@ -190,7 +190,7 @@ module Mirage
 
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
 #
-      MOCK_RESPONSES << MockResponse.new(name, response, http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'])
+      MOCK_RESPONSES << MockResponse.new(name, response, http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
@@ -360,8 +360,8 @@ module Mirage
         if response.file?
           tempfile = Tempfile.new('response')
           tempfile.write(response.value)
+          tempfile.close
 
-          tempfile.binmode
           send_file(tempfile.path, :type => File.ftype(tempfile.path))
         else
           response.value(body, request, query_string)

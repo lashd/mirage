@@ -12,7 +12,8 @@ Feature: If you want to see the content of a particular response without trigger
 
     
   Scenario: Peeking a file based response
-    Given I send PUT to 'http://localhost:7001/mirage/templates/some/location/download' with file: README.md
+    Given I send PUT to 'http://localhost:7001/mirage/templates/some/location/download' with file: README.md and headers:
+    |X-mirage-file|true|
 
     When I send GET to 'http://localhost:7001/mirage/templates/1'
     Then the response should be a file the same as 'README.md'

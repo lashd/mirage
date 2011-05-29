@@ -24,8 +24,11 @@ end
 
 
 Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
+  raise "response is not a file it's a: #{@response.class} " unless @response.instance_of?(Mechanize::File)
+
   download_path = "#{SCRATCH}/temp.download"
   @response.save_as(download_path)
+  puts "file content: #{File.read(download_path)}"
   FileUtils.cmp(download_path, file_path).should == true
 end
 
@@ -192,6 +195,14 @@ end
 Then /^the following should be returned:$/ do |text|
   @response.body.should == text
 end
-Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: (.*)/ do |url, endpoint, path|
-  put(url, File.new(path))
+Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^']*) and headers:$/ do |url, endpoint, path, table|
+  headers = {}
+  table.raw.each do |row|
+    parameter, value = row[0], row[1]
+    headers[parameter]=value
+  end
+  put(url, File.new(path), headers)
+end
+Then /^the response should not be a file$/ do
+  @response.is_a?(Mechanize::File).should == true
 end
