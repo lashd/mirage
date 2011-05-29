@@ -23,14 +23,6 @@ Then /^it should take at least '(.*)' seconds$/ do |time|
 end
 
 
-Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
-  raise "response is not a file it's a: #{@response.class} " unless @response.instance_of?(Mechanize::File)
-
-  download_path = "#{SCRATCH}/temp.download"
-  @response.save_as(download_path)
-  FileUtils.cmp(download_path, file_path).should == true
-end
-
 Then /^mirage should be running on '(.*)'$/ do |url|
   get(url).code.to_i.should == 200
 end
@@ -205,9 +197,6 @@ Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^'
     headers[parameter]=value
   end
   put(url, File.new(path), headers)
-end
-Then /^the response should not be a file$/ do
-  @response.instance_of?(Mechanize::File).should == false
 end
 
 When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|

@@ -1,5 +1,4 @@
 require 'uri'
-require 'mechanize'
 require 'open-uri'
 require 'mirage/web'
 
@@ -130,7 +129,6 @@ module Mirage
 
     private
     def response response
-      puts "code is : #{response.code}"
       case response.code.to_i
         when 500 then
           raise ::Mirage::InternalServerException.new(response.body, response.code.to_i)
