@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/reloader'
-require 'json'
 class Object
   def deep_clone
     Marshal.load(Marshal.dump(self))
@@ -11,11 +10,11 @@ end
 module Mirage
   class MockResponse
     @@id_count = 0
-    attr_reader :response_id, :delay, :name, :pattern, :http_method
+    attr_reader :response_id, :delay, :name, :pattern, :http_method, :content_type
     attr_accessor :response_id
 
-    def initialize name, value, http_method, pattern=nil, delay=0, default=false, file=false
-      @name, @value, @http_method, @pattern, @response_id, @delay, @default, @file = name, value, http_method, pattern, @@id_count+=1, delay, default, file
+    def initialize name, value, content_type, http_method, pattern=nil, delay=0, default=false, file=false
+      @name, @value,@content_type,  @http_method, @pattern, @response_id, @delay, @default, @file = name, value, content_type, http_method, pattern, @@id_count+=1, delay, default, file
     end
 
     def self.reset_count
@@ -189,7 +188,7 @@ module Mirage
 
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
 #
-      MOCK_RESPONSES << MockResponse.new(name, response, http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
+      MOCK_RESPONSES << MockResponse.new(name, response,headers['CONTENT_TYPE'], http_method ,pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
@@ -286,16 +285,9 @@ module Mirage
 
 
       def send_response(response, body='', request={}, query_string='')
-        if response.file?
-          tempfile = Tempfile.new('response')
-          tempfile.write(response.value)
-          tempfile.close
-
-          send_file(tempfile.path, :type => File.ftype(tempfile.path))
-        else
+          content_type(response.content_type)
           response.value(body, request, query_string)
         end
-      end
     end
   end
 end

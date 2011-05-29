@@ -46,6 +46,7 @@ module Mirage
       headers['X-mirage-method'] = params[:method] if params[:method]
       headers['X-mirage-pattern'] = params[:pattern] if params[:pattern]
       headers['X-mirage-file'] = true if response.is_a? File
+      headers['content-type'] = params[:content_type] || 'text/plain'
       
       
       puts "#{@url}/templates/#{endpoint}"
@@ -55,7 +56,14 @@ module Mirage
     # Use to look at what a response contains without actually triggering it.
     # Client.peek(response_id) => response held on the server as a String
     def peek response_id
-      response(http_get("#{@url}/templates/#{response_id}"))
+      response = response(get("#{@url}/templates/#{response_id}"))
+      case response
+        when String then
+          return response
+        when Mirage::Web::FileResponse then
+          return response.response.body
+      end
+      
     end
 
     # Clear Content from Mirage

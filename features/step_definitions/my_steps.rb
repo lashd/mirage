@@ -6,7 +6,7 @@ After('@command_line') do
   stop_mirage
 end
 
-Then /^'(.*?)' should be returned$/ do |expected_response|
+Then /^'([^']*)' should be returned$/ do |expected_response|
   response_text = @response.body
   if response_text != expected_response
     expected_response.split('&').each { |param_value_pair| response_text.should =~ /#{param_value_pair}/ }
@@ -28,7 +28,6 @@ Then /^the response should be a file the same as '([^']*)'$/ do |file_path|
 
   download_path = "#{SCRATCH}/temp.download"
   @response.save_as(download_path)
-  puts "file content: #{File.read(download_path)}"
   FileUtils.cmp(download_path, file_path).should == true
 end
 
@@ -204,5 +203,13 @@ Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^'
   put(url, File.new(path), headers)
 end
 Then /^the response should not be a file$/ do
-  @response.is_a?(Mechanize::File).should == true
+  @response.instance_of?(Mechanize::File).should == false
+end
+
+When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
+  @response.response[header].should include(value)
+end
+
+Then /^the response should be the same as the content of '([^']*)'$/ do |path|
+  @response.body.should == File.read(path)
 end

@@ -3,6 +3,7 @@ require 'uri'
 module Mirage
   module Web
     class FileResponse
+      attr_reader :response
       def initialize response
         @response = response
       end

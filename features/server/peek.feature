@@ -1,19 +1,20 @@
 Feature: If you want to see the content of a particular response without triggering then it can be peeked instead.
   To do this, the responses unique id is required to identify it
-
+    
 
   #TODO should return headers as well
   Scenario: Peeking a text based response
-    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello'
-    
+    Given I send PUT to 'http://localhost:7001/mirage/templates/xml' with body '<xml></xml>' and headers:
+      | content-type | text/xml |
+
     When I send GET to 'http://localhost:7001/mirage/templates/1'
-    Then 'Hello' should be returned
+    Then '<xml></xml>' should be returned
+    And the response 'content-type' should be 'text/xml'
 
 
-    
   Scenario: Peeking a file based response
     Given I send PUT to 'http://localhost:7001/mirage/templates/some/location/download' with file: README.md and headers:
-    |X-mirage-file|true|
+      | X-mirage-file | true |
 
     When I send GET to 'http://localhost:7001/mirage/templates/1'
     Then the response should be a file the same as 'README.md'

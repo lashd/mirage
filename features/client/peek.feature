@@ -9,17 +9,14 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     """
 
   Scenario: peeking a response
-    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
-    """
-    Hello
-    """
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello'
 
     When I run
     """
       Mirage::Client.new.peek(1).should == 'Hello'
     """
 
-    When I hit 'http://localhost:7001/mirage/check/1'
+    When I send GET to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
 
   Scenario: getting a response that does not exist
