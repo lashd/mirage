@@ -139,12 +139,12 @@ module Mirage
 
     private
     def response response
-      return Mirage::Web::FileResponse.new(response) if response.instance_of?(Mechanize::File)
+      puts "code is : #{response.code}"
       case response.code.to_i
         when 500 then
-          raise ::Mirage::InternalServerException.new(response.body, response.code)
+          raise ::Mirage::InternalServerException.new(response.body, response.code.to_i)
         when 404 then
-          raise ::Mirage::ResponseNotFound.new(response.page.body, response.code)
+          raise ::Mirage::ResponseNotFound.new(response.body, response.code.to_i)
         else
           response.body
       end

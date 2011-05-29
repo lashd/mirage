@@ -14,10 +14,7 @@ module Mirage
     end
 
     def put url, entity, headers={}
-
-
       uri = URI.parse(url)
-      http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Put.new(uri.request_uri)
 
       if entity.is_a? File
@@ -27,13 +24,16 @@ module Mirage
         request.body=entity
       end
       headers.each { |field, value| request.add_field(field, value) }
-      http.request(request)
+      
+      Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def get url, params={}
-      using_mechanize do |browser|
-        browser.get(url, params)
-      end
+    def get url, params={}, headers={}
+      uri = URI.parse(url)
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request.set_form_data params
+      headers.each { |field, value| request.add_field(field, value) }
+      Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
     def post url, params={}

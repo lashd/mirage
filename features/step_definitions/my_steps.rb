@@ -49,7 +49,11 @@ Given /^Mirage (is|is not) running$/ do |running|
 end
 
 Then /^Connection should be refused to '(.*)'$/ do |url|
-  fail "Mirage is still running" unless get(url).is_a? Errno::ECONNREFUSED
+  begin
+    get(url)
+    fail "Mirage is still running"
+  rescue Errno::ECONNREFUSED
+  end
 end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|

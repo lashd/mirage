@@ -17,7 +17,7 @@ Feature: If you want to see the content of a particular response without trigger
       | X-mirage-file | true |
 
     When I send GET to 'http://localhost:7001/mirage/templates/1'
-    Then the response should be a file the same as 'README.md'
+    Then the response should be the same as the content of 'README.md'
 
 
   Scenario: Peeking a response that does not exist
