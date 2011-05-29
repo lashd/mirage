@@ -51,7 +51,7 @@ module Web
   def hit_mirage(url, parameters={})
     start_time = Time.now
     file = parameters.values.find { |value| value.is_a?(File) }
-    response = (file ? http_post(url, parameters) : http_get(url, parameters))
+    response = (file ? post(url, parameters) : get(url, parameters))
     @response_time = Time.now - start_time
     response
   end

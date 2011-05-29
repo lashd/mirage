@@ -36,70 +36,23 @@ module Mirage
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def post url, params={}
-      using_mechanize do |browser|
-        browser.post(url, params)
-      end
+    def post url, params={}, headers={}
+      uri = URI.parse(url)
+      request = Net::HTTP::Post.new(uri.request_uri)
+      
+      params.is_a?(Hash) ? request.set_form_data(params) : request.body = params
+        
+      headers.each { |field, value| request.add_field(field, value) }
+      Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def delete url, params={}
-      using_mechanize do |browser|
-        browser.delete(url, params)
-      end
+    def delete url, params={}, headers={}
+      uri = URI.parse(url)
+      request = Net::HTTP::Delete.new(uri.request_uri)
+      params.is_a?(Hash) ? request.set_form_data(params) : request.body = params
+      headers.each { |field, value| request.add_field(field, value) }
+      Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def head url, params={}
-#      uri = URI.parse(url)
-#      head_request = Net::HTTP::Head.new(uri.path)
-#      Net::HTTP.start(uri.host, uri.port) do |http|
-#        http.request(head_request)
-#      end
-      using_mechanize do |browser|
-        browser.head(url, params)
-      end
-    end
-
-    def options url, params={}
-      using_mechanize do |browser|
-        browser.options(url, params)
-      end
-    end
-
-
-    def http_get url, params={}
-      using_mechanize do |browser|
-        params[:body] ? browser.post(url, params[:body]) : browser.get(url, params)
-      end
-    end
-
-    def http_post url, params={}
-      using_mechanize do |browser|
-        browser.post(url, params)
-      end
-    end
-
-    private
-    def using_mechanize
-      begin
-        browser = Mechanize.new
-        browser.keep_alive = false
-        response = yield browser
-
-        def response.code
-          @code.to_i
-        end
-      rescue Exception => e
-        response = e
-
-        def response.code
-          self.response_code.to_i
-        end
-
-        def response.body
-          ""
-        end
-      end
-      response
-    end
   end
 end

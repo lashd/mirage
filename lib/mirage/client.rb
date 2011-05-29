@@ -89,19 +89,6 @@ module Mirage
           delete("#{@url}/templates")
       end
       
-#      case thing       
-#        when NilClass then
-#          http_get("#{@url}/clear/")
-#        when Fixnum then
-#          http_get("#{@url}/clear/#{thing}")
-#        when :requests then
-#          http_get("#{@url}/clear/requests")
-#        when Hash then
-#          case thing.keys.first
-#            when :request then
-#              http_get("#{@url}/clear/request/#{thing.values.first}")
-#          end
-#      end
     end
 
 
@@ -129,7 +116,11 @@ module Mirage
 
     # Check to see if Mirage is up and running
     def running?
-      !http_get(@url).is_a?(Errno::ECONNREFUSED)
+      begin
+        get(@url) and return true
+      rescue Errno::ECONNREFUSED
+        return false
+      end
     end
 
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
