@@ -11,15 +11,7 @@ module Mirage
 
     MOCK_RESPONSES = MockResponsesCollection.new
 
-    configure do
-      require 'logger'
-      enable :logging
-      log_file = File.open('mirage.log', 'a')
-      log_file.sync=true
-      use Rack::CommonLogger, log_file
-      register Sinatra::Reloader
-      also_reload "**/*.rb"
-    end
+
 
     set :views, File.dirname(__FILE__) + '/../views'
 
