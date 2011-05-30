@@ -57,12 +57,14 @@ module Mirage
   end
 
   class MockResponsesCollection
-    SNAPSHOT, RESPONSES = {}, {}
+    def initialize
+      @snapshot, @responses = {}, {}
+    end
 
     def << response
 
 
-      stored_responses = RESPONSES[response.name]||={}
+      stored_responses = @responses[response.name]||={}
 
       stored_responses[response.pattern] ||= {}
       old_response = stored_responses[response.pattern].delete(response.http_method)
@@ -76,7 +78,7 @@ module Mirage
     end
 
     def get_response name, http_method, body, query_string
-      stored_responses = RESPONSES[name]
+      stored_responses = @responses[name]
       record = nil
 
       record = find_response(body, query_string, stored_responses, http_method) if stored_responses
@@ -98,7 +100,7 @@ module Mirage
     end
 
     def find id
-      RESPONSES.values.each do |response_sets|
+      @responses.values.each do |response_sets|
         response_sets.values.each do |response_set|
           response_set.values.each do |response|
             return response if response.response_id == id
@@ -108,7 +110,7 @@ module Mirage
     end
 
     def delete(response_id)
-      RESPONSES.values.each do |response_sets|
+      @responses.values.each do |response_sets|
         response_sets.values.each do |response_set|
           response_set.each do |method, response|
             response_set.delete(method) if response.response_id == response_id
@@ -118,20 +120,20 @@ module Mirage
     end
 
     def clear
-      RESPONSES.clear
+      @responses.clear
     end
 
     def backup
-      SNAPSHOT.clear and SNAPSHOT.replace(RESPONSES.deep_clone)
+      @snapshot.clear and @snapshot.replace(@responses.deep_clone)
     end
 
     def revert
-      RESPONSES.clear and RESPONSES.replace(SNAPSHOT.deep_clone)
+      @responses.clear and @responses.replace(@snapshot.deep_clone)
     end
 
     def all
       responses = []
-      RESPONSES.values.each do |response_sets|
+      @responses.values.each do |response_sets|
         response_sets.each do |pattern, response_set|
           response_set.values.each do |response|
             responses << response
@@ -155,8 +157,8 @@ module Mirage
     end
 
     def find_default_responses(name)
-      matches = RESPONSES.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
-      matches.collect { |key| RESPONSES[key] }
+      matches = @responses.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
+      matches.collect { |key| @responses[key] }
     end
 
   end
@@ -164,7 +166,7 @@ module Mirage
 
   class MirageServer < Sinatra::Base
 
-    REQUESTS, SNAPSHOT= {}, {}
+    REQUESTS, @snapshot= {}, {}
 
     MOCK_RESPONSES = MockResponsesCollection.new
 
