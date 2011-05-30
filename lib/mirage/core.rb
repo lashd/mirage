@@ -10,9 +10,6 @@ module Mirage
 
     MOCK_RESPONSES = MockResponsesCollection.new
 
-
-    
-
     put '/mirage/templates/*' do |name|
       response = request.body.read
 
@@ -20,7 +17,7 @@ module Mirage
       http_method = headers['HTTP_X_MIRAGE_METHOD'] || 'GET'
 
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
-#
+
       MOCK_RESPONSES << MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
     end
 
