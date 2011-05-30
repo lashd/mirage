@@ -1,5 +1,7 @@
 require 'mirage/web'
 require 'mirage/util'
+require 'mirage/mock_response'
+require 'mirage/mock_responses_collection'
 require 'mirage/core'
 require 'mirage/client'
 
