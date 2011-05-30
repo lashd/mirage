@@ -7,7 +7,7 @@ module Mirage
 
   class MirageServer < Sinatra::Base
 
-    REQUESTS, @snapshot= {}, {}
+    REQUESTS= {}
 
     MOCK_RESPONSES = MockResponsesCollection.new
 
