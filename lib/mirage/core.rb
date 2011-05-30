@@ -2,7 +2,6 @@ require 'sinatra/base'
 require 'sinatra/reloader'
 
 
-
 module Mirage
 
   class MirageServer < Sinatra::Base
@@ -12,8 +11,7 @@ module Mirage
     MOCK_RESPONSES = MockResponsesCollection.new
 
 
-
-    set :views, File.dirname(__FILE__) + '/../views'
+    
 
     put '/mirage/templates/*' do |name|
       response = request.body.read
@@ -23,7 +21,7 @@ module Mirage
 
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
 #
-      MOCK_RESPONSES << MockResponse.new(name, response,headers['CONTENT_TYPE'], http_method ,pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
+      MOCK_RESPONSES << MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
@@ -44,16 +42,15 @@ module Mirage
       MOCK_RESPONSES.delete(response_id)
       REQUESTS.delete(response_id)
     end
-    
+
     delete '/mirage/requests' do
       REQUESTS.clear
     end
-    
+
     delete '/mirage/requests/:id' do
       REQUESTS.delete(params[:id].to_i)
     end
-    
-    
+
 
     delete '/mirage/templates' do
       [REQUESTS].each { |map| map.clear }
@@ -83,7 +80,7 @@ module Mirage
       end
       erb :index
     end
-    
+
     error do
       erb request.env['sinatra.error'].message
     end
@@ -113,16 +110,14 @@ module Mirage
 
     helpers do
 
-
       def response_value
         return request['response'] unless request['response'].nil?
       end
 
-
       def send_response(response, body='', request={}, query_string='')
-          content_type(response.content_type)
-          response.value(body, request, query_string)
-        end
+        content_type(response.content_type)
+        response.value(body, request, query_string)
+      end
     end
   end
 end

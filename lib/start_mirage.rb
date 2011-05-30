@@ -18,6 +18,7 @@ module Mirage
       use Rack::CommonLogger, log_file
       register Sinatra::Reloader
       also_reload "**/*.rb"
+      set :views, File.dirname(__FILE__) + '/views'
     end
   end
 end
