@@ -1,3 +1,4 @@
+require 'mirage/object'
 require 'mirage/web'
 require 'mirage/util'
 require 'mirage/mock_response'
