@@ -37,7 +37,7 @@ Feature: The client can be used for clearing responses from Mirage
     And I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then a 404 should be returned
 
-    When I hit 'http://localhost:7001/mirage/requests/2'
+    When I send GET to 'http://localhost:7001/mirage/requests/2'
     Then a 404 should be returned
 
 
@@ -65,7 +65,7 @@ Feature: The client can be used for clearing responses from Mirage
     """
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then a 404 should be returned
-    When I hit 'http://localhost:7001/mirage/requests/1'
+    When I send GET to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
     When I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then a 200 should be returned

@@ -5,8 +5,9 @@ gem 'sinatra'
 gem 'childprocess', '~> 0.1'
 
 group :development do
-  gem 'rake'
+  gem 'rake', '0.9.0'
   gem 'cucumber'
+  gem 'gherkin', '2.3.9'
   gem 'rspec'
   gem "jeweler", "~> 1.5.2"
   gem 'bundler'

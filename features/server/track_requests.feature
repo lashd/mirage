@@ -34,7 +34,7 @@ Feature: After a response has been served from Mirage, the content of the reques
 
 
   Scenario: Tracking a response that has not been served yet
-    Given I hit 'http://localhost:7001/mirage/requests/1'
+    Given I send GET to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
 
 

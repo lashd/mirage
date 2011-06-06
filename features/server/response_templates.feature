@@ -21,7 +21,7 @@ Feature: Parts of a response can be substitued for values found in the request b
 
   Scenario: A response template populated from match found in the query string using a request parameter name
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello ${name}, how are you?'
-    When I hit 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
       | name | Leon |
     Then 'Hello Leon, how are you?' should be returned
 

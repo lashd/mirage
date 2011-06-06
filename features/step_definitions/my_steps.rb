@@ -64,7 +64,7 @@ Then /^the usage information should be displayed$/ do
 end
 Given /^usage information:$/ do |table|
   @usage = table.raw.flatten.collect { |line| normalise(line) }
-end
+end                                                                                                                                                                         
 
 Then /^I run$/ do |text|
   text.gsub!("\"", "\\\\\"")
@@ -73,26 +73,6 @@ end
 
 Given /^the following gems are required to run the Mirage client test code:$/ do |text|
   @code_snippet = text.gsub("\"", "\\\\\"")
-end
-
-When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, response_id|
-  @response = hit_mirage(url)
-end
-
-When /^I post to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, operation|
-  @response = http_post(url)
-end
-
-When /^I (hit|get|post to) '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |http_method, url, endpoint, table|
-
-  parameters = {}
-  table.raw.each do |row|
-    parameter, value = row[0].to_sym, row[1]
-    value = File.exists?(value) ? File.open(value, 'rb') : value
-    parameters[parameter]=value
-  end
-
-  @response = hit_mirage(url, parameters)
 end
 
 When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with request entity$/ do |method, url, endpoint, entity|
@@ -142,11 +122,6 @@ When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^
   @response = put(url, body, headers)
 end
 
-
-When /^I hit '(http:\/\/localhost:7001\/mirage\/(.*?))' with request body:$/ do |url, endpoint, request_body|
-  @response = hit_mirage(url, {:body => request_body})
-end
-
 Then /^I should see '(.*?)' on the command line$/ do |content|
   @commandline_output.should =~/#{content}/
 end
@@ -171,6 +146,7 @@ end
 When /^I click '(.*)'$/ do |thing|
   @page = @page.links.find { |link| link.attributes['id'] == thing }.click
 end
+
 When /^I send (GET|POST) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |http_method, url, endpoint, table|
 
   parameters = {}
@@ -187,9 +163,11 @@ When /^I send (GET|POST) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with para
                   get(url, parameters)
               end
 end
+
 Then /^the following should be returned:$/ do |text|
   @response.body.should == text
 end
+
 Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^']*) and headers:$/ do |url, endpoint, path, table|
   headers = {}
   table.raw.each do |row|

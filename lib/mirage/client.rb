@@ -12,6 +12,12 @@ module Mirage
       @code = message, code
     end
   end
+  
+  class Response
+    
+    attr_accessor :method, :pattern, :content_type
+    
+  end
 
   class InternalServerException < MirageError;
   end
@@ -40,16 +46,18 @@ module Mirage
     #  Client.set('greeting', 'hello', :pattern => /regexp/)
     #  Client.set('greeting', 'hello', :pattern => 'text')
     #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
-    def set endpoint, response, params={}      
+    def set endpoint, response_value, params={}
+      response = Response.new
+      
+      yield response if block_given?
+      
       headers = {}
-      headers['X-mirage-method'] = params[:method] if params[:method]
-      headers['X-mirage-pattern'] = params[:pattern] if params[:pattern]
-      headers['X-mirage-file'] = true if response.is_a? File
-      headers['content-type'] = params[:content_type] || 'text/plain'
+      headers['X-mirage-method'] = response.method.to_s if response.method
       
+      headers['X-mirage-pattern'] = response.pattern if response.pattern
+      headers['Content-Type'] = response.content_type || 'text/plain'
       
-      puts "#{@url}/templates/#{endpoint}"
-      response(put("#{@url}/templates/#{endpoint}",response, headers))
+      response(put("#{@url}/templates/#{endpoint}",response_value, headers))
     end
 
     # Use to look at what a response contains without actually triggering it.

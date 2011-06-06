@@ -48,14 +48,6 @@ end
 module Web
   include Mirage::Web
 
-  def hit_mirage(url, parameters={})
-    start_time = Time.now
-    file = parameters.values.find { |value| value.is_a?(File) }
-    response = (file ? post(url, parameters) : get(url, parameters))
-    @response_time = Time.now - start_time
-    response
-  end
-
   def normalise text
     text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ')
   end
