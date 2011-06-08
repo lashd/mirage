@@ -6,8 +6,9 @@ Feature: Mirage is started from the command line.
   Background: Mirage usage
     Given usage information:
       | Usage: mirage start\|stop [options] |
-      | -p, --port PORT     |
-      | -d, --defaults DIR  |
+      | -p, --port PORT                     |
+      | -d, --defaults DIR                  |
+      | --debug                             |
 
 
   Scenario: Starting with help option
@@ -37,9 +38,9 @@ Feature: Mirage is started from the command line.
     Given Mirage is not running
     When I run 'mirage start -p 9001'
     Then mirage should be running on 'http://localhost:9001/mirage'
-    
-    Scenario: Starting Mirage when it is already running
-      Given Mirage is running
-      When I run 'mirage start -p 9001'
-      Then I should see 'Mirage is already running' on the command line
-      Then Connection should be refused to 'http://localhost:9001/mirage' 
+
+  Scenario: Starting Mirage when it is already running
+    Given Mirage is running
+    When I run 'mirage start -p 9001'
+    Then I should see 'Mirage is already running' on the command line
+    Then Connection should be refused to 'http://localhost:9001/mirage' 

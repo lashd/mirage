@@ -13,5 +13,6 @@ group :development do
   gem 'bundler'
   gem 'sinatra-reloader'
   gem 'mechanize', '>= 1.0.0'
+  gem 'gemcutter'
 end
   

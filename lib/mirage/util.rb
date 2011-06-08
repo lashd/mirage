@@ -1,7 +1,7 @@
 require 'optparse'
 module Mirage
   module Util
-    
+
     def wait_until time=45
       start_time = Time.now
       until Time.now >= start_time + time
@@ -22,6 +22,10 @@ module Mirage
 
         opts.on("-d", "--defaults DIR", "location to load default responses from") do |directory|
           options[:defaults_directory] = directory
+        end
+
+        opts.on('--debug', 'run in debug mode') do
+          options[:debug] = true
         end
       end
 

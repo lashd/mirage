@@ -5,8 +5,12 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'sinatra'
 require 'sinatra/base'
-require 'sinatra/reloader'
 
+require 'mirage/util'
+include Mirage::Util
+options = parse_options(ARGV)
+
+$debug = options[:debug]
 
 module Mirage
   class MirageServer < Sinatra::Base
@@ -16,16 +20,19 @@ module Mirage
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
       use Rack::CommonLogger, log_file
-      register Sinatra::Reloader
-      also_reload "**/*.rb"
+
+      if $debug
+        require 'sinatra/reloader'
+        register Sinatra::Reloader
+        also_reload "**/*.rb"
+      end
       set :views, File.dirname(__FILE__) + '/views'
     end
   end
 end
+
+
 require 'mirage'
-include Mirage::Util
-#
-options = parse_options(ARGV)
 
 
 DEFAULT_RESPONSES_DIR = "#{options[:defaults_directory]}"
