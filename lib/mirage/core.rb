@@ -24,7 +24,7 @@ module Mirage
     ['get', 'post', 'delete', 'put'].each do |http_method|
       send(http_method, '/mirage/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
-        record = MOCK_RESPONSES.get_response(name, http_method.upcase, body, query_string)
+        record = MOCK_RESPONSES.get_response(name, http_method, body, query_string)
 
         return 404 unless record
         REQUESTS[record.response_id] = body.empty? ? query_string : body

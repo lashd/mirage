@@ -36,7 +36,7 @@ Given /^Mirage (is|is not) running$/ do |running|
   if running == 'is'
     start_mirage unless $mirage.running?
   else
-    stop_mirage if $mirage.running?
+    stop_mirage if $mirage.running?                                                   
   end
 end
 

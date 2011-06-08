@@ -10,8 +10,8 @@ module Mirage
       stored_responses = @responses[response.name]||={}
 
       stored_responses[response.pattern] ||= {}
-      old_response = stored_responses[response.pattern].delete(response.http_method)
-      stored_responses[response.pattern][response.http_method] = response
+      old_response = stored_responses[response.pattern].delete(response.http_method.upcase)
+      stored_responses[response.pattern][response.http_method.upcase] = response
 
 
       # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
@@ -88,6 +88,7 @@ module Mirage
 
     private
     def find_response(body, query_string, stored_responses, http_method)
+      http_method = http_method.upcase
       pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
 
       if pattern_match
