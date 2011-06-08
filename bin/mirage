@@ -33,7 +33,6 @@ end
 def stop_mirage
   mirage_process_ids.each { |process_id| windows? ? `taskkill /F /T /PID #{process_id}` : `kill -9 #{process_id}` }
   wait_until{ mirage_process_ids.size == 0 }
-  
 end
 
 if ARGV.include?('start')

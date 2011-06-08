@@ -8,7 +8,6 @@ Feature: Mirage is started from the command line.
       | Usage: mirage start\|stop [options] |
       | -p, --port PORT                     |
       | -d, --defaults DIR                  |
-      | --debug                             |
 
 
   Scenario: Starting with help option

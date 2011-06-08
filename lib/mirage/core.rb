@@ -76,7 +76,7 @@ module Mirage
         @responses["#{response.name}#{'/*' if response.default?}: #{pattern} #{delay}"] = response
       end
       erb :index
-    end
+    end         
 
     error do
       erb request.env['sinatra.error'].message

@@ -10,8 +10,6 @@ require 'mirage/util'
 include Mirage::Util
 options = parse_options(ARGV)
 
-$debug = options[:debug]
-
 module Mirage
   class MirageServer < Sinatra::Base
     configure do
@@ -20,13 +18,13 @@ module Mirage
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
       use Rack::CommonLogger, log_file
-
-      if $debug
-        require 'sinatra/reloader'
-        register Sinatra::Reloader
-        also_reload "**/*.rb"
-      end
       set :views, File.dirname(__FILE__) + '/views'
+    end
+
+    configure(:development) do |config|
+      require 'sinatra/reloader'
+      register Sinatra::Reloader
+      config.also_reload "**/*.rb"
     end
   end
 end
