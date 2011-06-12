@@ -48,7 +48,7 @@ module Mirage
     #  Client.set('greeting', 'hello', :pattern => /regexp/)
     #  Client.set('greeting', 'hello', :pattern => 'text')
     #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
-    def set endpoint, response_value, params={}
+    def put endpoint, response_value, params={}
       response = Response.new
       
       yield response if block_given?

@@ -15,7 +15,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario: Setting a basic response
     Given I run
     """
-    Mirage::Client.new.set('greeting','hello')
+    Mirage::Client.new.put('greeting','hello')
     """
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned
@@ -23,7 +23,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario: Setting the method that a response should be returned on
     Given I run
     """
-    Mirage::Client.new.set('greeting', 'Hello Leon') do |response|
+    Mirage::Client.new.put('greeting', 'Hello Leon') do |response|
       response.method = 'POST'
     end
     """
@@ -36,7 +36,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario Outline: Setting a response with a pattern
     Given I run
     """
-    Mirage::Client.new.set('greeting', 'Hello Leon') do |response|
+    Mirage::Client.new.put('greeting', 'Hello Leon') do |response|
       response.method = 'POST'
       response.pattern = <pattern>
     end
@@ -59,7 +59,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario: Setting the content type
     Given I run
     """
-    Mirage::Client.new.set('greeting', '<xml></xml>') do |response|
+    Mirage::Client.new.put('greeting', '<xml></xml>') do |response|
       response.content_type = 'text/xml'
     end
     """
@@ -73,8 +73,8 @@ Feature: the Mirage client provides methods for setting responses and loading de
     When the file 'responses/default_greetings.rb' contains:
     """
     Mirage.prime do |mirage|
-      mirage.set('greeting', 'hello')
-      mirage.set('leaving', 'goodbye')
+      mirage.put('greeting', 'hello')
+      mirage.put('leaving', 'goodbye')
     end
     """
     And I run
@@ -95,7 +95,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
     And I run
     """
     puts Dir.pwd
-    Mirage::Client.new.set('greeting', File.open('scratch/response_file')) do |response|
+    Mirage::Client.new.put('greeting', File.open('scratch/response_file')) do |response|
       response.method = 'POST'
     end
     """
@@ -128,7 +128,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario: Setting a file as a response
     Given I run
     """
-    Mirage::Client.new.set('download', File.open('README.md'))
+    Mirage::Client.new.put('download', File.open('README.md'))
     """
     When I send GET to 'http://localhost:7001/mirage/responses/download'
     Then the response should be the same as the content of 'README.md'
