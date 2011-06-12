@@ -6,7 +6,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     """
     require 'rubygems'
     require 'rspec'
-    require 'mirage'
+    require 'mirage/client'
     """
     And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
     """

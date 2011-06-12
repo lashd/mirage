@@ -5,7 +5,7 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     """
     require 'rubygems'
     require 'rspec'
-    require 'mirage'
+    require 'mirage/client'
     """
 
 #  Scenario: peeking a response

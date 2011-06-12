@@ -5,7 +5,7 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
     """
     require 'rubygems'
     require 'rspec'
-    require 'mirage'
+    require 'mirage/client'
     """
 
   Scenario: The MockServer returns a response

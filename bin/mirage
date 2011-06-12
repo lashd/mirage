@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
-require 'mirage'
+require 'mirage/client'
 require 'childprocess'
 include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'

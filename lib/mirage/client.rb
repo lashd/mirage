@@ -1,6 +1,8 @@
+$LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
 require 'uri'
 require 'open-uri'
-require 'mirage/web'
+require 'util'
+require 'web'
 
 module Mirage
 
@@ -132,6 +134,7 @@ module Mirage
 
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
+      puts "#{@url}/defaults"
       response(put("#{@url}/defaults",''))
     end
 

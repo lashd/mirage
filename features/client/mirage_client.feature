@@ -10,7 +10,7 @@ Feature: Interacting with Mirage is done via HTTP using  REST style URLs and the
     """
     require 'rubygems'
     require 'rspec'
-    require 'mirage'
+    require 'mirage/client'
     """
 
 

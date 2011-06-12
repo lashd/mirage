@@ -4,7 +4,16 @@ require 'sinatra/reloader'
 
 module Mirage
 
-  class MirageServer < Sinatra::Base
+  class Server < Sinatra::Base
+
+    
+    class << self
+      attr_reader :defaults_directory
+      
+      def configure options
+        @defaults_directory = options[:defaults_directory]
+      end
+    end
 
     REQUESTS= {}
 
@@ -76,7 +85,7 @@ module Mirage
         @responses["#{response.name}#{'/*' if response.default?}: #{pattern} #{delay}"] = response
       end
       erb :index
-    end         
+    end
 
     error do
       erb request.env['sinatra.error'].message
@@ -85,7 +94,7 @@ module Mirage
     put '/mirage/defaults' do
       MOCK_RESPONSES.clear
 
-      Dir["#{DEFAULT_RESPONSES_DIR}/**/*.rb"].each do |default|
+      Dir["#{Server.defaults_directory}/**/*.rb"].each do |default|
         begin
           load default
         rescue Exception

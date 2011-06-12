@@ -8,7 +8,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     require 'rubygems'
     require 'rspec'
-    require 'mirage'
+    require 'mirage/client'
     """
 
 

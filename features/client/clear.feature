@@ -5,7 +5,7 @@ Feature: The client can be used for clearing responses from Mirage
     """
     require 'rubygems'
     require 'rspec'
-    require 'mirage'
+    require 'mirage/client'
     """
     
     And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
