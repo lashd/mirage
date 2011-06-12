@@ -106,7 +106,7 @@ module Mirage
     #
     #   Example:
     #   Client.new.track(response_id) => Tracked request as a String
-    def track response_id
+    def request response_id
       build_response(http_get("#{@url}/requests/#{response_id}"))
     end
 

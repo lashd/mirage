@@ -18,5 +18,5 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
       | name | leon  |
     Then I run
     """
-       Mirage::Client.new.track(1).should == 'name=leon'
+       Mirage::Client.new.request(1).should == 'name=leon'
     """
