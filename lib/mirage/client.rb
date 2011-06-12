@@ -64,7 +64,7 @@ module Mirage
 
     # Use to look at what a response contains without actually triggering it.
     # Client.peek(response_id) => response held on the server as a String
-    def peek response_id
+    def response response_id
       response = build_response(http_get("#{@url}/templates/#{response_id}"))
       case response
         when String then
