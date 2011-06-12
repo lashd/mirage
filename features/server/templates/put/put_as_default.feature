@@ -1,4 +1,4 @@
-Feature: Mirage can respond with a 'default' response when a when the response requested at a sub url is not found.
+Feature: A template can be configure as the default response for when there is no response found for a sub url.
   I.e.
   if a response is held for 'level1' and request comes in for 'level1/level2' the response for 'level1'
   can be returned if nothing is held for 'level1/level2'

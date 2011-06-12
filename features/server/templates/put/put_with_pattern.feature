@@ -3,6 +3,9 @@ Feature: Mirage can be configured to return particular responses conditionally b
 
   Patterns can be either plain text or a regular expression
 
+  A response with a pattern is not considered the same a response at the same address that has either no pattern or a diffferent one.
+  This allows you to specify different behaviour depending on the request.
+
   Background: There is already a default response for 'greeting'
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Stranger' and headers:
       | X-mirage-method | POST |
@@ -65,3 +68,13 @@ Feature: Mirage can be configured to return particular responses conditionally b
     """
 
     Then 'Hello Stranger' should be returned
+
+  Scenario: Templates with different patterns on the same address
+    When I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
+      | X-mirage-pattern | 2 |
+
+    When I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
+      | X-mirage-pattern | 3 |
+    Then '3' should be returned
+    
+      
