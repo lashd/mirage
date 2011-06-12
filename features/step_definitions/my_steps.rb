@@ -24,7 +24,7 @@ end
 
 
 Then /^mirage should be running on '(.*)'$/ do |url|
-  get(url).code.to_i.should == 200
+  http_get(url).code.to_i.should == 200
 end
 
 Given /^I run '(.*)'$/ do |command|
@@ -42,7 +42,7 @@ end
 
 Then /^Connection should be refused to '(.*)'$/ do |url|
   begin
-    get(url)
+    http_get(url)
     fail "Mirage is still running"
   rescue Errno::ECONNREFUSED
   end
@@ -80,10 +80,10 @@ When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with requ
   @response = case method
                 when 'POST'
                 then
-                  post(url, entity)
+                  http_post(url, entity)
                 when 'PUT'
                 then
-                  put(url, entity)
+                  http_put(url, entity)
               end
 end
 
@@ -91,17 +91,17 @@ When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:7001\/m
   start_time = Time.now
   @response = case method
                 when 'GET' then
-                  get(url)
+                  http_get(url)
                 when 'PUT' then
-                  put(url, '')
+                  http_put(url, '')
                 when 'POST' then
-                  post(url, '')
+                  http_post(url, '')
                 when 'HEAD' then
-                  head(url)
+                  http_head(url)
                 when 'OPTIONS' then
-                  options(url)
+                  http_options(url)
                 when 'DELETE' then
-                  delete(url)
+                  http_delete(url)
               end
   @response_time = Time.now - start_time
 end
@@ -109,7 +109,7 @@ end
 
 When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^']*)'$/ do |url, endpoint, body|
   start_time = Time.now
-  @response = put(url, body)
+  @response = http_put(url, body)
   @response_time = Time.now - start_time
 end
 
@@ -119,7 +119,7 @@ When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^
     parameter, value = row[0], row[1]
     headers[parameter]=value
   end
-  @response = put(url, body, headers)
+  @response = http_put(url, body, headers)
 end
 
 Then /^I should see '(.*?)' on the command line$/ do |content|
@@ -158,9 +158,9 @@ When /^I send (GET|POST) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with para
 
   @response = case http_method
                 when 'POST' then
-                  post(url, parameters)
+                  http_post(url, parameters)
                 when 'GET' then
-                  get(url, parameters)
+                  http_get(url, parameters)
               end
 end
 
@@ -174,7 +174,7 @@ Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^'
     parameter, value = row[0], row[1]
     headers[parameter]=value
   end
-  put(url, File.new(path), headers)
+  http_put(url, File.new(path), headers)
 end
 
 When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|

@@ -59,13 +59,13 @@ module Mirage
       headers['X-mirage-pattern'] = response.pattern if response.pattern
       headers['Content-Type'] = response.content_type || 'text/plain'
       
-      response(put("#{@url}/templates/#{endpoint}",response_value, headers))
+      build_response(http_put("#{@url}/templates/#{endpoint}",response_value, headers))
     end
 
     # Use to look at what a response contains without actually triggering it.
     # Client.peek(response_id) => response held on the server as a String
     def peek response_id
-      response = response(get("#{@url}/templates/#{response_id}"))
+      response = build_response(http_get("#{@url}/templates/#{response_id}"))
       case response
         when String then
           return response
@@ -88,14 +88,14 @@ module Mirage
       
       case thing
         when :requests
-          delete("#{@url}/requests")
+          http_delete("#{@url}/requests")
         when Numeric then
-          delete("#{@url}/templates/#{thing}")
+          http_delete("#{@url}/templates/#{thing}")
         when Hash then
           puts "deleteing request #{thing[:request]}"
-          delete("#{@url}/requests/#{thing[:request]}") if thing[:request]
+          http_delete("#{@url}/requests/#{thing[:request]}") if thing[:request]
         else NilClass
-          delete("#{@url}/templates")
+          http_delete("#{@url}/templates")
       end
       
     end
@@ -107,26 +107,26 @@ module Mirage
     #   Example:
     #   Client.new.track(response_id) => Tracked request as a String
     def track response_id
-      response(get("#{@url}/requests/#{response_id}"))
+      build_response(http_get("#{@url}/requests/#{response_id}"))
     end
 
     # Save the state of the Mirage server so that it can be reverted back to that exact state at a later time.
     def save
-      put("#{@url}/backup",'').code == 200
+      http_put("#{@url}/backup",'').code == 200
     end
 
 
     # Revert the state of Mirage back to the state that was last saved
     # If there is no snapshot to rollback to, nothing happens
     def revert
-      put("#{@url}",'').code == 200
+      http_put("#{@url}",'').code == 200
     end
 
 
     # Check to see if Mirage is up and running
     def running?
       begin
-        get(@url) and return true
+        http_get(@url) and return true
       rescue Errno::ECONNREFUSED
         return false
       end
@@ -135,11 +135,11 @@ module Mirage
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
       puts "#{@url}/defaults"
-      response(put("#{@url}/defaults",''))
+      build_response(http_put("#{@url}/defaults",''))
     end
 
     private
-    def response response
+    def build_response response
       case response.code.to_i
         when 500 then
           raise ::Mirage::InternalServerException.new(response.body, response.code.to_i)

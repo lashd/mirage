@@ -13,7 +13,7 @@ module Mirage
       end
     end
 
-    def put url, entity, headers={}
+    def http_put url, entity, headers={}
       uri = URI.parse(url)
       request = Net::HTTP::Put.new(uri.request_uri)
 
@@ -28,7 +28,7 @@ module Mirage
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def get url, params={}, headers={}
+    def http_get url, params={}, headers={}
       uri = URI.parse(url)
       request = Net::HTTP::Get.new(uri.request_uri)
       request.set_form_data params
@@ -36,7 +36,7 @@ module Mirage
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def post url, params={}, headers={}
+    def http_post url, params={}, headers={}
       uri = URI.parse(url)
       request = Net::HTTP::Post.new(uri.request_uri)
       
@@ -46,7 +46,7 @@ module Mirage
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def delete url, params={}, headers={}
+    def http_delete url, params={}, headers={}
       uri = URI.parse(url)
       request = Net::HTTP::Delete.new(uri.request_uri)
       params.is_a?(Hash) ? request.set_form_data(params) : request.body = params
