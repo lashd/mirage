@@ -1,7 +1,8 @@
-require 'mirage/object'
-require 'mirage/mock_response'
-require 'mirage/mock_responses_collection'
-require 'mirage/core'
+$LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
+require 'object'
+require 'mock_response'
+require 'mock_responses_collection'
+require 'core'
 
 module Mirage
   class << self
