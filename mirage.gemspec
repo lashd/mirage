@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mirage}
-  s.version = "1.3.6"
+  s.version = "2.0.0.alpha4"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = %q{2011-04-25}
+  s.date = %q{2011-08-11}
   s.default_executable = %q{mirage}
   s.description = %q{Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.}
   s.executables = ["mirage"]
@@ -23,33 +23,34 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/mirage",
     "features/client/clear.feature",
-    "features/client/get.feature",
     "features/client/mirage_client.feature",
-    "features/client/get.feature",
-    "features/client/save_and_revert.feature",
     "features/client/put.feature",
-    "features/client/get.feature",
-    "features/server/clear.feature",
+    "features/client/request.feature",
+    "features/client/response.feature",
+    "features/client/save_and_revert.feature",
     "features/server/command_line_iterface.feature",
-    "features/server/file_responses.feature",
     "features/server/logging.feature",
-    "features/server/get.feature",
     "features/server/prime.feature",
-    "features/server/put_with_substitutions.feature",
+    "features/server/requests/delete.feature",
+    "features/server/requests/get.feature",
     "features/server/save_and_revert.feature",
-    "features/server/put.feature",
-    "features/server/put_as_default.feature",
-    "features/server/put_with_delay.feature",
-    "features/server/put_with_pattern.feature",
-    "features/server/get.feature",
+    "features/server/templates/delete.feature",
+    "features/server/templates/get.feature",
+    "features/server/templates/put/put.feature",
+    "features/server/templates/put/put_as_default.feature",
+    "features/server/templates/put/put_with_delay.feature",
+    "features/server/templates/put/put_with_pattern.feature",
+    "features/server/templates/put/put_with_substitutions.feature",
     "features/server/web_user_interface.feature",
     "features/step_definitions/my_steps.rb",
     "features/support/env.rb",
     "full_build.sh",
-    "lib/config.ru",
-    "lib/mirage.rb",
     "lib/mirage/client.rb",
     "lib/mirage/core.rb",
+    "lib/mirage/mock_response.rb",
+    "lib/mirage/mock_responses_collection.rb",
+    "lib/mirage/object.rb",
+    "lib/mirage/server.rb",
     "lib/mirage/util.rb",
     "lib/mirage/web.rb",
     "lib/start_mirage.rb",
@@ -71,43 +72,49 @@ For more information go to: https://github.com/lashd/mirage/wiki
 ===============================================================================
 }
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.1}
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Mirage is a easy mock server for testing your applications}
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rack>, ["~> 1.1.0"])
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
-      s.add_runtime_dependency(%q<mechanize>, [">= 1.0.0"])
       s.add_runtime_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<cucumber>, [">= 0"])
+      s.add_development_dependency(%q<gherkin>, ["= 2.3.9"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
+      s.add_development_dependency(%q<sinatra-reloader>, [">= 0"])
+      s.add_development_dependency(%q<mechanize>, [">= 1.0.0"])
+      s.add_development_dependency(%q<gemcutter>, [">= 0"])
     else
-      s.add_dependency(%q<rack>, ["~> 1.1.0"])
       s.add_dependency(%q<sinatra>, [">= 0"])
-      s.add_dependency(%q<mechanize>, [">= 1.0.0"])
       s.add_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<cucumber>, [">= 0"])
+      s.add_dependency(%q<gherkin>, ["= 2.3.9"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<bundler>, [">= 0"])
+      s.add_dependency(%q<sinatra-reloader>, [">= 0"])
+      s.add_dependency(%q<mechanize>, [">= 1.0.0"])
+      s.add_dependency(%q<gemcutter>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rack>, ["~> 1.1.0"])
     s.add_dependency(%q<sinatra>, [">= 0"])
-    s.add_dependency(%q<mechanize>, [">= 1.0.0"])
     s.add_dependency(%q<childprocess>, ["~> 0.1"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<cucumber>, [">= 0"])
+    s.add_dependency(%q<gherkin>, ["= 2.3.9"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<bundler>, [">= 0"])
+    s.add_dependency(%q<sinatra-reloader>, [">= 0"])
+    s.add_dependency(%q<mechanize>, [">= 1.0.0"])
+    s.add_dependency(%q<gemcutter>, [">= 0"])
   end
 end
 
