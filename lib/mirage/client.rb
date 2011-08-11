@@ -17,7 +17,7 @@ module Mirage
   
   class Response
     
-    attr_accessor :method, :pattern, :content_type
+    attr_accessor :method, :pattern, :content_type, :default
     
   end
 
@@ -57,6 +57,7 @@ module Mirage
       headers['X-mirage-method'] = response.method.to_s if response.method
       
       headers['X-mirage-pattern'] = response.pattern if response.pattern
+      headers['X-mirage-default'] = 'true' if response.default
       headers['Content-Type'] = response.content_type || 'text/plain'
       
       build_response(http_put("#{@url}/templates/#{endpoint}",response_value, headers))

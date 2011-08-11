@@ -55,6 +55,17 @@ Feature: the Mirage client provides methods for setting responses and loading de
     | /.*?>leon<\\/name>/ |
     | 'leon'              |
 
+  Scenario: setting a response as default
+    Given I run
+    """
+    Mirage::Client.new.put('greeting', 'default greeting') do |response|
+      response.default = true
+    end
+    """
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting/for/joel'
+    Then 'default greeting' should be returned
+
+
 
   Scenario: Setting the content type
     Given I run
@@ -122,8 +133,6 @@ Feature: the Mirage client provides methods for setting responses and loading de
       e.is_a?(Mirage::InternalServerException).should == true
     end
     """
-#
-#
 
   Scenario: Setting a file as a response
     Given I run
