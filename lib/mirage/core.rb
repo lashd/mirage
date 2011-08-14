@@ -1,5 +1,7 @@
 require 'sinatra/base'
-require 'sinatra/reloader'
+require 'object'
+require 'mock_response'
+require 'mock_responses_collection'
 
 
 module Mirage
@@ -87,8 +89,8 @@ module Mirage
 
       Dir["#{settings.defaults_directory}/**/*.rb"].each do |default|
         begin
-          load default
-        rescue Exception
+          eval File.read(default)
+        rescue Exception => e
           raise "Unable to load default responses from: #{default}"
         end
 
@@ -106,6 +108,10 @@ module Mirage
 
 
     helpers do
+      
+      def prime &block
+        yield Mirage::Client.new "http://localhost:#{settings.port}/mirage" 
+      end
 
       def response_value
         return request['response'] unless request['response'].nil?

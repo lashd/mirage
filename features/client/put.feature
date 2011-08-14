@@ -83,7 +83,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
 
     When the file 'responses/default_greetings.rb' contains:
     """
-    Mirage.prime do |mirage|
+    prime do |mirage|
       mirage.put('greeting', 'hello')
       mirage.put('leaving', 'goodbye')
     end

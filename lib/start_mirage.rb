@@ -25,7 +25,6 @@ module Mirage
       log_file.sync=true
       use Rack::CommonLogger, log_file
       enable :logging
-      Mirage.client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
     end
   end
 end

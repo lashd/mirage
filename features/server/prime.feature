@@ -11,7 +11,7 @@ Feature: Mirage can be primed with a set of responses.
   Scenario: Mirage is started with the responses to be used for priming located in ./responses
     Given the file 'responses/default_greetings.rb' contains:
     """
-    Mirage.prime do |mirage|
+    prime do |mirage|
       mirage.put('greeting', 'hello')
       mirage.put('leaving', 'goodbye')
     end
@@ -26,7 +26,7 @@ Feature: Mirage can be primed with a set of responses.
   Scenario: Mirage is started pointing with a relative path given for the responses directory
     Given the file './custom_responses_location/default_greetings.rb' contains:
     """
-    Mirage.prime do |mirage|
+    prime do |mirage|
       mirage.put('greeting', 'hello')
     end
     """
@@ -38,7 +38,7 @@ Feature: Mirage can be primed with a set of responses.
   Scenario: Mirage is started pointing with a full path for the responses
     Given the file '/tmp/responses/default_greetings.rb' contains:
     """
-    Mirage.prime do |mirage|
+    prime do |mirage|
       mirage.put('greeting', 'hello')
     end
     """
@@ -51,7 +51,7 @@ Feature: Mirage can be primed with a set of responses.
   Scenario: Priming mirage after its state has been modified
     Given the file 'responses/default_greetings.rb' contains:
     """
-    Mirage.prime do |mirage|
+    prime do |mirage|
       mirage.put('greeting', 'hello')
     end
     """
@@ -86,10 +86,3 @@ Feature: Mirage can be primed with a set of responses.
     """
     And I send PUT to 'http://localhost:7001/mirage/defaults'
     Then a 500 should be returned
-
-
-
-
-
-
-
