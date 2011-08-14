@@ -4,7 +4,7 @@ ROOT_DIR = File.dirname(__FILE__)
 $LOAD_PATH.unshift(ROOT_DIR)
 
 require 'sinatra'
-require 'mirage/core'
+require 'mirage/server'
 require 'mirage/util'
 
 include Mirage::Util

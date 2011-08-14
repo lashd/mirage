@@ -46,7 +46,7 @@ Gem::Specification.new do |s|
     "features/support/env.rb",
     "full_build.sh",
     "lib/mirage/client.rb",
-    "lib/mirage/core.rb",
+    "lib/mirage/server.rb",
     "lib/mirage/mock_response.rb",
     "lib/mirage/mock_responses_collection.rb",
     "lib/mirage/object.rb",
