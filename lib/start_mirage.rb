@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(ROOT_DIR)
 
 require 'sinatra'
 require 'mirage/core'
-require 'mirage/client'
+require 'mirage/util'
 
 include Mirage::Util
 
