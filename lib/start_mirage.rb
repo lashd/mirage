@@ -3,7 +3,6 @@ $0='Mirage Server'
 ROOT_DIR = File.dirname(__FILE__)
 $LOAD_PATH.unshift(ROOT_DIR)
  
-
 require 'sinatra'
 require 'mirage/server'
 require 'mirage/client'
@@ -18,7 +17,7 @@ module Mirage
       set :defaults_directory, options[:defaults_directory]
       Mirage.client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       
-      require 'logger'
+      
       enable :logging
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
