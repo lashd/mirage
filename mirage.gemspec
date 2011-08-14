@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     "Gemfile",
     "README.md",
     "VERSION",
+    "bin/mirage",
     "features/client/clear.feature",
     "features/client/mirage_client.feature",
     "features/client/put.feature",
