@@ -1,21 +1,22 @@
 require 'rubygems'
 $0='Mirage Server'
 ROOT_DIR = File.dirname(__FILE__)
-$LOAD_PATH.unshift("#{ROOT_DIR}/lib/mirage")
+$LOAD_PATH.unshift("#{ROOT_DIR}/lib")
 
-require 'client'
+
 require 'sinatra/base'
-require 'object'
-require 'mock_response'
-require 'mock_responses_collection'
+require 'mirage/client'
+require 'mirage/object'
+require 'mirage/mock_response'
+require 'mirage/mock_responses_collection'
 
 include Mirage::Util
-              
+
 
 module Mirage
 
   class Server < Sinatra::Base
-    
+
     configure do
       options = parse_options(ARGV)
       set :defaults_directory, options[:defaults_directory]
@@ -58,7 +59,6 @@ module Mirage
     end
 
     delete '/mirage/templates/:id' do
-      response_id = params[:id].to_i
       MockResponses.delete(response_id)
       REQUESTS.delete(response_id)
     end
@@ -68,7 +68,7 @@ module Mirage
     end
 
     delete '/mirage/requests/:id' do
-      REQUESTS.delete(params[:id].to_i)
+      REQUESTS.delete(response_id)
     end
 
 
@@ -79,13 +79,13 @@ module Mirage
     end
 
     get '/mirage/templates/:id' do
-      response = MockResponses.find(params[:id].to_i)
+      response = MockResponses.find(response_id)
       return 404 if response.is_a? Array
       send_response(response)
     end
 
     get '/mirage/requests/:id' do
-      REQUESTS[params[:id].to_i] || 404
+      REQUESTS[response_id] || 404
     end
 
 
@@ -120,22 +120,24 @@ module Mirage
 #
     put '/mirage/backup' do
       MockResponses.backup
+      ""
     end
 
 
     put '/mirage' do
       MockResponses.revert
+      ""
     end
 
 
     helpers do
-      
-      def prime &block
-        yield Mirage::Client.new "http://localhost:#{settings.port}/mirage" 
+
+      def response_id
+        params[:id].to_i
       end
 
-      def response_value
-        return request['response'] unless request['response'].nil?
+      def prime &block
+        yield Mirage::Client.new "http://localhost:#{settings.port}/mirage"
       end
 
       def send_response(response, body='', request={}, query_string='')
