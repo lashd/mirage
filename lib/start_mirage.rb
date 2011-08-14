@@ -12,19 +12,17 @@ include Mirage::Util
 module Mirage
   class Server < Sinatra::Base
     configure do 
-      
       options = parse_options(ARGV)
       set :defaults_directory, options[:defaults_directory]
       Mirage.client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       
-      
-      enable :logging
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
       use Rack::CommonLogger, log_file
+      
+      enable :logging
       set :views, "#{ROOT_DIR}/views"
       set :show_exception, false
-      set :raise_errors, false  
     end
   end
 end
