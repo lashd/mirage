@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mirage}
-  s.version = "2.0.0.alpha4"
+  s.version = "2.0.0"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = %q{2011-08-11}
+  s.date = %q{2011-08-14}
   s.default_executable = %q{mirage}
   s.description = %q{Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.}
   s.executables = ["mirage"]
@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
     "Gemfile",
     "README.md",
     "VERSION",
-    "bin/mirage",
     "features/client/clear.feature",
     "features/client/mirage_client.feature",
     "features/client/put.feature",
@@ -82,39 +81,36 @@ For more information go to: https://github.com/lashd/mirage/wiki
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_development_dependency(%q<rake>, [">= 0"])
-      s.add_development_dependency(%q<cucumber>, [">= 0"])
-      s.add_development_dependency(%q<gherkin>, ["= 2.3.9"])
-      s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<cucumber>, ["= 0.8.7"])
+      s.add_development_dependency(%q<rspec>, ["= 2.6.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<sinatra-reloader>, [">= 0"])
-      s.add_development_dependency(%q<mechanize>, [">= 1.0.0"])
+      s.add_development_dependency(%q<mechanize>, ["= 1.0.0"])
       s.add_development_dependency(%q<gemcutter>, [">= 0"])
+      s.add_development_dependency(%q<nokogiri>, ["= 1.4.7"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_dependency(%q<rake>, [">= 0"])
-      s.add_dependency(%q<cucumber>, [">= 0"])
-      s.add_dependency(%q<gherkin>, ["= 2.3.9"])
-      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<cucumber>, ["= 0.8.7"])
+      s.add_dependency(%q<rspec>, ["= 2.6.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<sinatra-reloader>, [">= 0"])
-      s.add_dependency(%q<mechanize>, [">= 1.0.0"])
+      s.add_dependency(%q<mechanize>, ["= 1.0.0"])
       s.add_dependency(%q<gemcutter>, [">= 0"])
+      s.add_dependency(%q<nokogiri>, ["= 1.4.7"])
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<childprocess>, ["~> 0.1"])
     s.add_dependency(%q<rake>, [">= 0"])
-    s.add_dependency(%q<cucumber>, [">= 0"])
-    s.add_dependency(%q<gherkin>, ["= 2.3.9"])
-    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<cucumber>, ["= 0.8.7"])
+    s.add_dependency(%q<rspec>, ["= 2.6.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<sinatra-reloader>, [">= 0"])
-    s.add_dependency(%q<mechanize>, [">= 1.0.0"])
+    s.add_dependency(%q<mechanize>, ["= 1.0.0"])
     s.add_dependency(%q<gemcutter>, [">= 0"])
+    s.add_dependency(%q<nokogiri>, ["= 1.4.7"])
   end
 end
 
