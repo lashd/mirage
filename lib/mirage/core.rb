@@ -6,15 +6,6 @@ module Mirage
 
   class Server < Sinatra::Base
 
-    
-    class << self
-      attr_reader :defaults_directory
-      
-      def configure options
-        @defaults_directory = options[:defaults_directory]
-      end
-    end
-
     REQUESTS= {}
 
     MOCK_RESPONSES = MockResponsesCollection.new
@@ -94,7 +85,7 @@ module Mirage
     put '/mirage/defaults' do
       MOCK_RESPONSES.clear
 
-      Dir["#{Server.defaults_directory}/**/*.rb"].each do |default|
+      Dir["#{settings.defaults_directory}/**/*.rb"].each do |default|
         begin
           load default
         rescue Exception
