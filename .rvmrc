@@ -1,1 +1,1 @@
-rvm --create default@mirage
+rvm --create use default@mirage
