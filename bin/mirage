@@ -11,9 +11,9 @@ def start_mirage(args)
   puts "Starting Mirage"
 
   if windows?
-    command = ["cmd", "/C", "start", "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/mirage/server.rb"]
+    command = ["cmd", "/C", "start", "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../mirage_server.rb"]
   else
-    command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../lib/mirage/server.rb"]
+    command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../mirage_server.rb"]
   end
   ChildProcess.build(*(command.concat(args))).start
   Mirage::Client.new "http://localhost:#{parse_options(ARGV)[:port]}/mirage"
@@ -24,7 +24,7 @@ def mirage_process_ids
   if windows?
     [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
   else
-    ["Mirage Server", 'mirage/server'].collect do |process_name|
+    ["Mirage Server", 'mirage_server'].collect do |process_name|
       `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
     end.find_all { |process_id| process_id != $$.to_s }.compact
   end

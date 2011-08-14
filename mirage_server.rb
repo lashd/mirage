@@ -1,7 +1,7 @@
 require 'rubygems'
 $0='Mirage Server'
 ROOT_DIR = File.dirname(__FILE__)
-$LOAD_PATH.unshift(ROOT_DIR)
+$LOAD_PATH.unshift("#{ROOT_DIR}/lib/mirage")
 
 require 'client'
 require 'sinatra/base'
@@ -23,7 +23,7 @@ module Mirage
       set :show_exceptions, false
       set :logging, true
       set :server, 'webrick'
-      set :views, "#{ROOT_DIR}/../../views"
+      set :views, "#{ROOT_DIR}/views"
 
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
