@@ -2,5 +2,8 @@ require 'rubygems'
 require 'mirage/client'
 
 
-Mirage::Client.new.prime
+client = Mirage::Client.new
+client.put('greeting', 'hello')
+client.save
+client.put('leaving', 'goodbye')
 

@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
     "lib/mirage/client.rb",
     "lib/mirage/server.rb",
     "lib/mirage/mock_response.rb",
-    "lib/mirage/mock_responses_collection.rb",
+    "lib/mirage/mock_responses.rb",
     "lib/mirage/object.rb",
     "lib/mirage/server.rb",
     "lib/mirage/util.rb",

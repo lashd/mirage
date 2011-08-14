@@ -10,7 +10,7 @@ require 'mock_response'
 require 'mock_responses_collection'
 
 include Mirage::Util
-
+              
 
 module Mirage
 
@@ -33,8 +33,6 @@ module Mirage
 
     REQUESTS= {}
 
-    MOCK_RESPONSES = MockResponsesCollection.new
-
     put '/mirage/templates/*' do |name|
       response = request.body.read
 
@@ -43,13 +41,13 @@ module Mirage
 
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
 
-      MOCK_RESPONSES << MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
+      MockResponses << MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
       send(http_method, '/mirage/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
-        record = MOCK_RESPONSES.get_response(name, http_method, body, query_string)
+        record = MockResponses.get_response(name, http_method, body, query_string)
 
         return 404 unless record
         REQUESTS[record.response_id] = body.empty? ? query_string : body
@@ -61,7 +59,7 @@ module Mirage
 
     delete '/mirage/templates/:id' do
       response_id = params[:id].to_i
-      MOCK_RESPONSES.delete(response_id)
+      MockResponses.delete(response_id)
       REQUESTS.delete(response_id)
     end
 
@@ -76,12 +74,12 @@ module Mirage
 
     delete '/mirage/templates' do
       [REQUESTS].each { |map| map.clear }
-      MOCK_RESPONSES.clear
+      MockResponses.clear
       MockResponse.reset_count
     end
 
     get '/mirage/templates/:id' do
-      response = MOCK_RESPONSES.find(params[:id].to_i)
+      response = MockResponses.find(params[:id].to_i)
       return 404 if response.is_a? Array
       send_response(response)
     end
@@ -94,7 +92,7 @@ module Mirage
     get '/mirage' do
       @responses = {}
 
-      MOCK_RESPONSES.all.each do |response|
+      MockResponses.all.each do |response|
         pattern = response.pattern.is_a?(Regexp) ? "pattern = #{response.pattern.source}" : ''
         delay = response.delay > 0 ? "delay = #{response.delay}" : ''
         pattern << ' ,' unless pattern.empty? || delay.empty?
@@ -108,7 +106,7 @@ module Mirage
     end
 
     put '/mirage/defaults' do
-      MOCK_RESPONSES.clear
+      MockResponses.clear
 
       Dir["#{settings.defaults_directory}/**/*.rb"].each do |default|
         begin
@@ -121,12 +119,12 @@ module Mirage
     end
 #
     put '/mirage/backup' do
-      MOCK_RESPONSES.backup
+      MockResponses.backup
     end
 
 
     put '/mirage' do
-      MOCK_RESPONSES.revert
+      MockResponses.revert
     end
 
 
