@@ -14,6 +14,7 @@ module Mirage
     configure do 
       options = parse_options(ARGV)
       set :defaults_directory, options[:defaults_directory]
+      set :port, options[:port]
       Mirage.client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       
       log_file = File.open('mirage.log', 'a')
@@ -27,6 +28,6 @@ module Mirage
   end
 end
 
-Mirage::Server.run! :port => parse_options(ARGV)[:port], :show_exceptions => false, :logging => true, :server => 'webrick'
+Mirage::Server.run! :show_exceptions => false, :logging => true, :server => 'webrick'
 
 
