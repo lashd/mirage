@@ -14,7 +14,10 @@ module Mirage
   class Server < Sinatra::Base
     configure do 
       
-      set :defaults_directory, parse_options(ARGV)[:defaults_directory] 
+      options = parse_options(ARGV)
+      set :defaults_directory, options[:defaults_directory]
+      Mirage.client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
+      
       require 'logger'
       enable :logging
       log_file = File.open('mirage.log', 'a')
@@ -27,8 +30,6 @@ module Mirage
   end
 end
 
-options = parse_options(ARGV)
-Mirage.client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
-Mirage::Server.run! :port => options[:port], :show_exceptions => false, :logging => true, :server => 'webrick'
+Mirage::Server.run! :port => parse_options(ARGV)[:port], :show_exceptions => false, :logging => true, :server => 'webrick'
 
 
