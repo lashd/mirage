@@ -1,10 +1,16 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
-require 'mirage/client'
 require 'childprocess'
+$LOAD_PATH.unshift("#{ROOT_DIR}/../lib")
+$LOAD_PATH.unshift("#{ROOT_DIR}/../server")
+
+require 'mirage/client'
+require 'util'
+
+
 include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
+ROOT_DIR = File.dirname(__FILE__)
 
 
 def start_mirage(args)

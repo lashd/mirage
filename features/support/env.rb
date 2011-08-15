@@ -1,6 +1,8 @@
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../../lib")
+$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../../server")
 require 'rubygems'
 require 'mirage/client'
+require 'util'
 require 'cucumber'
 require 'rspec'
 require 'mechanize'

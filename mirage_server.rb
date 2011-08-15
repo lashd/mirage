@@ -2,16 +2,18 @@ require 'rubygems'
 $0='Mirage Server'
 ROOT_DIR = File.dirname(__FILE__)
 $LOAD_PATH.unshift("#{ROOT_DIR}/lib")
-
+$LOAD_PATH.unshift("#{ROOT_DIR}/server")
 
 require 'sinatra/base'
+
+require 'extensions/object'
+require 'mock_response'
+require 'mock_responses'
+require 'util'
+
 require 'mirage/client'
-require 'mirage/object'
-require 'mirage/mock_response'
-require 'mirage/mock_responses_collection'
 
 include Mirage::Util
-
 
 module Mirage
 

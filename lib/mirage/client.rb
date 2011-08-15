@@ -1,8 +1,7 @@
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
 require 'uri'
 require 'open-uri'
-require 'util'
-require 'web'
+require 'client/web'
 
 module Mirage
 
