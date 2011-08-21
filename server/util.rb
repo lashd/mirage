@@ -2,15 +2,6 @@ require 'optparse'
 module Mirage
   module Util
 
-    def wait_until time=45
-      start_time = Time.now
-      until Time.now >= start_time + time
-        sleep 0.1
-        return if yield
-      end
-      raise 'timeout waiting'
-    end
-
     def parse_options args
       options = {:port => 7001, :defaults_directory => 'responses', :root_directory => '.'}
 

@@ -12,5 +12,6 @@ group :development do
   gem 'mechanize', '1.0.0'
   gem 'gemcutter'
   gem "nokogiri", "1.4.7"
+  gem "waitforit", "0.0.1.pre8"
 end
   

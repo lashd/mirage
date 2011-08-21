@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'childprocess'
+ROOT_DIR = File.dirname(__FILE__)
 $LOAD_PATH.unshift("#{ROOT_DIR}/../lib")
 $LOAD_PATH.unshift("#{ROOT_DIR}/../server")
 
 require 'mirage/client'
+require 'waitforit'
 require 'util'
 
 
 include Mirage::Util
 RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
-ROOT_DIR = File.dirname(__FILE__)
-
 
 def start_mirage(args)
   puts "Starting Mirage"
@@ -58,7 +58,7 @@ if ARGV.include?('start')
   rescue Mirage::InternalServerException => e
     puts "WARN: #{e.message}"
   end
-
+  
 elsif ARGV.include?('stop')
   puts "Stopping Mirage"
   stop_mirage
