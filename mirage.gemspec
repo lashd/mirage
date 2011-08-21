@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mirage}
-  s.version = "2.0.2"
+  s.version = "2.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = %q{2011-08-14}
+  s.date = %q{2011-08-21}
   s.default_executable = %q{mirage}
   s.description = %q{Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.}
   s.executables = ["mirage"]
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".rvmrc",
     "Gemfile",
+    "HISTORY",
     "README.md",
     "VERSION",
     "bin/mirage",
@@ -46,15 +47,14 @@ Gem::Specification.new do |s|
     "features/support/env.rb",
     "full_build.sh",
     "lib/mirage/client.rb",
-    "lib/mirage/mock_response.rb",
-    "lib/mirage/mock_responses.rb",
-    "lib/mirage/object.rb",
-    "lib/mirage/util.rb",
-    "lib/mirage/web.rb",
+    "lib/mirage/client/web.rb",
     "mirage.gemspec",
     "mirage_server.rb",
     "rakefile",
-    "test.rb",
+    "server/extensions/object.rb",
+    "server/mock_response.rb",
+    "server/mock_responses.rb",
+    "server/util.rb",
     "views/index.erb"
   ]
   s.homepage = %q{https://github.com/lashd/mirage}
@@ -88,6 +88,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
       s.add_development_dependency(%q<mechanize>, ["= 1.0.0"])
       s.add_development_dependency(%q<gemcutter>, [">= 0"])
       s.add_development_dependency(%q<nokogiri>, ["= 1.4.7"])
+      s.add_development_dependency(%q<waitforit>, ["= 0.0.1.pre8"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<childprocess>, ["~> 0.1"])
@@ -99,6 +100,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
       s.add_dependency(%q<mechanize>, ["= 1.0.0"])
       s.add_dependency(%q<gemcutter>, [">= 0"])
       s.add_dependency(%q<nokogiri>, ["= 1.4.7"])
+      s.add_dependency(%q<waitforit>, ["= 0.0.1.pre8"])
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
@@ -111,6 +113,7 @@ For more information go to: https://github.com/lashd/mirage/wiki
     s.add_dependency(%q<mechanize>, ["= 1.0.0"])
     s.add_dependency(%q<gemcutter>, [">= 0"])
     s.add_dependency(%q<nokogiri>, ["= 1.4.7"])
+    s.add_dependency(%q<waitforit>, ["= 0.0.1.pre8"])
   end
 end
 
