@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = %q{2011-08-21}
+  s.date = %q{2011-08-22}
   s.default_executable = %q{mirage}
   s.description = %q{Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.}
   s.executables = ["mirage"]
