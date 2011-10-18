@@ -49,7 +49,7 @@ if ARGV.include?('start')
   end
 
   mirage_client = start_mirage(ARGV)
-  wait_until do
+  wait_until :timeout_after => 30.seconds do
     mirage_client.running?
   end
 
