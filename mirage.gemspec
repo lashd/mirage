@@ -4,14 +4,13 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{mirage}
+  s.name = "mirage"
   s.version = "2.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = %q{2011-10-18}
-  s.default_executable = %q{mirage}
-  s.description = %q{Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.}
+  s.date = "2011-12-13"
+  s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
     "README.md"
@@ -19,6 +18,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".rvmrc",
     "Gemfile",
+    "Gemfile.lock",
     "HISTORY",
     "README.md",
     "VERSION",
@@ -57,22 +57,12 @@ Gem::Specification.new do |s|
     "server/util.rb",
     "views/index.erb"
   ]
-  s.homepage = %q{https://github.com/lashd/mirage}
+  s.homepage = "https://github.com/lashd/mirage"
   s.licenses = ["MIT"]
-  s.post_install_message = %q{
-===============================================================================
-Thanks you for installing mirage.   
-
-Run Mirage with:
-
-mirage start                                   
-
-For more information go to: https://github.com/lashd/mirage/wiki
-===============================================================================
-}
+  s.post_install_message = "\n===============================================================================\nThanks you for installing mirage.   \n\nRun Mirage with:\n\nmirage start                                   \n\nFor more information go to: https://github.com/lashd/mirage/wiki\n===============================================================================\n"
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.1}
-  s.summary = %q{Mirage is a easy mock server for testing your applications}
+  s.rubygems_version = "1.8.10"
+  s.summary = "Mirage is a easy mock server for testing your applications"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
@@ -81,39 +71,39 @@ For more information go to: https://github.com/lashd/mirage/wiki
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_development_dependency(%q<rake>, [">= 0"])
-      s.add_development_dependency(%q<cucumber>, ["= 0.8.7"])
+      s.add_development_dependency(%q<cucumber>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["= 2.6.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<sinatra-reloader>, [">= 0"])
+      s.add_development_dependency(%q<sinatra-contrib>, [">= 0"])
       s.add_development_dependency(%q<mechanize>, ["= 1.0.0"])
       s.add_development_dependency(%q<gemcutter>, [">= 0"])
       s.add_development_dependency(%q<nokogiri>, ["= 1.4.7"])
-      s.add_development_dependency(%q<waitforit>, ["= 0.0.1.pre8"])
+      s.add_development_dependency(%q<waitforit>, [">= 0"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<childprocess>, ["~> 0.1"])
       s.add_dependency(%q<rake>, [">= 0"])
-      s.add_dependency(%q<cucumber>, ["= 0.8.7"])
+      s.add_dependency(%q<cucumber>, [">= 0"])
       s.add_dependency(%q<rspec>, ["= 2.6.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<sinatra-reloader>, [">= 0"])
+      s.add_dependency(%q<sinatra-contrib>, [">= 0"])
       s.add_dependency(%q<mechanize>, ["= 1.0.0"])
       s.add_dependency(%q<gemcutter>, [">= 0"])
       s.add_dependency(%q<nokogiri>, ["= 1.4.7"])
-      s.add_dependency(%q<waitforit>, ["= 0.0.1.pre8"])
+      s.add_dependency(%q<waitforit>, [">= 0"])
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<childprocess>, ["~> 0.1"])
     s.add_dependency(%q<rake>, [">= 0"])
-    s.add_dependency(%q<cucumber>, ["= 0.8.7"])
+    s.add_dependency(%q<cucumber>, [">= 0"])
     s.add_dependency(%q<rspec>, ["= 2.6.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<sinatra-reloader>, [">= 0"])
+    s.add_dependency(%q<sinatra-contrib>, [">= 0"])
     s.add_dependency(%q<mechanize>, ["= 1.0.0"])
     s.add_dependency(%q<gemcutter>, [">= 0"])
     s.add_dependency(%q<nokogiri>, ["= 1.4.7"])
-    s.add_dependency(%q<waitforit>, ["= 0.0.1.pre8"])
+    s.add_dependency(%q<waitforit>, [">= 0"])
   end
 end
 
