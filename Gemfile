@@ -5,13 +5,13 @@ gem 'childprocess', '~> 0.1'
 
 group :development do
   gem 'rake'
-  gem 'cucumber', "0.8.7"
+  gem 'cucumber'
   gem 'rspec', "2.6.0"
   gem "jeweler", "~> 1.5.2"
-  gem 'sinatra-reloader'
+  gem 'sinatra-contrib'
   gem 'mechanize', '1.0.0'
   gem 'gemcutter'
   gem "nokogiri", "1.4.7"
-  gem "waitforit", "0.0.1.pre8"
+  gem "waitforit"
 end
   

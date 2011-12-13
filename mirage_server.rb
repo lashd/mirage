@@ -63,14 +63,17 @@ module Mirage
     delete '/mirage/templates/:id' do
       MockResponses.delete(response_id)
       REQUESTS.delete(response_id)
+      ""
     end
 
     delete '/mirage/requests' do
       REQUESTS.clear
+      ""
     end
 
     delete '/mirage/requests/:id' do
       REQUESTS.delete(response_id)
+      ""
     end
 
 
@@ -78,6 +81,7 @@ module Mirage
       [REQUESTS].each { |map| map.clear }
       MockResponses.clear
       MockResponse.reset_count
+      ""
     end
 
     get '/mirage/templates/:id' do
