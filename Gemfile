@@ -2,6 +2,7 @@ source :rubygems
 
 gem 'sinatra'
 gem 'childprocess', '~> 0.1'
+gem "waitforit"
 
 group :development do
   gem 'rake'
@@ -12,6 +13,5 @@ group :development do
   gem 'mechanize', '1.0.0'
   gem 'gemcutter'
   gem "nokogiri", "1.4.7"
-  gem "waitforit"
 end
   
