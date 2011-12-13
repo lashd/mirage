@@ -44,7 +44,9 @@ module Mirage
 
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
 
-      MockResponses << MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
+      mock_response = MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
+      MockResponses << mock_response
+      mock_response.response_id.to_s
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
@@ -63,17 +65,17 @@ module Mirage
     delete '/mirage/templates/:id' do
       MockResponses.delete(response_id)
       REQUESTS.delete(response_id)
-      ""
+      200
     end
 
     delete '/mirage/requests' do
       REQUESTS.clear
-      ""
+      200
     end
 
     delete '/mirage/requests/:id' do
       REQUESTS.delete(response_id)
-      ""
+      200
     end
 
 
@@ -81,7 +83,7 @@ module Mirage
       [REQUESTS].each { |map| map.clear }
       MockResponses.clear
       MockResponse.reset_count
-      ""
+      200
     end
 
     get '/mirage/templates/:id' do
@@ -107,9 +109,6 @@ module Mirage
       erb :index
     end
 
-    error do
-      erb request.env['sinatra.error'].message
-    end
 
     put '/mirage/defaults' do
       MockResponses.clear
@@ -122,19 +121,23 @@ module Mirage
         end
 
       end
+      200
     end
 #
     put '/mirage/backup' do
       MockResponses.backup
-      ""
+      200
     end
 
 
     put '/mirage' do
       MockResponses.revert
-      ""
+      200
     end
 
+    error do
+      erb request.env['sinatra.error'].message
+    end
 
     helpers do
 

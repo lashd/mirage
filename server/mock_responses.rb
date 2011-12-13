@@ -4,8 +4,6 @@ module Mirage
     class << self
 
       def << response
-
-
         stored_responses = responses[response.name]||={}
 
         stored_responses[response.pattern] ||= {}
@@ -16,7 +14,6 @@ module Mirage
         # Right not an the main id count goes up by one even if the id is not used because the old id is reused from another response
         response.response_id = old_response.response_id if old_response
         response.response_id.to_s
-
       end
 
       def get_response name, http_method, body, query_string
@@ -49,7 +46,6 @@ module Mirage
             end
           end
         end
-        
       end
 
       def delete(response_id)
