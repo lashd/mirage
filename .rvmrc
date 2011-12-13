@@ -1,1 +1,1 @@
-rvm --create use default@mirage
+rvm --create use 1.9.2@mirage
