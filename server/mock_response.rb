@@ -3,8 +3,8 @@ module Mirage
     class << self
 
       def add response
-        stored_responses = responses[response.name]||={}
-        stored_response_set = (stored_responses[response.pattern] ||= {})
+        stored_response_sets = responses[response.name]||={}
+        stored_response_set = (stored_response_sets[response.pattern] ||= {})
 
         old_response = stored_response_set.delete(response.http_method)
         stored_response_set[response.http_method] = response
