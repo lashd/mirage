@@ -4,10 +4,10 @@ module Mirage
 
       def add response
         stored_responses = responses[response.name]||={}
-        stored_responses[response.pattern] ||= {}
+        stored_response_set = (stored_responses[response.pattern] ||= {})
 
-        old_response = stored_responses[response.pattern].delete(response.http_method)
-        stored_responses[response.pattern][response.http_method] = response
+        old_response = stored_response_set.delete(response.http_method)
+        stored_response_set[response.http_method] = response
 
         response.response_id = old_response ? old_response.response_id : (@@id_count+=1)
       end
