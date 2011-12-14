@@ -17,10 +17,10 @@ module Mirage
         record = find_response(body, query_string, responses[name], http_method) if responses.include?(name)
 
         unless record
-          default_responses, record = find_default_responses(name), nil
+          default_response_sets, record = find_default_responses(name), nil
 
-          until record || default_responses.empty?
-            record = find_response(body, query_string, default_responses.delete_at(0), http_method)
+          until record || default_response_sets.empty?
+            record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
             if record
               record = record.default? ? record : nil
             end
