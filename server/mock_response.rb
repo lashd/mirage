@@ -146,8 +146,5 @@ module Mirage
     def find_match(string, regex)
       string.scan(/#{regex}/).flatten.first
     end
-
-
   end
-  MockResponses = MockResponse
 end
