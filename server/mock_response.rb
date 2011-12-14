@@ -13,8 +13,12 @@ module Mirage
       end
 
       def next_id
-        @id_count||= 0
-        @id_count+=1
+        @next_id||= 0
+        @next_id+=1
+      end
+
+      def reset_count
+        @next_id = 0
       end
 
       def get_response name, http_method, body, query_string
@@ -111,10 +115,6 @@ module Mirage
     def initialize name, value, content_type, http_method, pattern=nil, delay=0, default=false, file=false
       @name, @value, @content_type, @http_method, @pattern, @delay, @default, @file = name, value, content_type, http_method.to_s.upcase, pattern, delay, default, file
       MockResponse.add self
-    end
-
-    def self.reset_count
-      @id_count = 0
     end
 
     def default?
