@@ -14,7 +14,12 @@ module Mirage
 
 
       def get_response name, http_method, body, query_string
-        find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
+        if responses[name]
+          response_set = responses[name][body] || responses[name][query_string] || responses[name][:basic]
+          response = response_set[http_method.upcase] if response_set
+          return response if response
+        end
+        default_response(body, http_method, name, query_string)
       end
 
       def find id
@@ -47,7 +52,7 @@ module Mirage
       end
 
       def revert
-        responses.clear and responses.replace(snapshot.deep_clone)
+        clear and responses.replace(snapshot.deep_clone)
       end
 
       def all

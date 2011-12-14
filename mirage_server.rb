@@ -7,6 +7,7 @@ $LOAD_PATH.unshift("#{ROOT_DIR}/server")
 require 'sinatra/base'
 
 require 'extensions/object'
+require 'extensions/hash'
 require 'mock_response'
 require 'util'
 
