@@ -128,5 +128,5 @@ end
 
 
 at_exit do
-  #stop_mirage if $mirage.running?
+  stop_mirage if $mirage.running?
 end
