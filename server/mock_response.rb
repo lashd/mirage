@@ -13,10 +13,8 @@ module Mirage
       end
 
       def get_response name, http_method, body, query_string
-        stored_responses = responses[name]
 
-        record = find_response(body, query_string, stored_responses, http_method) if stored_responses
-
+        record = find_response(body, query_string, responses[name], http_method) if responses.include?(name)
 
         unless record
           default_responses, record = find_default_responses(name), nil
