@@ -11,7 +11,7 @@ module Mirage
 
 
         # Right now an the main id count goes up by one even if the id is not used because the old id is reused from another response
-        response.response_id = old_response.response_id if old_response
+        response.response_id = old_response ? old_response.response_id : (@@id_count+=1)
         response.response_id.to_s
       end
 
@@ -114,7 +114,7 @@ module Mirage
     attr_accessor :response_id
 
     def initialize name, value, content_type, http_method, pattern=nil, delay=0, default=false, file=false
-      @name, @value,@content_type,  @http_method, @pattern, @response_id, @delay, @default, @file = name, value, content_type, http_method, pattern, @@id_count+=1, delay, default, file
+      @name, @value,@content_type,  @http_method, @pattern, @delay, @default, @file = name, value, content_type, http_method, pattern, delay, default, file
       MockResponse.add self
     end
 

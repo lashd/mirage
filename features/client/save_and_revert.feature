@@ -24,7 +24,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     Goodbye
     """
 
-    And I send PUT to 'http://localhost:7001/mirage/set/greeting' with request entity
+    And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
     """
     Changed
     """
