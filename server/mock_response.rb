@@ -12,12 +12,6 @@ module Mirage
         response.response_id = old_response ? old_response.response_id : next_id
       end
 
-      def next_id
-        @next_id||= 0
-        @next_id+=1
-      end
-
-
 
       def get_response name, http_method, body, query_string
         find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
@@ -68,8 +62,6 @@ module Mirage
         all_responses
       end
 
-      private
-
       def default_response(body, http_method, name, query_string)
         default_response_sets = find_default_responses(name)
 
@@ -79,6 +71,7 @@ module Mirage
         end
       end
 
+      private
       def find_response(body, query_string, response_set, http_method)
         return unless response_set
         http_method = http_method.upcase
@@ -98,7 +91,6 @@ module Mirage
         matches.collect { |key| responses[key] }
       end
 
-      private
       def responses
         @responses ||={}
       end
@@ -106,6 +98,12 @@ module Mirage
       def snapshot
         @snapshot ||={}
       end
+
+      def next_id
+        @next_id||= 0
+        @next_id+=1
+      end
+
     end
 
     attr_reader :response_id, :delay, :name, :pattern, :http_method, :content_type
