@@ -14,12 +14,7 @@ module Mirage
 
 
       def get_response name, http_method, body, query_string
-        if responses[name]
-          response_set = responses[name][body] || responses[name][query_string] || responses[name][:basic]
-          response = response_set[http_method.upcase] if response_set
-          return response if response
-        end
-        default_response(body, http_method, name, query_string)
+        find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
       end
 
       def find id
@@ -79,16 +74,9 @@ module Mirage
       private
       def find_response(body, query_string, response_set, http_method)
         return unless response_set
-        http_method = http_method.upcase
-        pattern_match = response_set.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
-
-        if pattern_match
-          record = response_set[pattern_match][http_method]
-        else
-          record = response_set[:basic]
-          record = record[http_method] if record
-        end
-        record
+        response_set = response_set[body] || response_set[query_string] || response_set[:basic]
+        response = response_set[http_method.upcase] if response_set
+        return response if response
       end
 
       def find_default_responses(name)
