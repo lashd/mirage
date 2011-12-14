@@ -17,9 +17,7 @@ module Mirage
         @next_id+=1
       end
 
-      def reset_count
-        @next_id = 0
-      end
+
 
       def get_response name, http_method, body, query_string
         find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
@@ -47,6 +45,7 @@ module Mirage
 
       def clear
         responses.clear
+        @next_id = 0
       end
 
       def backup

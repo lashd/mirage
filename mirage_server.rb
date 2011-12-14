@@ -80,7 +80,6 @@ module Mirage
     delete '/mirage/templates' do
       [REQUESTS].each { |map| map.clear }
       MockResponse.clear
-      MockResponse.reset_count
       200
     end
 
