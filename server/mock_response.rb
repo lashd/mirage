@@ -17,7 +17,6 @@ module Mirage
 
       def get_response name, http_method, body, query_string
         stored_responses = responses[name]
-        record = nil
 
         record = find_response(body, query_string, stored_responses, http_method) if stored_responses
 
@@ -72,7 +71,7 @@ module Mirage
       def all
         all_responses = []
         responses.values.each do |response_sets|
-          response_sets.each do |pattern, response_set|
+          response_sets.values.each do |response_set|
             response_set.values.each do |response|
               all_responses << response
             end
