@@ -8,7 +8,6 @@ require 'sinatra/base'
 
 require 'extensions/object'
 require 'mock_response'
-require 'mock_responses'
 require 'util'
 
 require 'mirage/client'
@@ -45,13 +44,12 @@ module Mirage
       pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
 
       mock_response = MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
-      MockResponses << mock_response
       mock_response.response_id.to_s
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
       send(http_method, '/mirage/responses/*') do |name|
-        body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.env['QUERY_STRING']
+        body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
         record = MockResponses.get_response(name, http_method, body, query_string)
 
         return 404 unless record
@@ -119,7 +117,6 @@ module Mirage
         rescue Exception => e
           raise "Unable to load default responses from: #{default}"
         end
-
       end
       200
     end
