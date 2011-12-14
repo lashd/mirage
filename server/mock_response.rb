@@ -21,10 +21,7 @@ module Mirage
 
           until record || default_response_sets.empty?
             record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
-            if record
-              record = record.default? ? record : nil
-            end
-
+            record = nil unless record && record.default?
           end
         end
 
@@ -76,15 +73,15 @@ module Mirage
       end
 
       private
-      def find_response(body, query_string, stored_responses, http_method)
-        return unless stored_responses
+      def find_response(body, query_string, response_set, http_method)
+        return unless response_set
         http_method = http_method.upcase
-        pattern_match = stored_responses.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
+        pattern_match = response_set.keys.find_all { |pattern| pattern != :basic }.find { |pattern| (body =~ pattern || query_string =~ pattern) }
 
         if pattern_match
-          record = stored_responses[pattern_match][http_method]
+          record = response_set[pattern_match][http_method]
         else
-          record = stored_responses[:basic]
+          record = response_set[:basic]
           record = record[http_method] if record
         end
         record
