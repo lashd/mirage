@@ -119,7 +119,7 @@ module Mirage
     end
 
     def file?
-      @file == 'true'
+      'true' == @file
     end
 
 
