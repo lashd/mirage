@@ -9,7 +9,12 @@ module Mirage
         old_response = stored_response_set.delete(response.http_method)
         stored_response_set[response.http_method] = response
 
-        response.response_id = old_response ? old_response.response_id : (@@id_count+=1)
+        response.response_id = old_response ? old_response.response_id : next_id
+      end
+
+      def next_id
+        @id_count||= 0
+        @id_count+=1
       end
 
       def get_response name, http_method, body, query_string
@@ -100,7 +105,6 @@ module Mirage
       end
     end
 
-    @@id_count = 0
     attr_reader :response_id, :delay, :name, :pattern, :http_method, :content_type
     attr_accessor :response_id
 
@@ -110,7 +114,7 @@ module Mirage
     end
 
     def self.reset_count
-      @@id_count = 0
+      @id_count = 0
     end
 
     def default?
