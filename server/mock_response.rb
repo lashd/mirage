@@ -13,15 +13,7 @@ module Mirage
       end
 
       def get_response name, http_method, body, query_string
-        record = find_response(body, query_string, responses[name], http_method)
-        return record if record
-
-        default_response_sets = find_default_responses(name)
-
-        until default_response_sets.empty?
-          record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
-          return record if record && record.default?
-        end
+        find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
       end
 
       def find id
@@ -69,6 +61,16 @@ module Mirage
       end
 
       private
+
+      def default_response(body, http_method, name, query_string)
+        default_response_sets = find_default_responses(name)
+
+        until default_response_sets.empty?
+          record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
+          return record if record && record.default?
+        end
+      end
+
       def find_response(body, query_string, response_set, http_method)
         return unless response_set
         http_method = http_method.upcase
