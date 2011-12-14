@@ -13,19 +13,15 @@ module Mirage
       end
 
       def get_response name, http_method, body, query_string
-
         record = find_response(body, query_string, responses[name], http_method)
+        return record if record
 
-        if record.nil?
-          default_response_sets, record = find_default_responses(name), nil
+        default_response_sets = find_default_responses(name)
 
-          until record || default_response_sets.empty?
-            record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
-            record = nil unless record && record.default?
-          end
+        until default_response_sets.empty?
+          record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
+          return record if record && record.default?
         end
-
-        record
       end
 
       def find id
@@ -107,7 +103,7 @@ module Mirage
     attr_accessor :response_id
 
     def initialize name, value, content_type, http_method, pattern=nil, delay=0, default=false, file=false
-      @name, @value,@content_type,  @http_method, @pattern, @delay, @default, @file = name, value, content_type, http_method.to_s.upcase, pattern, delay, default, file
+      @name, @value, @content_type, @http_method, @pattern, @delay, @default, @file = name, value, content_type, http_method.to_s.upcase, pattern, delay, default, file
       MockResponse.add self
     end
 
