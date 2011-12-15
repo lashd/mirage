@@ -18,23 +18,11 @@ module Mirage
       end
 
       def find id
-        responses.values.each do |response_sets|
-          response_sets.values.each do |response_set|
-            response_set.values.each do |response|
-              return response if response.response_id == id
-            end
-          end
-        end
+        response_set_containing(id).values.find{|response|response.response_id == id}
       end
 
-      def delete(response_id)
-        responses.values.each do |response_sets|
-          response_sets.values.each do |response_set|
-            response_set.each do |method, response|
-              response_set.delete(method) if response.response_id == response_id
-            end
-          end
-        end
+      def delete(id)
+        response_set_containing(id).delete_if{|http_method, response|response.response_id == id}
       end
 
       def clear
@@ -75,8 +63,16 @@ module Mirage
       def find_response(body, query_string, response_set, http_method)
         return unless response_set
         response_set = response_set[body] || response_set[query_string] || response_set[:basic]
-        response = response_set[http_method.upcase] if response_set
-        return response if response
+        response_set[http_method.upcase] if response_set
+      end
+
+      def response_set_containing id
+        responses.values.each do |response_sets|
+          response_sets.values.each do |response_set|
+            return response_set if response_set.find{|key, response|response.response_id == id}
+          end
+        end
+        {}
       end
 
       def find_default_responses(name)

@@ -86,7 +86,7 @@ module Mirage
 
     get '/mirage/templates/:id' do
       response = MockResponse.find(response_id)
-      return 404 if response.is_a? Array
+      return 404 if response.nil? || response.is_a?(Array)
       send_response(response)
     end
 
