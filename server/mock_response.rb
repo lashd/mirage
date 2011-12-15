@@ -100,7 +100,8 @@ module Mirage
     attr_accessor :response_id
 
     def initialize name, value, content_type, http_method, pattern=nil, delay=0, default=false, file=false
-      @name, @value, @content_type, @http_method, @pattern, @delay, @default, @file = name, value, content_type, http_method.to_s.upcase, pattern, delay, default, file
+      @name, @value, @content_type, @http_method, @delay, @default, @file = name, value, content_type, (http_method||'GET').upcase,  delay, default, file
+      @pattern = pattern ? /#{pattern}/ : :basic
       MockResponse.add self
     end
 

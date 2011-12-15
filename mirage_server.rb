@@ -38,14 +38,14 @@ module Mirage
 
     put '/mirage/templates/*' do |name|
       response = request.body.read
-
-      headers = request.env
-      http_method = headers['HTTP_X_MIRAGE_METHOD'] || 'GET'
-
-      pattern = headers['HTTP_X_MIRAGE_PATTERN'] ? /#{headers['HTTP_X_MIRAGE_PATTERN']}/ : :basic
-
-      mock_response = MockResponse.new(name, response, headers['CONTENT_TYPE'], http_method, pattern, headers['HTTP_X_MIRAGE_DELAY'].to_f, headers['HTTP_X_MIRAGE_DEFAULT'], headers['HTTP_X_MIRAGE_FILE'])
-      mock_response.response_id.to_s
+      MockResponse.new(name,
+                       response,
+                       @env['CONTENT_TYPE'],
+                       @env['HTTP_X_MIRAGE_METHOD'],
+                       @env['HTTP_X_MIRAGE_PATTERN'],
+                       @env['HTTP_X_MIRAGE_DELAY'].to_f,
+                       @env['HTTP_X_MIRAGE_DEFAULT'],
+                       @env['HTTP_X_MIRAGE_FILE']).response_id.to_s
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|
@@ -81,7 +81,7 @@ module Mirage
 
 
     delete '/mirage/templates' do
-      [REQUESTS].each { |map| map.clear }
+      REQUESTS.clear
       MockResponse.delete_all
       200
     end
@@ -95,7 +95,6 @@ module Mirage
     get '/mirage/requests/:id' do
       REQUESTS[response_id] || 404
     end
-
 
     get '/mirage' do
       @responses = {}
