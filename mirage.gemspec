@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2011-12-14"
+  s.date = "2011-12-15"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -51,6 +51,7 @@ Gem::Specification.new do |s|
     "mirage.gemspec",
     "mirage_server.rb",
     "rakefile",
+    "server/extensions/hash.rb",
     "server/extensions/object.rb",
     "server/mock_response.rb",
     "server/util.rb",
