@@ -2,21 +2,7 @@ module Mirage
   class MockResponse
     class << self
 
-      def add response
-        stored_response_sets = responses[response.name]||={}
-        stored_response_set = (stored_response_sets[response.pattern] ||= {})
-
-        old_response = stored_response_set.delete(response.http_method)
-        stored_response_set[response.http_method] = response
-
-        response.response_id = old_response ? old_response.response_id : next_id
-      end
-
-      def get_response name, http_method, body, query_string
-        find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
-      end
-
-      def find id
+      def find_by_id id
         response_set_containing(id).values.find { |response| response.response_id == id }
       end
 
@@ -24,7 +10,7 @@ module Mirage
         response_set_containing(id).delete_if { |http_method, response| response.response_id == id }
       end
 
-      def clear
+      def delete_all
         responses.clear
         @next_id = 0
       end
@@ -34,7 +20,7 @@ module Mirage
       end
 
       def revert
-        clear and responses.replace(snapshot.deep_clone)
+        delete_all and responses.replace(snapshot.deep_clone)
       end
 
       def all
@@ -45,17 +31,30 @@ module Mirage
         all_responses
       end
 
-      def default_response(body, http_method, name, query_string)
+      def find_default(body, http_method, name, query_string)
         default_response_sets = find_default_responses(name)
 
         until default_response_sets.empty?
-          record = find_response(body, query_string, default_response_sets.delete_at(0), http_method)
+          record = find_in_response_set(body, query_string, default_response_sets.delete_at(0), http_method)
           return record if record && record.default?
         end
       end
 
+      def find(body, query_string, name, http_method)
+        find_in_response_set(body, query_string, responses[name], http_method)
+      end
+
+      def add new_response
+        response_set = target_response_set(new_response)
+
+        old_response = response_set.delete(new_response.http_method)
+        response_set[new_response.http_method] = new_response
+        new_response.response_id = old_response ? old_response.response_id : next_id
+      end
+
       private
-      def find_response(body, query_string, response_set, http_method)
+
+      def find_in_response_set(body, query_string, response_set, http_method)
         return unless response_set
         response_set = response_set[body] || response_set[query_string] || response_set[:basic]
         response_set[http_method.upcase] if response_set
@@ -75,6 +74,11 @@ module Mirage
       def find_default_responses(name)
         matches = responses.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
         matches.collect { |key| responses[key] }
+      end
+
+      def target_response_set response
+        responses_sets = responses[response.name]||={}
+        responses_sets[response.pattern] ||= {}
       end
 
       def responses

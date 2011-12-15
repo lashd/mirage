@@ -51,7 +51,9 @@ module Mirage
     ['get', 'post', 'delete', 'put'].each do |http_method|
       send(http_method, '/mirage/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
-        record = MockResponse.get_response(name, http_method, body, query_string)
+
+        record = MockResponse.find(body, query_string, name, http_method) ||
+            MockResponse.find_default(body, http_method, name, query_string)
 
         return 404 unless record
         REQUESTS[record.response_id] = body.empty? ? query_string : body
@@ -80,12 +82,12 @@ module Mirage
 
     delete '/mirage/templates' do
       [REQUESTS].each { |map| map.clear }
-      MockResponse.clear
+      MockResponse.delete_all
       200
     end
 
     get '/mirage/templates/:id' do
-      response = MockResponse.find(response_id)
+      response = MockResponse.find_by_id(response_id)
       return 404 if response.nil? || response.is_a?(Array)
       send_response(response)
     end
@@ -109,7 +111,7 @@ module Mirage
 
 
     put '/mirage/defaults' do
-      MockResponse.clear
+      MockResponse.delete_all
 
       Dir["#{settings.defaults_directory}/**/*.rb"].each do |default|
         begin
