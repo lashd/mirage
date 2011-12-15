@@ -18,11 +18,11 @@ module Mirage
       end
 
       def find id
-        response_set_containing(id).values.find{|response|response.response_id == id}
+        response_set_containing(id).values.find { |response| response.response_id == id }
       end
 
       def delete(id)
-        response_set_containing(id).delete_if{|http_method, response|response.response_id == id}
+        response_set_containing(id).delete_if { |http_method, response| response.response_id == id }
       end
 
       def clear
@@ -40,12 +40,8 @@ module Mirage
 
       def all
         all_responses = []
-        responses.values.each do |response_sets|
-          response_sets.values.each do |response_set|
-            response_set.values.each do |response|
-              all_responses << response
-            end
-          end
+        response_sets.each do |response_set|
+          response_set.values.each{|response|all_responses << response}
         end
         all_responses
       end
@@ -67,12 +63,14 @@ module Mirage
       end
 
       def response_set_containing id
-        responses.values.each do |response_sets|
-          response_sets.values.each do |response_set|
-            return response_set if response_set.find{|key, response|response.response_id == id}
-          end
+        response_sets.each do |response_set|
+          return response_set if response_set.find { |key, response| response.response_id == id }
         end
         {}
+      end
+
+      def response_sets
+        responses.values.collect { |response_sets| response_sets.values }.flatten
       end
 
       def find_default_responses(name)
