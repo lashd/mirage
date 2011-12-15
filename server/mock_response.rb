@@ -12,7 +12,6 @@ module Mirage
         response.response_id = old_response ? old_response.response_id : next_id
       end
 
-
       def get_response name, http_method, body, query_string
         find_response(body, query_string, responses[name], http_method) || default_response(body, http_method, name, query_string)
       end
