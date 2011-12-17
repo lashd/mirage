@@ -1,9 +1,12 @@
 module Mirage
+  class ServerResponseNotFound < Exception
+    
+  end
   class MockResponse
     class << self
 
       def find_by_id id
-        response_set_containing(id).values.find { |response| response.response_id == id }
+        response_set_containing(id).values.find { |response| response.response_id == id } || raise(ServerResponseNotFound)
       end
 
       def delete(id)
@@ -38,10 +41,12 @@ module Mirage
           record = find_in_response_set(body, query_string, default_response_sets.delete_at(0), http_method)
           return record if record && record.default?
         end
+
+        raise ServerResponseNotFound
       end
 
       def find(body, query_string, name, http_method)
-        find_in_response_set(body, query_string, responses[name], http_method)
+        find_in_response_set(body, query_string, responses[name], http_method) || raise(ServerResponseNotFound)
       end
 
       def add new_response

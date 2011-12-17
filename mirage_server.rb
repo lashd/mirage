@@ -25,6 +25,7 @@ module Mirage
       set :port, options[:port]
       set :show_exceptions, false
       set :logging, true
+      #set :dump_errors, true
       set :server, 'webrick'
       set :views, "#{ROOT_DIR}/views"
 
@@ -52,14 +53,17 @@ module Mirage
       send(http_method, '/mirage/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
-        record = MockResponse.find(body, query_string, name, http_method) ||
-            MockResponse.find_default(body, http_method, name, query_string)
+        begin
+          record = MockResponse.find(body, query_string, name, http_method)
+        rescue ServerResponseNotFound
+          record = MockResponse.find_default(body, http_method, name, query_string)
+        end
 
-        return 404 unless record
         REQUESTS[record.response_id] = body.empty? ? query_string : body
 
         sleep record.delay
         send_response(record, body, request, query_string)
+
       end
     end
 
@@ -131,6 +135,10 @@ module Mirage
     put '/mirage' do
       MockResponse.revert
       200
+    end
+
+    error ServerResponseNotFound do
+      404
     end
 
     error do
