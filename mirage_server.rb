@@ -61,9 +61,7 @@ module Mirage
 
         REQUESTS[record.response_id] = body.empty? ? query_string : body
 
-        sleep record.delay
         send_response(record, body, request, query_string)
-
       end
     end
 
@@ -82,7 +80,6 @@ module Mirage
       REQUESTS.delete(response_id)
       200
     end
-
 
     delete '/mirage/templates' do
       REQUESTS.clear
@@ -154,6 +151,7 @@ module Mirage
       end
 
       def send_response(response, body='', request={}, query_string='')
+        sleep response.delay
         content_type(response.content_type)
         response.value(body, request, query_string)
       end
