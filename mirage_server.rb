@@ -25,7 +25,7 @@ module Mirage
       set :port, options[:port]
       set :show_exceptions, false
       set :logging, true
-      #set :dump_errors, true
+      set :dump_errors, true
       set :server, 'webrick'
       set :views, "#{ROOT_DIR}/views"
 
@@ -91,9 +91,7 @@ module Mirage
     end
 
     get '/mirage/templates/:id' do
-      response = MockResponse.find_by_id(response_id)
-      return 404 if response.nil? || response.is_a?(Array)
-      send_response(response)
+      send_response(MockResponse.find_by_id(response_id))
     end
 
     get '/mirage/requests/:id' do
