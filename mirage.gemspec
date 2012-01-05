@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "2.0.11"
+  s.version = "2.0.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2011-12-20"
+  s.date = "2012-01-05"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -74,7 +74,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<waitforit>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<cucumber>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, ["= 2.6.0"])
+      s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<sinatra-contrib>, [">= 0"])
       s.add_development_dependency(%q<mechanize>, ["= 1.0.0"])
@@ -86,7 +86,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<waitforit>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<cucumber>, [">= 0"])
-      s.add_dependency(%q<rspec>, ["= 2.6.0"])
+      s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<sinatra-contrib>, [">= 0"])
       s.add_dependency(%q<mechanize>, ["= 1.0.0"])
@@ -99,7 +99,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<waitforit>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<cucumber>, [">= 0"])
-    s.add_dependency(%q<rspec>, ["= 2.6.0"])
+    s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<sinatra-contrib>, [">= 0"])
     s.add_dependency(%q<mechanize>, ["= 1.0.0"])
