@@ -7,7 +7,7 @@ gem "waitforit"
 group :development do
   gem 'rake'
   gem 'cucumber'
-  gem 'rspec', "2.6.0"
+  gem 'rspec'
   gem "jeweler", "~> 1.5.2"
   gem 'sinatra-contrib'
   gem 'mechanize', '1.0.0'

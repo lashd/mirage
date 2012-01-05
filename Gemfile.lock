@@ -66,7 +66,7 @@ DEPENDENCIES
   mechanize (= 1.0.0)
   nokogiri (= 1.4.7)
   rake
-  rspec (= 2.6.0)
+  rspec
   sinatra
   sinatra-contrib
   waitforit
