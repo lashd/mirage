@@ -2,7 +2,6 @@ GEM
   remote: http://rubygems.org/
   specs:
     backports (2.3.0)
-    bouncy-castle-java (1.5.0146.1)
     builder (3.0.0)
     childprocess (0.2.5)
       ffi (~> 1.0.6)
@@ -16,23 +15,16 @@ GEM
     domain_name (0.5.1)
       unf (~> 0.0.3)
     eventmachine (0.12.10)
-    eventmachine (0.12.10-java)
     ffi (1.0.11)
-    ffi (1.0.11-java)
     gemcutter (0.7.1)
     gherkin (2.7.2)
-      json (>= 1.4.6)
-    gherkin (2.7.2-java)
       json (>= 1.4.6)
     git (1.2.5)
     jeweler (1.6.4)
       bundler (~> 1.0)
       git (>= 1.2.5)
       rake
-    jruby-openssl (0.7.4)
-      bouncy-castle-java
     json (1.6.4)
-    json (1.6.4-java)
     mechanize (2.1)
       domain_name (~> 0.5, >= 0.5.1)
       net-http-digest_auth (~> 1.1, >= 1.1.1)
@@ -43,7 +35,6 @@ GEM
     net-http-digest_auth (1.2)
     net-http-persistent (2.3.3)
     nokogiri (1.5.0)
-    nokogiri (1.5.0-java)
     ntlm-http (0.1.1)
     rack (1.4.0)
     rack-protection (1.2.0)
@@ -80,7 +71,6 @@ GEM
       nokogiri (>= 1.4.4)
 
 PLATFORMS
-  java
   ruby
 
 DEPENDENCIES
@@ -88,7 +78,6 @@ DEPENDENCIES
   cucumber
   gemcutter
   jeweler
-  jruby-openssl
   mechanize
   nokogiri
   rake
