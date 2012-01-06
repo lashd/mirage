@@ -4,6 +4,10 @@ gem 'sinatra'
 gem 'childprocess'
 gem "waitforit"
 
+platform :jruby do
+  gem "jruby-openssl"
+end
+
 group :development do
   gem 'rake'
   gem 'cucumber'
