@@ -13,5 +13,9 @@ group :development do
   gem 'mechanize'
   gem 'gemcutter'
   gem "nokogiri"
+
+  platform :jruby do
+    gem "jruby-openssl"
+  end
 end
   
