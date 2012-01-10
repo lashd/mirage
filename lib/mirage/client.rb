@@ -59,7 +59,7 @@ module Mirage
       headers['X-mirage-default'] = 'true' if response.default
       headers['Content-Type'] = response.content_type || 'text/plain'
       
-      build_response(http_put("#{@url}/templates/#{endpoint}",response_value, headers))
+      build_response(http_put("#{@url}/templates/#{endpoint}",response_value.to_s, headers))
     end
 
     # Use to look at what a response contains without actually triggering it.
