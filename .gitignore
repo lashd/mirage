@@ -1,5 +1,6 @@
 *.log
 .idea/*
+.scratch
 pkg
 *.iml
 .bundle
