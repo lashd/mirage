@@ -17,7 +17,7 @@ def start_mirage(args)
   puts "Starting Mirage"
 
   if windows?
-    command = ["cmd", "/C", "start", "\"mirage server\"", RUBY_CMD, "#{File.dirname(__FILE__)}/../mirage_server.rb"]
+    command = ["cmd", "/C", "start", "mirage serverk", RUBY_CMD, "#{File.dirname(__FILE__)}/../mirage_server.rb"]
   else
     command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../mirage_server.rb"]
   end
