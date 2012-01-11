@@ -98,27 +98,6 @@ Feature: the Mirage client provides methods for setting responses and loading de
     When I send GET to 'http://localhost:7001/mirage/responses/leaving'
     Then 'goodbye' should be returned
 
-  Scenario: A file is given to the client with substitution in it
-    Given the file 'response_file' contains:
-    """
-    Hello ${<firstname>(.*?)</firstname>} ${<surname>(.*?)</surname>}, how are you?
-    """
-    And I run
-    """
-    puts Dir.pwd
-    Mirage::Client.new.put('greeting', File.open('scratch/response_file')) do |response|
-      response.method = 'POST'
-    end
-    """
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-    <grettingRequest>
-      <firstname>Leon</firstname>
-      <surname>Davis</surname>
-    </greetingRequest>
-    """
-    Then 'Hello Leon Davis, how are you?' should be returned
-
   Scenario: Priming Mirage when one of the response file has something bad in it
     Given the file 'responses/default_greetings.rb' contains:
     """
