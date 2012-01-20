@@ -3,7 +3,7 @@ Feature: Parts of a response can be substitued for values found in the request b
 
   To do this, substitution patterns are put in to the response. When the response is triggered, the patterns are used to search the request body
   and then the query string for matches. Patterns can be either the name of a parameter found in the query string, or a regular expression with a single
-  matching group which is what is put in to the and here is a change that was not there before.
+  matching group which is what is put in to the response.
 
 
 

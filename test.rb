@@ -1,1 +1,1 @@
-puts File.open('rakefile', 'r').kind_of?(IO)
+a change
