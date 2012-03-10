@@ -113,5 +113,7 @@ Feature: Mirage can be primed with a set of responses.
     When I send PUT to 'http://localhost:7001/mirage/defaults'
     And I send GET to 'http://localhost:7001/mirage/responses/test?user=a'
     Then 'a' should be returned
+    And I send GET to 'http://localhost:7001/mirage/responses/test?user=b'
+    And 'b' should be returned
     And I send GET to 'http://localhost:7001/mirage/responses/test?user=z'
     And 'z' should be returned
