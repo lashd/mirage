@@ -86,3 +86,32 @@ Feature: Mirage can be primed with a set of responses.
     """
     And I send PUT to 'http://localhost:7001/mirage/defaults'
     Then a 500 should be returned
+
+  Scenario: Mirage is started with a full path and the files are loaded in order
+    Given the file '/tmp/responses/c.rb' contains:
+    """
+    client = Mirage::Client.new
+    client.put('test', 'b') do |response|
+        response.pattern = /user=b.*/
+    end
+    """
+    And the file '/tmp/responses/z.rb' contains:
+    """
+    client = Mirage::Client.new
+    client.put('test', 'z') do |response|
+        response.pattern = /user=.*/
+    end
+    """
+    And the file '/tmp/responses/a.rb' contains:
+    """
+    client = Mirage::Client.new
+    client.put('test', 'a') do |response|
+        response.pattern = /user=a.*/
+    end
+    """
+    And I run 'mirage start -d /tmp/responses'
+    When I send PUT to 'http://localhost:7001/mirage/defaults'
+    And I send GET to 'http://localhost:7001/mirage/responses/test?user=a'
+    Then 'a' should be returned
+    And I send GET to 'http://localhost:7001/mirage/responses/test?user=z'
+    And 'z' should be returned
