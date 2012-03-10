@@ -88,7 +88,7 @@ Feature: Mirage can be primed with a set of responses.
     Then a 500 should be returned
 
   Scenario: Mirage is started with a full path and the files are loaded in order
-    Given the file '/tmp/responses/c.rb' contains:
+    Given the file '/tmp/responses/b.rb' contains:
     """
     client = Mirage::Client.new
     client.put('test', 'b') do |response|
