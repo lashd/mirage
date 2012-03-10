@@ -111,7 +111,7 @@ module Mirage
     put '/mirage/defaults' do
       MockResponse.delete_all
 
-      Dir["#{settings.defaults_directory}/**/*.rb"].each do |default|
+      Dir["#{settings.defaults_directory}/**/*.rb"].sort.each do |default|
         begin
           eval File.read(default)
         rescue Exception => e
