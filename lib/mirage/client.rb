@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
 require 'uri'
 require 'client/web'
+require 'ostruct'
 
 module Mirage
 
@@ -13,10 +14,26 @@ module Mirage
     end
   end
   
-  class Response
-    
-    attr_accessor :method, :pattern, :content_type, :default
-    
+  class Response < OpenStruct
+
+    attr_accessor :content_type
+    attr_reader :value
+    def initialize response
+      @content_type = 'text/plain'
+      @value = response
+      super({})
+    end
+
+    def headers
+      headers = {}
+
+      @table.each{|header, value| headers["X-mirage-#{header.to_s.gsub('_', '-')}"] = value}
+      headers['Content-Type']=@content_type
+      headers['X-mirage-file'] = 'true' if @response.kind_of?(IO)
+
+      headers
+    end
+
   end
 
   class InternalServerException < MirageError;
@@ -38,37 +55,28 @@ module Mirage
     end
 
 
-    # Set a text or file based response, to be hosted at a given end point optionally with a given pattern and delay
-    # Client.set(endpoint, response, params) => unique id that can be used to call back to the server
+    # Set a text or file based response template, to be hosted at a given end point. A block can be specified to configure the template
+    # Client.set(endpoint, response, &block) => unique id that can be used to call back to the server
     #
-    #  Examples:
-    #  Client.set('greeting', 'hello':)
-    #  Client.set('greeting', 'hello', :pattern => /regexp/)
-    #  Client.set('greeting', 'hello', :pattern => 'text')
-    #  Client.set('greeting', 'hello', :delay => 5) # number of seconds
-    def put endpoint, response_value, params={}
-      response = Response.new
+    # Examples:
+    # Client.put('greeting', 'hello')
+    #
+    # Client.put('greeting', 'hello') do |response|
+    #   response.pattern = 'pattern' #regex or string literal applied against the request querystring and body
+    #   response.method = :post #By default templates will respond to get requests
+    #   response.content_type = 'text/html' #defaults text/plain
+    #   response.default = true # defaults to false. setting to true will allow this template to respond to request made to sub resources should it match.
+    # end
+    def put endpoint, response_value, &block
+      response = Response.new response_value
       
       yield response if block_given?
-      
-      headers = {}
-      headers['X-mirage-method'] = response.method.to_s if response.method
-      
-      headers['X-mirage-pattern'] = response.pattern if response.pattern
-      headers['X-mirage-default'] = 'true' if response.default
-      headers['Content-Type'] = response.content_type || 'text/plain'
 
-      if response_value.kind_of?(IO)
-        headers['X-mirage-file'] = 'true'
-      else
-        response_value = response_value.to_s
-      end
-
-      build_response(http_put("#{@url}/templates/#{endpoint}",response_value, headers))
+      build_response(http_put("#{@url}/templates/#{endpoint}",response.value, response.headers))
     end
 
     # Use to look at what a response contains without actually triggering it.
-    # Client.peek(response_id) => response held on the server as a String
+    # client.response(response_id) => response held on the server as a String
     def response response_id
       response = build_response(http_get("#{@url}/templates/#{response_id}"))
       case response
