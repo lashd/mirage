@@ -154,7 +154,7 @@ module Mirage
       def send_response(response, body='', request={}, query_string='')
         sleep response.delay
         content_type(response.content_type)
-        status response.code
+        status response.status_code
         response.value(body, request, query_string)
       end
     end
