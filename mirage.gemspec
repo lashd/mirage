@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "2.0.16"
+  s.version = "2.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2012-01-11"
+  s.date = "2012-04-29"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -62,7 +62,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.post_install_message = "\n===============================================================================\nThanks you for installing mirage.   \n\nRun Mirage with:\n\nmirage start                                   \n\nFor more information go to: https://github.com/lashd/mirage/wiki\n===============================================================================\n"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.17"
   s.summary = "Mirage is a easy mock server for testing your applications"
 
   if s.respond_to? :specification_version then
@@ -78,7 +78,6 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<sinatra-contrib>, [">= 0"])
       s.add_development_dependency(%q<mechanize>, [">= 0"])
-      s.add_development_dependency(%q<gemcutter>, [">= 0"])
       s.add_development_dependency(%q<nokogiri>, [">= 0"])
       s.add_development_dependency(%q<jruby-openssl>, [">= 0"])
     else
@@ -91,7 +90,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<sinatra-contrib>, [">= 0"])
       s.add_dependency(%q<mechanize>, [">= 0"])
-      s.add_dependency(%q<gemcutter>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
       s.add_dependency(%q<jruby-openssl>, [">= 0"])
     end
@@ -105,7 +103,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<sinatra-contrib>, [">= 0"])
     s.add_dependency(%q<mechanize>, [">= 0"])
-    s.add_dependency(%q<gemcutter>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
     s.add_dependency(%q<jruby-openssl>, [">= 0"])
   end
