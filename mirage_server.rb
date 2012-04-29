@@ -43,6 +43,7 @@ module Mirage
                        response,
                        @env['CONTENT_TYPE'],
                        @env['HTTP_X_MIRAGE_METHOD'],
+                       @env['HTTP_X_MIRAGE_STATUS_CODE'],
                        @env['HTTP_X_MIRAGE_PATTERN'],
                        @env['HTTP_X_MIRAGE_DELAY'].to_f,
                        @env['HTTP_X_MIRAGE_DEFAULT'],
@@ -153,6 +154,7 @@ module Mirage
       def send_response(response, body='', request={}, query_string='')
         sleep response.delay
         content_type(response.content_type)
+        status response.code
         response.value(body, request, query_string)
       end
     end

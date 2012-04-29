@@ -14,7 +14,7 @@ Then /^'([^']*)' should be returned$/ do |expected_response|
   end
 end
 
-Then /^a (200|404|500) should be returned$/ do |error_code|
+Then /^a (\d+) should be returned$/ do |error_code|
   @response.code.to_i.should == error_code.to_i
 end
 

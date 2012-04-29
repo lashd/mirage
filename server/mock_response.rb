@@ -104,9 +104,10 @@ module Mirage
     attr_reader :response_id, :delay, :name, :pattern, :http_method, :content_type
     attr_accessor :response_id
 
-    def initialize name, value, content_type, http_method, pattern=nil, delay=0, default=false, file=false
+    def initialize name, value, content_type, http_method, code, pattern=nil, delay=0, default=false, file=false
       @name, @value, @content_type, @http_method, @delay, @default, @file = name, value, content_type, (http_method||'GET').upcase,  delay, default, file
       @pattern = pattern ? /#{pattern}/ : :basic
+      @code = code
       MockResponse.add self
     end
 
@@ -137,6 +138,10 @@ module Mirage
 
       end
       value
+    end
+
+    def code
+      @code || 200
     end
 
     private

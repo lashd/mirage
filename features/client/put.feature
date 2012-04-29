@@ -120,3 +120,11 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     When I send GET to 'http://localhost:7001/mirage/responses/download'
     Then the response should be the same as the content of 'README.md'
+
+  Scenario: Setting a response status code
+    Given I run
+    """
+    Mirage::Client.new.put('greeting', 'hello'){|response| response.status_code = 203}
+    """
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 203 should be returned

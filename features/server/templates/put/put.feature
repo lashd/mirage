@@ -9,6 +9,7 @@ Feature: Mirage can be configured with templates that are returned when addresse
   X-mirage-delay (optional) = the amount of time in seconds that mirage should wait for before responding (defaults to 0)
   X-mirage-method (optional) = http method that this response applies to. Can be set to GET, POST, PUT or DELETE. Templates are configured to respond to GET requests by default
   X-mirage-default (optional) = set whether the reponse can act as a default response, see put_as_default.feature (defaults to false)
+  X-mirage-status-code (optional) = set the http status that is returned, defaults to 200
   content-type (optional) = Set the content type to be returned
 
 
@@ -17,6 +18,7 @@ Feature: Mirage can be configured with templates that are returned when addresse
 
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'Hello' should be returned
+    And a 200 should be returned
     
 
   Scenario: A template put under a deeper address
@@ -41,6 +43,12 @@ Feature: Mirage can be configured with templates that are returned when addresse
 
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hi'
     Then '1' should be returned
+
+  Scenario: Setting the http status code to be returned
+    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello' and headers:
+      | X-mirage-status-code | 202 |
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 202 should be returned
     
     
 
