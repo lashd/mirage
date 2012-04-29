@@ -112,21 +112,14 @@ module Mirage
     end
 
     def method_missing *args
-      @options[args.first]
+      method_name = args.first
+      key = method_name.to_s.gsub(/\?$/, '').to_sym
+      method_name.to_s.end_with?('?') ? 'true' == @options[key] : @options[key]
     end
 
     def pattern
       @options[:pattern] == :basic ? :basic : /#{@options[:pattern]}/
     end
-
-    def default?
-      'true' == @options[:default]
-    end
-
-    def file?
-      'true' == @options[:file]
-    end
-
 
     def value(body='', request_parameters={}, query_string='')
       return @value if file?
