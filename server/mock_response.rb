@@ -101,7 +101,7 @@ module Mirage
 
     end
 
-    attr_reader :response_id, :name
+    attr_reader  :name
     attr_accessor :response_id
 
     def initialize name, value,options
