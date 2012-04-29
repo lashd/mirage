@@ -106,7 +106,7 @@ module Mirage
 
     def initialize name, value,options
       @name, @value = name, value
-      @options = {:pattern => :basic, :http_method => 'GET', :delay => 0.0, :status_code => 200}.merge(options){|key, old_value, new_value| new_value || old_value}
+      @options = {:pattern => :basic, :http_method => 'GET', :delay => 0.0, :status => 200}.merge(options){|key, old_value, new_value| new_value || old_value}
       @options[:http_method].upcase!
       MockResponse.add self
     end

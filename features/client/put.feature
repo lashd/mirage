@@ -124,7 +124,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
   Scenario: Setting a response status code
     Given I run
     """
-    Mirage::Client.new.put('greeting', 'hello'){|response| response.status_code = 203}
+    Mirage::Client.new.put('greeting', 'hello'){|response| response.status = 203}
     """
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then a 203 should be returned

@@ -46,7 +46,7 @@ Feature: Mirage can be configured with templates that are returned when addresse
 
   Scenario: Setting the http status code to be returned
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello' and headers:
-      | X-mirage-status-code | 202 |
+      | X-mirage-status | 202 |
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then a 202 should be returned
     
