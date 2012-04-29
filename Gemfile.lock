@@ -19,7 +19,6 @@ GEM
     eventmachine (0.12.10-java)
     ffi (1.0.11)
     ffi (1.0.11-java)
-    gemcutter (0.7.1)
     gherkin (2.7.2)
       json (>= 1.4.6)
     gherkin (2.7.2-java)
@@ -86,7 +85,6 @@ PLATFORMS
 DEPENDENCIES
   childprocess
   cucumber
-  gemcutter
   jeweler
   jruby-openssl
   mechanize
