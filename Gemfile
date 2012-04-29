@@ -11,7 +11,6 @@ group :development do
   gem "jeweler"
   gem 'sinatra-contrib'
   gem 'mechanize'
-  gem 'gemcutter'
   gem "nokogiri"
 
   platform :jruby do
