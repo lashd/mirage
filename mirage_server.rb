@@ -39,15 +39,16 @@ module Mirage
 
     put '/mirage/templates/*' do |name|
       response = request.body.read
+
       MockResponse.new(name,
                        response,
-                       @env['CONTENT_TYPE'],
-                       @env['HTTP_X_MIRAGE_METHOD'],
-                       @env['HTTP_X_MIRAGE_STATUS_CODE'],
-                       @env['HTTP_X_MIRAGE_PATTERN'],
-                       @env['HTTP_X_MIRAGE_DELAY'].to_f,
-                       @env['HTTP_X_MIRAGE_DEFAULT'],
-                       @env['HTTP_X_MIRAGE_FILE']).response_id.to_s
+                       :content_type => @env['CONTENT_TYPE'],
+                       :http_method => @env['HTTP_X_MIRAGE_METHOD'],
+                       :status_code => @env['HTTP_X_MIRAGE_STATUS_CODE'],
+                       :pattern => @env['HTTP_X_MIRAGE_PATTERN'],
+                       :delay => @env['HTTP_X_MIRAGE_DELAY'].to_f,
+                       :default => @env['HTTP_X_MIRAGE_DEFAULT'],
+                       :file => @env['HTTP_X_MIRAGE_FILE']).response_id.to_s
     end
 
     ['get', 'post', 'delete', 'put'].each do |http_method|

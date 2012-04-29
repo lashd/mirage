@@ -101,22 +101,30 @@ module Mirage
 
     end
 
-    attr_reader :response_id, :delay, :name, :pattern, :http_method, :content_type
+    attr_reader :response_id, :name
     attr_accessor :response_id
 
-    def initialize name, value, content_type, http_method, status_code, pattern=nil, delay=0, default=false, file=false
-      @name, @value, @content_type, @http_method, @delay, @default, @file = name, value, content_type, (http_method||'GET').upcase,  delay, default, file
-      @pattern = pattern ? /#{pattern}/ : :basic
-      @status_code = status_code
+    def initialize name, value,options
+      @name, @value = name, value
+      @options = {:pattern => :basic, :http_method => 'GET', :delay => 0.0}.merge(options){|key, old_value, new_value| new_value || old_value}
+      @options[:http_method].upcase!
       MockResponse.add self
     end
 
+    def method_missing *args
+      @options[args.first]
+    end
+
+    def pattern
+      @options[:pattern] == :basic ? :basic : /#{@options[:pattern]}/
+    end
+
     def default?
-      'true' == @default
+      'true' == @options[:default]
     end
 
     def file?
-      'true' == @file
+      'true' == @options[:file]
     end
 
 
@@ -141,7 +149,7 @@ module Mirage
     end
 
     def status_code
-      @status_code || 200
+      @options[:status_code] || 200
     end
 
     private
