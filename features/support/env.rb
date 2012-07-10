@@ -2,7 +2,6 @@ $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../../lib")
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../../server")
 require 'rubygems'
 require 'mirage/client'
-require 'util'
 require 'cucumber'
 require 'rspec'
 require 'mechanize'
@@ -10,7 +9,14 @@ require 'childprocess'
 
 ENV['RUBYOPT'] =''
 
-include Mirage::Util
+module OsSupport
+  def windows?
+    ENV['OS'] == 'Windows_NT'
+  end
+end
+World OsSupport
+include OsSupport
+
 SCRATCH = './scratch'
 RUBY_CMD = RUBY_PLATFORM == 'JAVA' ? 'jruby' : 'ruby'
 
@@ -23,12 +29,7 @@ else
   MIRAGE_CMD = "#{RUBY_CMD} ../bin/mirage"
 end
 
-module OsSupport
-  def windows?
-    ENV['OS'] == 'Windows_NT'
-  end
-end
-World OsSupport
+
 
 module CommandLine
   COMAND_LINE_OUTPUT_PATH = "#{File.dirname(__FILE__)}/../../#{SCRATCH}/commandline_output.txt"
@@ -73,8 +74,6 @@ end
 
 module Mirage
   module Runner
-    include Mirage::Util
-
     def stop_mirage
       system "cd #{SCRATCH} && #{MIRAGE_CMD} stop"
     end
@@ -99,8 +98,6 @@ end
 
 module IntelliJ
   include CommandLine
-  include Mirage::Util
-
   def run command
     execute "#{RUBY_CMD} #{command}"
   end
