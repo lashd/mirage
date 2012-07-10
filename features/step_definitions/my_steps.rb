@@ -54,7 +54,7 @@ Given /^the file '(.*)' contains:$/ do |file_path, content|
   FileUtils.rm_rf(file_path) if File.exists?(file_path)
   FileUtils.mkdir_p(File.dirname(file_path))
 
-  File.open("#{file_path}", 'w') do
+  File.open("#{file_path}", 'w') do |file|
     file.write(content)
   end
 

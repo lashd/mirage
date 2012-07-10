@@ -10,12 +10,13 @@ require 'ostruct'
 module Mirage
 
   class << self
+
     def start args={}
 
       args = convert_to_command_line_argument_array(args) if args.is_a? Hash
 
-      process = Mirage::CLI.run args
-      mirage_client = Mirage::Client.new "http://localhost:#{Mirage::CLI.parse_options(args)[:port]}/mirage", process
+      Mirage::CLI.run args
+      mirage_client = Mirage::Client.new "http://localhost:#{Mirage::CLI.parse_options(args)[:port]}/mirage"
       wait_until :timeout_after => 30.seconds do
         mirage_client.running?
       end
@@ -88,9 +89,8 @@ module Mirage
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
-    def initialize url="http://localhost:7001/mirage", process=nil
+    def initialize url="http://localhost:7001/mirage"
       @url = url
-      @process = process
     end
 
 
@@ -189,11 +189,6 @@ module Mirage
     def prime
       puts "#{@url}/defaults"
       build_response(http_put("#{@url}/defaults", ''))
-    end
-
-    def stop
-      @process.stop
-      wait_until{!running?}
     end
 
     private
