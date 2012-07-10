@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "2.1.2"
+  s.version = "2.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2012-04-29"
+  s.date = "2012-07-10"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/mirage",
     "features/client/clear.feature",
+    "features/client/command_line_interface.feature",
     "features/client/mirage_client.feature",
     "features/client/put.feature",
     "features/client/request.feature",
@@ -46,15 +47,16 @@ Gem::Specification.new do |s|
     "features/step_definitions/my_steps.rb",
     "features/support/env.rb",
     "full_build.sh",
+    "lib/mirage/cli.rb",
     "lib/mirage/client.rb",
     "lib/mirage/client/web.rb",
     "mirage.gemspec",
     "mirage_server.rb",
     "rakefile",
+    "responses/default_responses.rb",
     "server/extensions/hash.rb",
     "server/extensions/object.rb",
     "server/mock_response.rb",
-    "server/util.rb",
     "test.rb",
     "views/index.erb"
   ]
@@ -72,6 +74,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<childprocess>, [">= 0"])
       s.add_runtime_dependency(%q<waitforit>, [">= 0"])
+      s.add_development_dependency(%q<thin>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<cucumber>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
@@ -84,6 +87,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<childprocess>, [">= 0"])
       s.add_dependency(%q<waitforit>, [">= 0"])
+      s.add_dependency(%q<thin>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<cucumber>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
@@ -97,6 +101,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<childprocess>, [">= 0"])
     s.add_dependency(%q<waitforit>, [">= 0"])
+    s.add_dependency(%q<thin>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<cucumber>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
