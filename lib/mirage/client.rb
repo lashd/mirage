@@ -12,14 +12,12 @@ module Mirage
   class << self
 
     def start args={}
-
+      puts "Starting Mirage"
       args = convert_to_command_line_argument_array(args) if args.is_a? Hash
 
       Mirage::CLI.run args
       mirage_client = Mirage::Client.new "http://localhost:#{Mirage::CLI.parse_options(args)[:port]}/mirage"
-      wait_until :timeout_after => 30.seconds do
-        mirage_client.running?
-      end
+      wait_until(:timeout_after => 30.seconds) { mirage_client.running? }
 
       begin
         mirage_client.prime
@@ -29,17 +27,18 @@ module Mirage
       mirage_client
     end
 
+    def stop
+      puts "Stopping Mirage"
+      Mirage::CLI.stop
+    end
+
+    private
     def convert_to_command_line_argument_array(args)
       command_line_arguments = {}
       args.each do |key, value|
         command_line_arguments["--#{key}"] = "#{value}"
       end
       command_line_arguments.to_a.flatten
-    end
-
-    def stop
-      puts "Stopping Mirage"
-      Mirage::CLI.stop
     end
   end
 
