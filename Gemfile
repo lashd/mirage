@@ -5,6 +5,7 @@ gem 'childprocess'
 gem "waitforit"
 
 group :development do
+  gem "thin"
   gem 'rake'
   gem 'cucumber'
   gem 'rspec'

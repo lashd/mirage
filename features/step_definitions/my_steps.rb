@@ -36,7 +36,7 @@ Given /^Mirage (is|is not) running$/ do |running|
   if running == 'is'
     start_mirage unless $mirage.running?
   else
-    stop_mirage if $mirage.running?                                                   
+    stop_mirage if $mirage.running?
   end
 end
 
@@ -54,9 +54,10 @@ Given /^the file '(.*)' contains:$/ do |file_path, content|
   FileUtils.rm_rf(file_path) if File.exists?(file_path)
   FileUtils.mkdir_p(File.dirname(file_path))
 
-  file = File.new("#{file_path}", 'w')
-  file.write(content)
-  file.close
+  File.open("#{file_path}", 'w') do
+    file.write(content)
+  end
+
 end
 
 Then /^the usage information should be displayed$/ do
@@ -64,11 +65,13 @@ Then /^the usage information should be displayed$/ do
 end
 Given /^usage information:$/ do |table|
   @usage = table.raw.flatten.collect { |line| normalise(line) }
-end                                                                                                                                                                         
+end
 
 Then /^I run$/ do |text|
   text.gsub!("\"", "\\\\\"")
-  raise "run failed" unless system "#{RUBY_CMD} -e \"#{@code_snippet}\n#{text}\""
+  Dir.chdir SCRATCH do
+    raise "run failed" unless system "#{RUBY_CMD} -e \"#{@code_snippet}\n#{text}\""
+  end
 end
 
 Given /^the following gems are required to run the Mirage client test code:$/ do |text|
@@ -87,7 +90,7 @@ When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with requ
               end
 end
 
-When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:7001\/mirage([^']*))'$/ do |method, url, endpoint|
+When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:\d{4}\/mirage([^']*))'$/ do |method, url, endpoint|
   start_time = Time.now
   @response = case method
                 when 'GET' then
@@ -174,7 +177,10 @@ Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^'
     parameter, value = row[0], row[1]
     headers[parameter]=value
   end
-  http_put(url, File.new(path), headers)
+
+  Dir.chdir SCRATCH do
+    http_put(url, File.new(path), headers)
+  end
 end
 
 When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
@@ -182,5 +188,7 @@ When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
 end
 
 Then /^the response should be the same as the content of '([^']*)'$/ do |path|
-  @response.body.should == File.read(path)
+  Dir.chdir SCRATCH do
+    @response.body.should == File.read(path)
+  end
 end

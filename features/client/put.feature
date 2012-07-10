@@ -114,12 +114,16 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
 
   Scenario: Setting a file as a response
-    Given I run
+    Given the file 'test_file.txt' contains:
     """
-    Mirage::Client.new.put('download', File.open('README.md'))
+    test content
+    """
+    And I run
+    """
+    Mirage::Client.new.put('download', File.open('test_file.txt'))
     """
     When I send GET to 'http://localhost:7001/mirage/responses/download'
-    Then the response should be the same as the content of 'README.md'
+    Then the response should be the same as the content of 'test_file.txt'
 
   Scenario: Setting a response status code
     Given I run

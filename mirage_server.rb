@@ -9,7 +9,6 @@ require 'sinatra/base'
 require 'extensions/object'
 require 'extensions/hash'
 require 'mock_response'
-require 'util'
 
 require 'mirage/client'
 
@@ -20,8 +19,8 @@ module Mirage
   class Server < Sinatra::Base
 
     configure do
-      options = parse_options(ARGV)
-      set :defaults_directory, options[:defaults_directory]
+      options = Mirage::CLI.parse_options(ARGV)
+      set :defaults, options[:defaults]
       set :port, options[:port]
       set :show_exceptions, false
       set :logging, true
@@ -113,7 +112,7 @@ module Mirage
     put '/mirage/defaults' do
       MockResponse.delete_all
 
-      Dir["#{settings.defaults_directory}/**/*.rb"].each do |default|
+      Dir["#{settings.defaults}/**/*.rb"].each do |default|
         begin
           eval File.read(default)
         rescue Exception => e

@@ -13,11 +13,15 @@ Feature: If you want to see the content of a particular response without trigger
 
 
   Scenario: Peeking a file based response
-    Given I send PUT to 'http://localhost:7001/mirage/templates/some/location/download' with file: README.md and headers:
+    Given the file 'test_file.txt' contains:
+    """
+    test content
+    """
+    And I send PUT to 'http://localhost:7001/mirage/templates/some/location/download' with file: test_file.txt and headers:
       | X-mirage-file | true |
 
     When I send GET to 'http://localhost:7001/mirage/templates/1'
-    Then the response should be the same as the content of 'README.md'
+    Then the response should be the same as the content of 'test_file.txt'
 
 
   Scenario: Peeking a response that does not exist

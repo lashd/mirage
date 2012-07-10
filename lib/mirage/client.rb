@@ -1,9 +1,46 @@
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
 require 'uri'
+require 'waitforit'
+require 'childprocess'
 require 'client/web'
+require 'util'
+require 'cli'
 require 'ostruct'
 
 module Mirage
+
+  class << self
+    def start args={}
+
+      args = convert_to_command_line_argument_array(args) if args.is_a? Hash
+
+      process = Mirage::CLI.run args
+      mirage_client = Mirage::Client.new "http://localhost:#{Mirage::CLI.parse_options(args)[:port]}/mirage", process
+      wait_until :timeout_after => 30.seconds do
+        mirage_client.running?
+      end
+
+      begin
+        mirage_client.prime
+      rescue Mirage::InternalServerException => e
+        puts "WARN: #{e.message}"
+      end
+      mirage_client
+    end
+
+    def convert_to_command_line_argument_array(args)
+      command_line_arguments = {}
+      args.each do |key, value|
+        command_line_arguments["--#{key}"] = "#{value}"
+      end
+      command_line_arguments.to_a.flatten
+    end
+
+    def stop
+      puts "Stopping Mirage"
+      Mirage::CLI.stop
+    end
+  end
 
   class MirageError < ::Exception
     attr_reader :code
@@ -13,11 +50,12 @@ module Mirage
       @code = message, code
     end
   end
-  
+
   class Response < OpenStruct
 
     attr_accessor :content_type
     attr_reader :value
+
     def initialize response
       @content_type = 'text/plain'
       @value = response
@@ -27,7 +65,7 @@ module Mirage
     def headers
       headers = {}
 
-      @table.each{|header, value| headers["X-mirage-#{header.to_s.gsub('_', '-')}"] = value}
+      @table.each { |header, value| headers["X-mirage-#{header.to_s.gsub('_', '-')}"] = value }
       headers['Content-Type']=@content_type
       headers['X-mirage-file'] = 'true' if @response.kind_of?(IO)
 
@@ -50,8 +88,9 @@ module Mirage
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
-    def initialize url="http://localhost:7001/mirage"
+    def initialize url="http://localhost:7001/mirage", process=nil
       @url = url
+      @process = process
     end
 
 
@@ -69,10 +108,10 @@ module Mirage
     # end
     def put endpoint, response_value, &block
       response = Response.new response_value
-      
+
       yield response if block_given?
 
-      build_response(http_put("#{@url}/templates/#{endpoint}",response.value, response.headers))
+      build_response(http_put("#{@url}/templates/#{endpoint}", response.value, response.headers))
     end
 
     # Use to look at what a response contains without actually triggering it.
@@ -85,7 +124,7 @@ module Mirage
         when Mirage::Web::FileResponse then
           return response.response.body
       end
-      
+
     end
 
     # Clear Content from Mirage
@@ -98,7 +137,7 @@ module Mirage
     #   Client.new.clear(:requests) # Clear all tracked request information
     #   Client.new.clear(:request => response_id) # Clear the tracked request for a given response id
     def clear thing=nil
-      
+
       case thing
         when :requests
           http_delete("#{@url}/requests")
@@ -107,10 +146,11 @@ module Mirage
         when Hash then
           puts "deleteing request #{thing[:request]}"
           http_delete("#{@url}/requests/#{thing[:request]}") if thing[:request]
-        else NilClass
+        else
+          NilClass
           http_delete("#{@url}/templates")
       end
-      
+
     end
 
 
@@ -125,14 +165,14 @@ module Mirage
 
     # Save the state of the Mirage server so that it can be reverted back to that exact state at a later time.
     def save
-      http_put("#{@url}/backup",'').code == 200
+      http_put("#{@url}/backup", '').code == 200
     end
 
 
     # Revert the state of Mirage back to the state that was last saved
     # If there is no snapshot to rollback to, nothing happens
     def revert
-      http_put("#{@url}",'').code == 200
+      http_put("#{@url}", '').code == 200
     end
 
 
@@ -148,7 +188,12 @@ module Mirage
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
       puts "#{@url}/defaults"
-      build_response(http_put("#{@url}/defaults",''))
+      build_response(http_put("#{@url}/defaults", ''))
+    end
+
+    def stop
+      @process.stop
+      wait_until{!running?}
     end
 
     private
