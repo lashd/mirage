@@ -12,8 +12,6 @@ require 'mock_response'
 
 require 'mirage/client'
 
-include Mirage::Util
-
 module Mirage
 
   class Server < Sinatra::Base

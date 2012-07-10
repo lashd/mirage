@@ -23,6 +23,13 @@ else
   MIRAGE_CMD = "#{RUBY_CMD} ../bin/mirage"
 end
 
+module OsSupport
+  def windows?
+    ENV['OS'] == 'Windows_NT'
+  end
+end
+World OsSupport
+
 module CommandLine
   COMAND_LINE_OUTPUT_PATH = "#{File.dirname(__FILE__)}/../../#{SCRATCH}/commandline_output.txt"
   module Windows

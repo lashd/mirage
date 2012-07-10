@@ -1,6 +1,5 @@
 module Mirage
   class CLI
-    extend Mirage::Util
     RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
     class << self
 
@@ -22,42 +21,33 @@ module Mirage
             options[:debug] = true
           end
         end
-
-        begin
-          opt_parser.parse args
-        rescue
-          puts opt_parser
-          exit 1
-        end
+        opt_parser.parse args
 
         options
+      rescue
+        puts opt_parser
+        exit 1
       end
 
       def run args
-
         unless mirage_process_ids.empty?
           puts "Mirage is already running"
           exit 1
         end
 
-        puts "Starting Mirage"
-
+        mirage_server_file = "#{File.dirname(__FILE__)}/../../mirage_server.rb"
         if windows?
-          command = ["cmd", "/C", "start", "mirage server", RUBY_CMD, "#{File.dirname(__FILE__)}/../../mirage_server.rb"]
+          command = ["cmd", "/C", "start", "mirage server", RUBY_CMD, mirage_server_file]
         else
-          command = [RUBY_CMD, "#{File.dirname(__FILE__)}/../../mirage_server.rb"]
+          command = [RUBY_CMD, mirage_server_file]
         end
 
-
-        puts *(command.concat(args))
-        process = ChildProcess.build(*(command.concat(args)))
-        process.start
-        process
+        ChildProcess.build(*(command.concat(args))).start
       end
 
       def stop
         mirage_process_ids.each { |process_id| windows? ? `taskkill /F /T /PID #{process_id}` : `kill -9 #{process_id}` }
-        wait_until{ mirage_process_ids.size == 0 }
+        wait_until { mirage_process_ids.size == 0 }
       end
 
       private
@@ -69,6 +59,10 @@ module Mirage
             `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
           end.find_all { |process_id| process_id != $$.to_s }.compact
         end
+      end
+
+      def windows?
+        ENV['OS'] == 'Windows_NT'
       end
     end
   end

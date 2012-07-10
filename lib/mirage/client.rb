@@ -3,9 +3,9 @@ require 'uri'
 require 'waitforit'
 require 'childprocess'
 require 'client/web'
-require 'util'
 require 'cli'
 require 'ostruct'
+require 'optparse'
 
 module Mirage
 
