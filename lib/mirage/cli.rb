@@ -32,7 +32,7 @@ module Mirage
       def run args
         unless mirage_process_ids.empty?
           puts "Mirage is already running"
-          exit 1
+          return
         end
 
         mirage_server_file = "#{File.dirname(__FILE__)}/../../mirage_server.rb"
