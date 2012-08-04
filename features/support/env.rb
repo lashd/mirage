@@ -75,7 +75,10 @@ end
 module Mirage
   module Runner
     def stop_mirage
-      system "cd #{SCRATCH} && #{MIRAGE_CMD} stop"
+      Dir.chdir SCRATCH do
+        system "#{MIRAGE_CMD} stop"
+      end
+
     end
 
     def start_mirage
