@@ -131,6 +131,10 @@ module Mirage
       200
     end
 
+    get '/mirage/pid' do
+      "#{$$}"
+    end
+
     error ServerResponseNotFound do
       404
     end

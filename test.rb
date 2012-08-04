@@ -1,6 +1,2 @@
-require 'rubygems'
-require './lib/mirage/client'
-
-client = Mirage.start :port => 9001
-
-client.stop
+puts "line 1
+line 2".lines.collect{|line| line.split(" ")[1]}

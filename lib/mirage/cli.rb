@@ -1,7 +1,9 @@
 module Mirage
   class CLI
+
     RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
     class << self
+      include ::Mirage::Web
 
 
       def parse_options args
@@ -30,7 +32,7 @@ module Mirage
       end
 
       def run args
-        unless mirage_process_ids.empty?
+        unless mirage_process_ids([args[:port]]).empty?
           puts "Mirage is already running"
           return
         end
@@ -42,22 +44,45 @@ module Mirage
           command = [RUBY_CMD, mirage_server_file]
         end
 
-        ChildProcess.build(*(command.concat(args))).start
+        ChildProcess.build(*(command.concat(ARGV))).start
       end
 
-      def stop
-        mirage_process_ids.each { |process_id| windows? ? `taskkill /F /T /PID #{process_id}` : `kill -9 #{process_id}` }
-        wait_until { mirage_process_ids.size == 0 }
+      def stop options={}
+
+        puts("ports: #{options[:port]}")
+        mirage_process_ids(options[:port]).each do |process_id|
+          puts "killing #{process_id}"
+          windows? ? `taskkill /F /T /PID #{process_id}` : `kill -9 #{process_id}`
+        end
+        wait_until do
+          mirage_process_ids(options[:port]).size == 0
+        end
       end
 
       private
-      def mirage_process_ids
-        if windows?
-          [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
+      def mirage_process_ids ports
+        if ports.first == "all"
+
+          if windows?
+            [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
+          else
+            ["Mirage Server", "mirage_server"].collect do |process_name|
+              puts `ps aux | grep "#{process_name}" | grep -v grep`
+              `ps aux | grep "#{process_name}" | grep -v grep`.chomp.lines.collect{|process_line| process_line.split(' ')[1]}
+            end.flatten.find_all { |process_id| process_id != $$.to_s }.compact
+          end
+
         else
-          ["Mirage Server", 'mirage_server'].collect do |process_name|
-            `ps aux | grep "#{process_name}" | grep -v grep`.split(' ')[1]
-          end.find_all { |process_id| process_id != $$.to_s }.compact
+
+          ports.collect do |port|
+            begin
+              http_get("http://localhost:#{port}/mirage/pid").body.to_i
+            rescue
+              nil
+            end
+
+          end.compact
+
         end
       end
 

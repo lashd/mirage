@@ -3,6 +3,7 @@ source :rubygems
 gem 'sinatra'
 gem 'childprocess'
 gem "waitforit"
+gem "thor"
 
 group :development do
   gem "thin"

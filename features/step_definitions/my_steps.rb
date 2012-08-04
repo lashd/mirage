@@ -1,8 +1,6 @@
-Before('@command_line') do
+Around ('@command_line') do |scenario, block|
   stop_mirage
-end
-
-After('@command_line') do
+  block.call
   stop_mirage
 end
 
@@ -23,8 +21,14 @@ Then /^it should take at least '(.*)' seconds$/ do |time|
 end
 
 
-Then /^mirage should be running on '(.*)'$/ do |url|
-  http_get(url).code.to_i.should == 200
+Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
+  running = false
+  begin
+    running = http_get(url).code.to_i.should == 200
+  rescue
+  end
+
+  should == "should" ? running.should == true : running.should == false
 end
 
 Given /^I run '(.*)'$/ do |command|

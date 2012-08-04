@@ -9,14 +9,15 @@ require 'optparse'
 
 module Mirage
 
+
   class << self
+    RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
 
-    def start args={}
-      puts "Starting Mirage"
-      args = convert_to_command_line_argument_array(args) if args.is_a? Hash
+    def start options
 
-      Mirage::CLI.run args
-      mirage_client = Mirage::Client.new "http://localhost:#{Mirage::CLI.parse_options(args)[:port]}/mirage"
+      Mirage::CLI.run options
+
+      mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       wait_until(:timeout_after => 30.seconds) { mirage_client.running? }
 
       begin
@@ -27,9 +28,13 @@ module Mirage
       mirage_client
     end
 
-    def stop
+    def stop options={}
       puts "Stopping Mirage"
-      Mirage::CLI.stop
+      Mirage::CLI.stop options
+    end
+
+    def windows?
+      ENV['OS'] == 'Windows_NT'
     end
 
     private

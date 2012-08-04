@@ -76,7 +76,7 @@ module Mirage
   module Runner
     def stop_mirage
       Dir.chdir SCRATCH do
-        system "#{MIRAGE_CMD} stop"
+        system "#{MIRAGE_CMD} stop -p all"
       end
 
     end
@@ -135,5 +135,5 @@ end
 
 
 at_exit do
-  stop_mirage if $mirage.running?
+  #stop_mirage if $mirage.running?
 end
