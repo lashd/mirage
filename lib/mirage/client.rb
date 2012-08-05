@@ -3,19 +3,39 @@ require 'uri'
 require 'waitforit'
 require 'childprocess'
 require 'client/web'
-require 'cli'
 require 'ostruct'
 require 'optparse'
+require 'thor'
 
 module Mirage
 
-
-  class << self
+  class Runner < Thor
+    include ::Mirage::Web
     RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
 
-    def start options
+    desc "start", "Starts mirage"
+    method_option :port, :aliases => "-p", :type => :numeric, :default => 7001, :desc => "port that mirage should be started on"
+    method_option :defaults, :aliases => "-d", :type => :string, :default => 'responses', :desc => "location to load default responses from"
+    method_option :debug, :type => :boolean, :default => false, :desc => "run in debug mode"
+    def start
 
-      Mirage::CLI.run options
+      unless mirage_process_ids([options[:port]]).empty?
+        puts "Mirage is already running: #{mirage_process_ids([options[:port]])}"
+        return
+      end
+
+      mirage_server_file = "#{File.dirname(__FILE__)}/../../mirage_server.rb"
+
+      if ChildProcess.windows?
+        command = ["cmd", "/C", "start", "mirage server", RUBY_CMD, mirage_server_file]
+      else
+        command = [RUBY_CMD, mirage_server_file]
+      end
+
+
+
+      command = command.concat(options.to_a).flatten.collect{|arg| arg.to_s}
+      ChildProcess.build(*command).start
 
       mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       wait_until(:timeout_after => 30.seconds) { mirage_client.running? }
@@ -28,13 +48,60 @@ module Mirage
       mirage_client
     end
 
-    def stop options={}
-      puts "Stopping Mirage"
-      Mirage::CLI.stop options
+    desc "stop", "stops mirage"
+    method_option :port, :aliases => "-p", :type => :array, :required => true, :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
+    def stop
+      mirage_process_ids(options[:port]).each do |process_id|
+        puts "killing #{process_id}"
+        ChildProcess.windows? ? `taskkill /F /T /PID #{process_id}` : `kill -9 #{process_id}`
+      end
+      wait_until do
+        mirage_process_ids(options[:port]).size == 0
+      end
     end
 
-    def windows?
-      ENV['OS'] == 'Windows_NT'
+    private
+    def mirage_process_ids ports
+      if ports.first.to_s.downcase == "all"
+        puts "in here"
+
+        if ChildProcess.windows?
+          [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
+        else
+          ["Mirage Server", "mirage_server"].collect do |process_name|
+            puts `ps aux | grep "#{process_name}" | grep -v grep`
+            `ps aux | grep "#{process_name}" | grep -v grep`.chomp.lines.collect{|process_line| process_line.split(' ')[1]}
+          end.flatten.find_all { |process_id| process_id != $$.to_s }.compact
+        end
+
+      else
+
+        ports.collect do |port|
+          begin
+            http_get("http://localhost:#{port}/mirage/pid").body.to_i
+          rescue
+            nil
+          end
+
+        end.compact
+
+      end
+    end
+
+  end
+
+
+  class << self
+
+
+    def start options={:port => 7001}
+      Runner.new.invoke(:start,[],options)
+    end
+
+    def stop options
+      options[:port] = [options[:port]] unless options[:port].is_a?(Array)
+      puts "Stopping Mirage"
+      Runner.new.invoke(:stop,[],options)
     end
 
     private
@@ -95,6 +162,10 @@ module Mirage
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
     def initialize url="http://localhost:7001/mirage"
       @url = url
+    end
+
+    def stop
+      Mirage.stop :port => URI.parse(@url).port
     end
 
 

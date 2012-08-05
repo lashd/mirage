@@ -17,9 +17,9 @@ module Mirage
   class Server < Sinatra::Base
 
     configure do
-      options = Mirage::CLI.parse_options(ARGV)
-      set :defaults, options[:defaults]
-      set :port, options[:port]
+      options = Hash[*ARGV]
+      set :defaults, options["defaults"]
+      set :port, options["port"]
       set :show_exceptions, false
       set :logging, true
       set :dump_errors, true
@@ -109,7 +109,6 @@ module Mirage
 
     put '/mirage/defaults' do
       MockResponse.delete_all
-
       Dir["#{settings.defaults}/**/*.rb"].each do |default|
         begin
           eval File.read(default)

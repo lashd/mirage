@@ -1,29 +1,9 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'thor'
+
 
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage/client'
 
-module Mirage
-  class Runner < Thor
-
-    desc "start", "Starts mirage"
-    method_option :port, :aliases => "-p", :type => :numeric, :default => 7001, :desc => "port that mirage should be started on"
-    method_option :defaults, :aliases => "-d", :type => :string, :default => 'responses', :desc => "location to load default responses from"
-    method_option :debug, :type => :boolean, :default => false, :desc => "run in debug mode"
-    def start
-      Mirage.start options
-      puts "starting"
-    end
-
-    desc "stop", "stops mirage"
-    method_option :port, :aliases => "-p", :type => :array, :required => true, :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
-    def stop
-      Mirage.stop options
-    end
-
-  end
-end
 
 Mirage::Runner.start

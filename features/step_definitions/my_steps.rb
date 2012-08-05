@@ -1,9 +1,3 @@
-Around ('@command_line') do |scenario, block|
-  stop_mirage
-  block.call
-  stop_mirage
-end
-
 Then /^'([^']*)' should be returned$/ do |expected_response|
   response_text = @response.body
   if response_text != expected_response
@@ -33,6 +27,8 @@ end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "../bin/"
+
+  puts "running: #{"#{path}#{command}"}"
   @commandline_output = normalise(run("#{path}#{command}"))
 end
 
@@ -40,7 +36,7 @@ Given /^Mirage (is|is not) running$/ do |running|
   if running == 'is'
     start_mirage unless $mirage.running?
   else
-    stop_mirage if $mirage.running?
+    stop_mirage
   end
 end
 
@@ -72,9 +68,11 @@ Given /^usage information:$/ do |table|
 end
 
 Then /^I run$/ do |text|
+
+
   text.gsub!("\"", "\\\\\"")
   Dir.chdir SCRATCH do
-    raise "run failed" unless system "#{RUBY_CMD} -e \"#{@code_snippet}\n#{text}\""
+    raise "run failed" unless system "#{RUBY_CMD} -I #{SOURCE_PATH} -e \"#{@code_snippet}\n#{text}\""
   end
 end
 

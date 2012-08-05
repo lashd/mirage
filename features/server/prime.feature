@@ -36,13 +36,14 @@ Feature: Mirage can be primed with a set of responses.
 
 
   Scenario: Mirage is started pointing with a full path for the responses
-    Given the file '/tmp/responses/default_greetings.rb' contains:
+    Given Mirage is not running
+    And the file '/tmp/responses/default_greetings.rb' contains:
     """
     prime do |mirage|
       mirage.put('greeting', 'hello')
     end
     """
-    And I run 'mirage start -d /tmp/responses'
+    And I run 'mirage start --defaults /tmp/responses'
     When I send PUT to 'http://localhost:7001/mirage/defaults'
     And I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned
@@ -68,7 +69,7 @@ Feature: Mirage can be primed with a set of responses.
     When I send GET to 'http://localhost:7001/mirage/responses/a_new_response'
     Then a 404 should be returned
 
-
+  @command_line
   Scenario: Mirage is started with a bad file
     Given the file 'responses/default_greetings.rb' contains:
     """
