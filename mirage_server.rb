@@ -1,5 +1,4 @@
 require 'rubygems'
-$0='Mirage Server'
 ROOT_DIR = File.dirname(__FILE__)
 $LOAD_PATH.unshift("#{ROOT_DIR}/lib")
 $LOAD_PATH.unshift("#{ROOT_DIR}/server")
@@ -20,6 +19,7 @@ module Mirage
       options = Hash[*ARGV]
       set :defaults, options["defaults"]
       set :port, options["port"]
+      $0="Mirage Server port #{settings.port}"
       set :show_exceptions, false
       set :logging, true
       set :dump_errors, true

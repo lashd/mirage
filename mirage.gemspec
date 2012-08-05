@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
     "features/client/request.feature",
     "features/client/response.feature",
     "features/client/save_and_revert.feature",
-    "features/server/command_line_iterface.feature",
+    "features/server/help.feature",
     "features/server/logging.feature",
     "features/server/prime.feature",
     "features/server/requests/delete.feature",

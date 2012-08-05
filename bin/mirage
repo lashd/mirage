@@ -5,5 +5,10 @@ require 'rubygems'
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'mirage/client'
 
+begin
+  Mirage::Runner.start
+rescue RuntimeError => e
+  puts e.message
+  exit 1
+end
 
-Mirage::Runner.start

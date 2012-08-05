@@ -61,8 +61,9 @@ Given /^the file '(.*)' contains:$/ do |file_path, content|
 end
 
 Then /^the usage information should be displayed$/ do
-  @usage.each { |line| @commandline_output.should =~ /#{line}/ }
+  @usage.each { |line| @commandline_output.should include(line) }
 end
+
 Given /^usage information:$/ do |table|
   @usage = table.raw.flatten.collect { |line| normalise(line) }
 end
@@ -128,7 +129,7 @@ When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^
 end
 
 Then /^I should see '(.*?)' on the command line$/ do |content|
-  @commandline_output.should =~/#{content}/
+  @commandline_output.should include(content)
 end
 
 Then /^'(.*)' should exist$/ do |path|
