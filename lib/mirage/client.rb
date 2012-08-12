@@ -81,9 +81,9 @@ module Mirage
           [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
         else
           ["Mirage Server", "mirage_server"].each do |process_name|
-            `ps aux | grep "#{process_name}" | grep -v grep`.chomp.lines.collect{|line|line.chomp}.each do |process_line|
+            `ps aux | grep "#{process_name}" | grep -v grep`.chomp.lines.collect { |line| line.chomp }.each do |process_line|
               pid = process_line.split(' ')[1]
-              port = process_line[/port (\d+)/,1]
+              port = process_line[/port (\d+)/, 1]
               mirage_instances[port] = pid
             end
           end.flatten.find_all { |process_id| process_id != $$.to_s }.compact
@@ -112,10 +112,14 @@ module Mirage
       Runner.new.invoke(:start, [], options)
     end
 
-    def stop options
-      options[:port] = [options[:port]] unless options[:port].is_a?(Array)
+    def stop options={}
+      unless options.is_a? Hash
+        options[:port] = [options[:port]] if options[:port]
+      end
       puts "Stopping Mirage"
       Runner.new.invoke(:stop, [], options)
+    rescue RuntimeError => e
+      raise "Mirage is running on more than one port, please specify the port(s) you wish to stop it on"
     end
 
     private

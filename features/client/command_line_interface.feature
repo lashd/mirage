@@ -70,6 +70,21 @@ Feature: The Mirage client provides a programmatic interface equivalent to the c
 
   Scenario: Using client to stop mirage
     Given Mirage is not running
+    And I run 'mirage start -p 7001'
+    And I run 'mirage start -p 9001'
+    When I run
+    """
+    begin
+      Mirage.stop
+      raise "should have errored"
+    rescue
+    end
+    """
+    Then mirage should be running on 'http://localhost:7001/mirage'
+    And mirage should be running on 'http://localhost:9001/mirage'
+
+  Scenario: Stopping Mirage without specifying the port when more than one instance of Mirage is running
+    Given Mirage is not running
     When I run
     """
     client = Mirage.start

@@ -69,8 +69,6 @@ Given /^usage information:$/ do |table|
 end
 
 Then /^I run$/ do |text|
-
-
   text.gsub!("\"", "\\\\\"")
   Dir.chdir SCRATCH do
     raise "run failed" unless system "#{RUBY_CMD} -I #{SOURCE_PATH} -e \"#{@code_snippet}\n#{text}\""
