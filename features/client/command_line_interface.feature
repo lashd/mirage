@@ -1,4 +1,3 @@
-@command_line
 Feature: The Mirage client provides a programmatic interface equivalent to the command line interface. This gives an
   easy method for bringing a local instance of Mirage in situ inside a test suite.
 
@@ -14,7 +13,6 @@ Feature: The Mirage client provides a programmatic interface equivalent to the c
 
 
   Scenario: Starting mirage with defaults
-    Given Mirage is not running
     When I run
     """
     Mirage.start

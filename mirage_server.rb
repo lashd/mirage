@@ -109,11 +109,13 @@ module Mirage
 
     put '/mirage/defaults' do
       MockResponse.delete_all
-      Dir["#{settings.defaults}/**/*.rb"].each do |default|
-        begin
-          eval File.read(default)
-        rescue Exception => e
-          raise "Unable to load default responses from: #{default}"
+      if File.directory?(settings.defaults.to_s)
+        Dir["#{settings.defaults}/**/*.rb"].each do |default|
+          begin
+            eval File.read(default)
+          rescue Exception => e
+            raise "Unable to load default responses from: #{default}"
+          end
         end
       end
       200

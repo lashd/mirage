@@ -35,7 +35,9 @@ module Mirage
 
 
       command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
-      ChildProcess.build(*command).start
+      process = ChildProcess.build(*command)
+      process.detach
+      process.start
 
       mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       wait_until(:timeout_after => 30.seconds) { mirage_client.running? }
