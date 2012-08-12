@@ -52,13 +52,12 @@ module Mirage
 
     desc "stop", "stops mirage"
     method_option :port, :aliases => "-p", :type => :array, :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
-
     def stop
 
       ports = options[:port]
       if ports.nil?
         mirage_process_ids = mirage_process_ids([:all])
-        raise "Mirage is running on ports #{mirage_process_ids.keys.join(", ")}. Please run mirage stop -p [PORT(s)] instead" if mirage_process_ids.size > 1
+        raise ClientError.new("Mirage is running on ports #{mirage_process_ids.keys.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if mirage_process_ids.size > 1
         ports = [:all]
       end
 
@@ -73,8 +72,8 @@ module Mirage
     end
 
     private
-    def mirage_process_ids ports
-
+    def mirage_process_ids *ports
+      ports.flatten!
       mirage_instances = {}
       if ports.first.to_s.downcase == "all"
         if ChildProcess.windows?
@@ -118,8 +117,8 @@ module Mirage
       end
       puts "Stopping Mirage"
       Runner.new.invoke(:stop, [], options)
-    rescue RuntimeError => e
-      raise "Mirage is running on more than one port, please specify the port(s) you wish to stop it on"
+    rescue ClientError => e
+      raise ClientError.new("Mirage is running multiple ports, please specify the port(s) see api/tests for details")
     end
 
     private
@@ -168,6 +167,12 @@ module Mirage
   end
 
   class ResponseNotFound < MirageError;
+  end
+
+  class ClientError < ::Exception
+    def initialize message
+      super message
+    end
   end
 
   class Client

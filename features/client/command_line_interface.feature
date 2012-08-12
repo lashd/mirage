@@ -77,7 +77,7 @@ Feature: The Mirage client provides a programmatic interface equivalent to the c
     begin
       Mirage.stop
       raise "should have errored"
-    rescue
+    rescue Mirage::ClientError => ce
     end
     """
     Then mirage should be running on 'http://localhost:7001/mirage'

@@ -7,7 +7,7 @@ require 'mirage/client'
 
 begin
   Mirage::Runner.start
-rescue RuntimeError => e
+rescue Mirage::ClientError => e
   puts e.message
   exit 1
 end
