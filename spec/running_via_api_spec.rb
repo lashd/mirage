@@ -6,15 +6,48 @@ def process_string_for_mirage(mirage_port, pid)
   "team     #{pid}  6.2  0.4  84328 20760 pts/1    Sl   22:15   0:00 Mirage Server port #{mirage_port}"
 end
 
+include Mirage
+
 describe Mirage do
 
   describe 'starting' do
-    it 'should start Mirage' do
-      #Mirage.start
+    before(:each) do
+      @runner = mock
+      Runner.should_receive(:new).and_return(@runner)
+    end
+
+    it 'should start Mirage on port 7001 by default' do
+      @runner.should_receive(:invoke).with(:start, [], {:port => 7001})
+      Mirage.start
+    end
+
+    it 'should start mirage on the given port' do
+      options = {:port => 9001}
+      @runner.should_receive(:invoke).with(:start, [], options)
+      Mirage.start options
     end
   end
 
   describe 'stopping' do
+    before(:each) do
+      @runner = mock
+      Runner.stub(:new).and_return(@runner)
+    end
+
+    it 'should supply single port argument in an array to the runner' do
+      port = 7001
+      @runner.should_receive(:invoke).with(:stop, [], :port => [port])
+      @runner.should_receive(:invoke).with(:stop, [], :port => [:all])
+      Mirage.stop(:port => port)
+      Mirage.stop(:port => :all)
+    end
+
+    it 'should stop multiple instances of Mirage' do
+      ports = 7001, 7002
+      @runner.should_receive(:invoke).with(:stop, [], :port => ports)
+      Mirage.stop(:port => ports)
+    end
+
   end
 
   describe Mirage::Runner do
@@ -25,8 +58,7 @@ describe Mirage do
         IO.rspec_reset
         IO.stub(:popen).and_return("")
       end
-      runner = Mirage::Runner.new
-      runner.stop
+      Mirage::Runner.new.stop
     end
 
     it 'should not stop any instances when more than one is running' do
@@ -54,10 +86,7 @@ PS
         IO.stub(:popen).and_return(process_string_for_mirage(7002, 18902))
       end
 
-      begin
-        Mirage::Runner.new.invoke(:stop, [], {:port => [7001]})
-      rescue Mirage::ClientError => ce
-      end
+      Mirage::Runner.new.invoke(:stop, [], {:port => [7001]})
     end
 
     it 'should stop the instance running on the given ports' do
@@ -90,7 +119,7 @@ PS
         IO.stub(:popen).and_return("")
       end
 
-      Mirage::Runner.new.invoke(:stop, [], {:port => ["all"]})
+      Mirage::Runner.new.invoke(:stop, [], {:port => [:all]})
 
     end
 

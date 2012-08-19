@@ -10,12 +10,9 @@ module Mirage
 
     #TODO - tests needed at this level
     def stop options={}
-
-      puts "Stopping Mirage"
       if options[:port]
         options[:port] = [options[:port]] unless options[:port].is_a?(Array)
       end
-
 
       Runner.new.invoke(:stop, [], options)
     rescue ClientError => e
@@ -50,9 +47,7 @@ module Mirage
 
 
       command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
-      process = ChildProcess.build(*command)
-      process.detach
-      process.start
+      ChildProcess.build(*command).start
 
       mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
       wait_until(:timeout_after => 30.seconds) { mirage_client.running? }
@@ -65,19 +60,22 @@ module Mirage
       mirage_client
     end
 
-    desc "stop", "stops mirage"
+    desc "stop", "Stops mirage"
     method_option :port, :aliases => "-p", :type => :array, :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
 
     def stop
-
-      ports = options[:port]
-      if ports.nil?
+      ports = options[:port] || []
+      if  ports.empty?
         mirage_process_ids = mirage_process_ids([:all])
         raise ClientError.new("Mirage is running on ports #{mirage_process_ids.keys.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if mirage_process_ids.size > 1
-        ports = [:all]
-      else
-        ports = ports.collect { |port| port.to_i } unless ports.first.to_s.downcase == "all"
       end
+
+      ports = case ports
+                when %w(all), [:all], []
+                  [:all]
+                else
+                  ports.collect { |port| port.to_i }
+              end
 
       mirage_process_ids(ports).values.each do |process_id|
         ChildProcess.windows? ? `taskkill /F /T /PID #{process_id}` : IO.popen("kill -9 #{process_id}")
