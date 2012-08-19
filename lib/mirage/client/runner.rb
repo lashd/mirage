@@ -35,7 +35,6 @@ module Mirage
 
     def start
 
-      puts "empty?: #{mirage_process_ids([options[:port]])}"
       unless mirage_process_ids([options[:port]]).empty?
         puts "Mirage is already running: #{mirage_process_ids([options[:port]]).values.join(",")}"
         return
