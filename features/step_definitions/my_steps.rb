@@ -28,11 +28,7 @@ end
 
 Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "../bin/"
-
-  puts "running: #{"#{path}#{command}"}"
-  output = run("#{path}#{command}")
-  puts output
-  @commandline_output = normalise(output)
+  @commandline_output = normalise(run("#{path}#{command}"))
 end
 
 Given /^Mirage (is|is not) running$/ do |running|

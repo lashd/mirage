@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift('lib')
 require 'rubygems'
 require 'bundler'
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -10,6 +11,9 @@ rescue Bundler::BundlerError => e
 end
 
 require 'rake'
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
@@ -59,4 +63,6 @@ task :stop do
 end
 
 
-task :default => [:install,:features,:clean]
+
+
+task :default => [:spec, :install,:features,:clean]
