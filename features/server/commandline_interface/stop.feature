@@ -1,3 +1,4 @@
+@command_line
 Feature: stop
 
 

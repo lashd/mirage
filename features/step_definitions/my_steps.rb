@@ -18,6 +18,7 @@ end
 Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
   running = false
   begin
+    puts http_get(url).body
     running = http_get(url).code.to_i.should == 200
   rescue
   end
@@ -29,7 +30,9 @@ Given /^I run '(.*)'$/ do |command|
   path = ENV['mode'] == 'regression' ? '' : "../bin/"
 
   puts "running: #{"#{path}#{command}"}"
-  @commandline_output = normalise(run("#{path}#{command}"))
+  output = run("#{path}#{command}")
+  puts output
+  @commandline_output = normalise(output)
 end
 
 Given /^Mirage (is|is not) running$/ do |running|

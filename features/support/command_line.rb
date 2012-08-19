@@ -1,3 +1,4 @@
+require 'tempfile'
 module CommandLine
   COMAND_LINE_OUTPUT_PATH = "#{File.dirname(__FILE__)}/../../#{SCRATCH}/commandline_output.txt"
   module Windows
@@ -16,9 +17,17 @@ module CommandLine
 
   module Linux
     def run command
+      output = Tempfile.new("child")
       Dir.chdir SCRATCH do
-        `#{BLANK_RUBYOPT_CMD} && #{command}`
+
+        process = ChildProcess.build(*("#{command}".split(' ')))
+        process.detach
+        process.io.stdout = output
+        process.io.stderr = output
+        process.start
+        wait_until{process.exited?}
       end
+      File.read(output.path)
     end
   end
 
@@ -29,3 +38,4 @@ end
 
 World CommandLine
 ChildProcess.windows? ? World(CommandLine::Windows) : World(CommandLine::Linux)
+include CommandLine::Linux

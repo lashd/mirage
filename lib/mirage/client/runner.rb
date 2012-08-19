@@ -1,16 +1,20 @@
 require 'thor'
 require 'waitforit'
 require 'childprocess'
+require 'uri'
 module Mirage
   class << self
     def start options={:port => 7001}
       Runner.new.invoke(:start, [], options)
     end
 
+    #TODO - tests needed at this level
     def stop options={}
-      unless options.is_a? Hash
-        options[:port] = [options[:port]] if options[:port]
+
+      if options[:port]
+        options[:port] = [options[:port]] unless options[:port].is_a?(Array)
       end
+
       puts "Stopping Mirage"
       Runner.new.invoke(:stop, [], options)
     rescue ClientError => e
@@ -38,8 +42,9 @@ module Mirage
 
     def start
 
+      puts "empty?: #{mirage_process_ids([options[:port]])}"
       unless mirage_process_ids([options[:port]]).empty?
-        puts "Mirage is already running: #{mirage_process_ids([options[:port]])}"
+        puts "Mirage is already running: #{mirage_process_ids([options[:port]]).values.join(",")}"
         return
       end
 
@@ -79,15 +84,17 @@ module Mirage
         mirage_process_ids = mirage_process_ids([:all])
         raise ClientError.new("Mirage is running on ports #{mirage_process_ids.keys.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if mirage_process_ids.size > 1
         ports = [:all]
+      else
+        ports = ports.collect { |port| port.to_i } unless ports.first.to_s.downcase == "all"
       end
 
       mirage_process_ids(ports).values.each do |process_id|
         puts "killing #{process_id}"
-        ChildProcess.windows? ? `taskkill /F /T /PID #{process_id}` : `kill -9 #{process_id}`
+        ChildProcess.windows? ? `taskkill /F /T /PID #{process_id}` : IO.popen("kill -9 #{process_id}")
       end
 
       wait_until do
-        mirage_process_ids(ports).size == 0
+        mirage_process_ids(ports).empty?
       end
     end
 
@@ -95,30 +102,39 @@ module Mirage
     def mirage_process_ids *ports
       ports.flatten!
       mirage_instances = {}
-      if ports.first.to_s.downcase == "all"
-        if ChildProcess.windows?
-          [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
-        else
-          ["Mirage Server", "mirage_server"].each do |process_name|
-            `ps aux | grep "#{process_name}" | grep -v grep`.chomp.lines.collect { |line| line.chomp }.each do |process_line|
-              pid = process_line.split(' ')[1]
-              port = process_line[/port (\d+)/, 1]
-              mirage_instances[port] = pid
-            end
-          end.flatten.find_all { |process_id| process_id != $$.to_s }.compact
+      ["Mirage Server", "mirage_server"].each do |process_name|
+        IO.popen("ps aux | grep '#{process_name}' | grep -v grep | grep -v #{$$}").lines.collect { |line| line.chomp }.each do |process_line|
+          puts process_line
+          pid = process_line.split(' ')[1]
+          port = process_line[/port (\d+)/, 1]
+          mirage_instances[port] = pid
         end
-      else
-        ports.collect do |port|
-          begin
-            pid = http_get("http://localhost:#{port}/mirage/pid").body.to_i
-            mirage_instances[port] = pid
-          rescue
-            nil
-          end
-        end.compact
       end
 
-      mirage_instances
+      return mirage_instances if ports.first.to_s.downcase == "all"
+      puts "mirage instances: #{mirage_instances}, #{ports}"
+
+      Hash[mirage_instances.find_all { |port, pid| ports.include?(port.to_i) }]
+      #
+      #
+      #if
+      #  if ChildProcess.windows?
+      #    [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
+      #  else
+      #
+      #  end
+      #else
+      #  ports.collect do |port|
+      #    begin
+      #      pid = http_get("http://localhost:#{port}/mirage/pid").body.to_i
+      #      mirage_instances[port] = pid
+      #    rescue
+      #      nil
+      #    end
+      #  end.compact
+      #end
+      #
+      #mirage_instances
     end
 
   end

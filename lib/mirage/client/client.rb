@@ -1,7 +1,7 @@
 require 'uri'
 module Mirage
   class Client
-    include ::Mirage::Web
+    include Mirage::Web
     attr_reader :url
 
     # Creates an instance of the MIrage client that can be used to interact with the Mirage Server
@@ -30,7 +30,7 @@ module Mirage
     #   response.default = true # defaults to false. setting to true will allow this template to respond to request made to sub resources should it match.
     # end
     def put endpoint, response_value, &block
-      response = Response.new response_value
+      response = Mirage::Response.new response_value
 
       yield response if block_given?
 
@@ -110,7 +110,6 @@ module Mirage
 
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
-      puts "#{@url}/defaults"
       build_response(http_put("#{@url}/defaults", ''))
     end
 
