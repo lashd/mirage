@@ -11,24 +11,17 @@ module Mirage
     #TODO - tests needed at this level
     def stop options={}
 
+      puts "Stopping Mirage"
       if options[:port]
         options[:port] = [options[:port]] unless options[:port].is_a?(Array)
       end
 
-      puts "Stopping Mirage"
+
       Runner.new.invoke(:stop, [], options)
     rescue ClientError => e
       raise ClientError.new("Mirage is running multiple ports, please specify the port(s) see api/tests for details")
     end
 
-    private
-    def convert_to_command_line_argument_array(args)
-      command_line_arguments = {}
-      args.each do |key, value|
-        command_line_arguments["--#{key}"] = "#{value}"
-      end
-      command_line_arguments.to_a.flatten
-    end
   end
 
   class Runner < Thor
@@ -60,7 +53,6 @@ module Mirage
       command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
       process = ChildProcess.build(*command)
       process.detach
-      #process.io.inherit!
       process.start
 
       mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
@@ -112,29 +104,13 @@ module Mirage
       end
 
       return mirage_instances if ports.first.to_s.downcase == "all"
-      puts "mirage instances: #{mirage_instances}, #{ports}"
-
       Hash[mirage_instances.find_all { |port, pid| ports.include?(port.to_i) }]
-      #
-      #
       #if
       #  if ChildProcess.windows?
       #    [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
       #  else
       #
       #  end
-      #else
-      #  ports.collect do |port|
-      #    begin
-      #      pid = http_get("http://localhost:#{port}/mirage/pid").body.to_i
-      #      mirage_instances[port] = pid
-      #    rescue
-      #      nil
-      #    end
-      #  end.compact
-      #end
-      #
-      #mirage_instances
     end
 
   end
