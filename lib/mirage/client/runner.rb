@@ -26,7 +26,7 @@ module Mirage
 
   class Runner < Thor
     include ::Mirage::Web
-    RUBY_CMD = RUBY_PLATFORM == 'java' ? 'jruby' : 'ruby'
+    RUBY_CMD = ChildProcess.jruby? ? 'jruby' : 'ruby'
 
     desc "start", "Starts mirage"
     method_option :port, :aliases => "-p", :type => :numeric, :default => 7001, :desc => "port that mirage should be started on"
