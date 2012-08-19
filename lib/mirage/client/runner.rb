@@ -80,7 +80,6 @@ module Mirage
       end
 
       mirage_process_ids(ports).values.each do |process_id|
-        puts "killing #{process_id}"
         ChildProcess.windows? ? `taskkill /F /T /PID #{process_id}` : IO.popen("kill -9 #{process_id}")
       end
 
@@ -95,7 +94,6 @@ module Mirage
       mirage_instances = {}
       ["Mirage Server", "mirage_server"].each do |process_name|
         IO.popen("ps aux | grep '#{process_name}' | grep -v grep | grep -v #{$$}").lines.collect { |line| line.chomp }.each do |process_line|
-          puts process_line
           pid = process_line.split(' ')[1]
           port = process_line[/port (\d+)/, 1]
           mirage_instances[port] = pid

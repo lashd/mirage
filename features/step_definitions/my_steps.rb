@@ -18,7 +18,6 @@ end
 Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
   running = false
   begin
-    puts http_get(url).body
     running = http_get(url).code.to_i.should == 200
   rescue
   end
