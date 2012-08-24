@@ -67,7 +67,7 @@ module Mirage
       ports = options[:port] || []
       if  ports.empty?
         mirage_process_ids = mirage_process_ids([:all])
-        raise ClientError.new("Mirage is running on ports #{mirage_process_ids.keys.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if mirage_process_ids.size > 1
+        raise ClientError.new("Mirage is running on ports #{mirage_process_ids.keys.sort.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if mirage_process_ids.size > 1
       end
 
       ports = case ports
