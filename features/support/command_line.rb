@@ -25,7 +25,7 @@ module CommandLine
         process.io.stdout = output
         process.io.stderr = output
         process.start
-        wait_until{process.exited?}
+        wait_until(:timeout_after => 30.seconds){process.exited?}
       end
       File.read(output.path)
     end
