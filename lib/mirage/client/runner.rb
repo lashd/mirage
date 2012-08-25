@@ -40,7 +40,7 @@ module Mirage
       mirage_server_file = "#{File.dirname(__FILE__)}/../../../mirage_server.rb"
 
       if ChildProcess.windows?
-        command = ["cmd", "/C", "start", "mirage server", RUBY_CMD, mirage_server_file]
+        command = ["cmd", "/C", "start", "mirage server port #{options[:port]}", RUBY_CMD, mirage_server_file]
       else
         command = [RUBY_CMD, mirage_server_file]
       end
@@ -87,11 +87,21 @@ module Mirage
     end
 
     private
+
+    def processes_with_name name
+      if ChildProcess.windows?
+
+        `tasklist /V | findstr "#{name.gsub(" ", '\\ ')}"`
+      else
+        IO.popen("ps aux | grep '#{name}' | grep -v grep | grep -v #{$$}")
+      end
+    end
+
     def mirage_process_ids *ports
       ports.flatten!
       mirage_instances = {}
-      ["Mirage Server", "mirage_server"].each do |process_name|
-        IO.popen("ps aux | grep '#{process_name}' | grep -v grep | grep -v #{$$}").lines.collect { |line| line.chomp }.each do |process_line|
+      ["Mirage Server", "mirage_server", "mirage server"].each do |process_name|
+        processes_with_name(process_name).lines.collect { |line| line.chomp }.each do |process_line|
           pid = process_line.split(' ')[1]
           port = process_line[/port (\d+)/, 1]
           mirage_instances[port] = pid
@@ -100,12 +110,6 @@ module Mirage
 
       return mirage_instances if ports.first.to_s.downcase == "all"
       Hash[mirage_instances.find_all { |port, pid| ports.include?(port.to_i) }]
-      #if
-      #  if ChildProcess.windows?
-      #    [`tasklist /V | findstr "mirage\\ server"`.split(' ')[1]].compact
-      #  else
-      #
-      #  end
     end
 
   end

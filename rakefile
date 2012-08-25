@@ -65,4 +65,4 @@ end
 
 
 
-task :default => [:spec, :install,:features,:clean]
+task :default => [:install,:features,:clean]

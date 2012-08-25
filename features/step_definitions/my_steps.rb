@@ -26,7 +26,12 @@ Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
 end
 
 Given /^I run '(.*)'$/ do |command|
-  path = ENV['mode'] == 'regression' ? '' : "../bin/"
+  if ENV['mode'] == 'regression' && ChildProcess.windows?
+    command.gsub!(/^mirage/, MIRAGE_CMD)
+  else
+    path = "#{RUBY_CMD} ../bin/"
+  end
+
   @commandline_output = normalise(run("#{path}#{command}"))
 end
 
