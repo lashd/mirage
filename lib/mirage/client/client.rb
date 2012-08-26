@@ -54,11 +54,11 @@ module Mirage
     #
     # If a response id is not valid, a ResponseNotFound exception will be thrown
     #
-    #   Examples:
-    #   client.clear # clear all responses and associated requests
-    #   client.clear(response_id) # Clear the response and tracked request for a given response id
-    #   client.clear(:requests) # Clear all tracked request information
-    #   client.clear(:request => response_id) # Clear the tracked request for a given response id
+    # Example Usage:
+    #   client.clear -> clear all responses and associated requests
+    #   client.clear(response_id) -> Clear the response and tracked request for a given response id
+    #   client.clear(:requests) -> Clear all tracked request information
+    #   client.clear(:request => response_id) -> Clear the tracked request for a given response id
     def clear thing=nil
 
       case thing
@@ -80,8 +80,8 @@ module Mirage
     # Retrieve the last request that triggered a response to be returned. If the request contained content in its body, this is returned. If the
     # request did not have any content in its body then what ever was in the request query string is returned instead
     #
-    #   Example:
-    #   client.request(response_id) => Tracked request as a String
+    # Example Usage
+    #   client.request(response_id) -> Tracked request as a String
     def request response_id
       build_response(http_get("#{@url}/requests/#{response_id}"))
     end
