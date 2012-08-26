@@ -4,7 +4,7 @@ module Mirage
     include Mirage::Web
     attr_reader :url
 
-    # Creates an instance of the MIrage client that can be used to interact with the Mirage Server
+    # Creates an instance of the Mirage client that can be used to interact with the Mirage Server
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
@@ -18,12 +18,12 @@ module Mirage
 
 
     # Set a text or file based response template, to be hosted at a given end point. A block can be specified to configure the template
-    # Client.set(endpoint, response, &block) => unique id that can be used to call back to the server
+    # client.set(endpoint, response, &block) => unique id that can be used to call back to the server
     #
     # Examples:
-    # Client.put('greeting', 'hello')
+    # client.put('greeting', 'hello')
     #
-    # Client.put('greeting', 'hello') do |response|
+    # client.put('greeting', 'hello') do |response|
     #   response.pattern = 'pattern' #regex or string literal applied against the request querystring and body
     #   response.method = :post #By default templates will respond to get requests
     #   response.content_type = 'text/html' #defaults text/plain
@@ -37,7 +37,7 @@ module Mirage
       build_response(http_put("#{@url}/templates/#{endpoint}", response.value, response.headers))
     end
 
-    # Use to look at what a response contains without actually triggering it.
+    # Use to look to preview the content of a response template would return to a client without actually triggering.
     # client.response(response_id) => response held on the server as a String
     def response response_id
       response = build_response(http_get("#{@url}/templates/#{response_id}"))
@@ -55,10 +55,10 @@ module Mirage
     # If a response id is not valid, a ResponseNotFound exception will be thrown
     #
     #   Examples:
-    #   Client.new.clear # clear all responses and associated requests
-    #   Client.new.clear(response_id) # Clear the response and tracked request for a given response id
-    #   Client.new.clear(:requests) # Clear all tracked request information
-    #   Client.new.clear(:request => response_id) # Clear the tracked request for a given response id
+    #   client.clear # clear all responses and associated requests
+    #   client.clear(response_id) # Clear the response and tracked request for a given response id
+    #   client.clear(:requests) # Clear all tracked request information
+    #   client.clear(:request => response_id) # Clear the tracked request for a given response id
     def clear thing=nil
 
       case thing
@@ -81,7 +81,7 @@ module Mirage
     # request did not have any content in its body then what ever was in the request query string is returned instead
     #
     #   Example:
-    #   Client.new.track(response_id) => Tracked request as a String
+    #   client.request(response_id) => Tracked request as a String
     def request response_id
       build_response(http_get("#{@url}/requests/#{response_id}"))
     end
@@ -99,7 +99,7 @@ module Mirage
     end
 
 
-    # Check to see if Mirage is up and running
+    # Check to see if mirage is running on the url that the client is pointing to
     def running?
       Mirage.running?(@url)
     end
