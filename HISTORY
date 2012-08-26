@@ -1,3 +1,4 @@
+V2.3.0 - Enhanced commandline/programmatic api
 V2.2.3 - fix bug where mirage is already running a client calls exit.
 V2.2.1/2 - Code tidy up
 V2.2.0 - Api for starting and stopping Mirage locally
