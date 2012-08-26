@@ -1,14 +1,8 @@
-module Test
-  module Mirage
-    module Runner
-      def stop_mirage
-        run "#{MIRAGE_CMD} stop -p all"
-      end
-
-      def start_mirage
-          run "#{MIRAGE_CMD} start"
-      end
+module Mirage
+  def start_mirage_in_scratch_dir
+    Dir.chdir SCRATCH do
+      Mirage.start
     end
   end
 end
-include Test::Mirage::Runner
+include Mirage

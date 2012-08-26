@@ -1,10 +1,10 @@
 Before do
   FileUtils.mkdir_p(SCRATCH)
-  $mirage = Mirage::Client.new
-  if $mirage.running?
+
+  if Mirage.running?
     $mirage.clear
   else
-    start_mirage
+    $mirage = start_mirage_in_scratch_dir
   end
 
   Dir["#{SCRATCH}/*"].each do |file|
@@ -18,13 +18,13 @@ Before do
 end
 
 Before ('@command_line') do
-  stop_mirage
+  Mirage.stop :port => :all
 end
 
 After('@command_line') do
-  stop_mirage
+  Mirage.stop :port => :all
 end
 
 at_exit do
-  stop_mirage
+  Mirage.stop :port => :all
 end

@@ -3,7 +3,6 @@ module CommandLine
   def run command
     output = Tempfile.new("child")
     Dir.chdir SCRATCH do
-
       process = ChildProcess.build(*("#{command}".split(' ')))
       process.detach
       process.io.stdout = output
