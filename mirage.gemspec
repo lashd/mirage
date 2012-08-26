@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "2.2.3"
+  s.version = "2.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2012-07-15"
+  s.date = "2012-08-26"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -24,13 +24,16 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/mirage",
     "features/client/clear.feature",
-    "features/client/command_line_interface.feature",
-    "features/client/running.feature",
+    "features/client/preview_responses.feature",
     "features/client/put.feature",
     "features/client/requests.feature",
-    "features/client/preview_responses.feature",
+    "features/client/running.feature",
     "features/client/save_and_revert.feature",
-    "features/server/help.feature",
+    "features/client/start.feature",
+    "features/client/stop.feature",
+    "features/server/commandline_interface/help.feature",
+    "features/server/commandline_interface/start.feature",
+    "features/server/commandline_interface/stop.feature",
     "features/server/logging.feature",
     "features/server/prime.feature",
     "features/server/requests/delete.feature",
@@ -45,10 +48,16 @@ Gem::Specification.new do |s|
     "features/server/templates/put/put_with_substitutions.feature",
     "features/server/web_user_interface.feature",
     "features/step_definitions/my_steps.rb",
+    "features/support/command_line.rb",
     "features/support/env.rb",
+    "features/support/hooks.rb",
+    "features/support/mirage.rb",
     "full_build.sh",
-    "lib/mirage/cli.rb",
     "lib/mirage/client.rb",
+    "lib/mirage/client/client.rb",
+    "lib/mirage/client/error.rb",
+    "lib/mirage/client/response.rb",
+    "lib/mirage/client/runner.rb",
     "lib/mirage/client/web.rb",
     "mirage.gemspec",
     "mirage_server.rb",
@@ -57,6 +66,8 @@ Gem::Specification.new do |s|
     "server/extensions/hash.rb",
     "server/extensions/object.rb",
     "server/mock_response.rb",
+    "spec/running_via_api_spec.rb",
+    "spec/running_via_api_windows_spec.rb",
     "test.rb",
     "views/index.erb"
   ]
@@ -72,8 +83,10 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
+      s.add_runtime_dependency(%q<eventmachine>, ["= 1.0.0.rc.4"])
       s.add_runtime_dependency(%q<childprocess>, [">= 0"])
       s.add_runtime_dependency(%q<waitforit>, [">= 0"])
+      s.add_runtime_dependency(%q<thor>, [">= 0"])
       s.add_development_dependency(%q<thin>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<cucumber>, [">= 0"])
@@ -85,8 +98,10 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jruby-openssl>, [">= 0"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
+      s.add_dependency(%q<eventmachine>, ["= 1.0.0.rc.4"])
       s.add_dependency(%q<childprocess>, [">= 0"])
       s.add_dependency(%q<waitforit>, [">= 0"])
+      s.add_dependency(%q<thor>, [">= 0"])
       s.add_dependency(%q<thin>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<cucumber>, [">= 0"])
@@ -99,8 +114,10 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
+    s.add_dependency(%q<eventmachine>, ["= 1.0.0.rc.4"])
     s.add_dependency(%q<childprocess>, [">= 0"])
     s.add_dependency(%q<waitforit>, [">= 0"])
+    s.add_dependency(%q<thor>, [">= 0"])
     s.add_dependency(%q<thin>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<cucumber>, [">= 0"])
