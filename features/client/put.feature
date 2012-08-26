@@ -66,7 +66,6 @@ Feature: the Mirage client provides methods for setting responses and loading de
     Then 'default greeting' should be returned
 
 
-
   Scenario: Setting the content type
     Given I run
     """
@@ -132,3 +131,12 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
     Then a 203 should be returned
+
+
+  Scenario: Setting a response with a delay
+    Given I run
+    """
+    Mirage::Client.new.put('greeting', 'hello'){|response| response.delay = 2}
+    """
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    Then it should take at least '2' seconds

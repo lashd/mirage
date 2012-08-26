@@ -1,23 +1,27 @@
 require 'ostruct'
 module Mirage
-  class Response < OpenStruct
+  class Response
 
-    attr_accessor :content_type
+    attr_accessor :content_type,:method, :response_code, :pattern, :default, :status, :delay
     attr_reader :value
 
     def initialize response
       @content_type = 'text/plain'
       @value = response
-      super({})
+      @method = :get
+      @status = 200
+      @delay = 0
     end
 
     def headers
       headers = {}
-
-      @table.each { |header, value| headers["X-mirage-#{header.to_s.gsub('_', '-')}"] = value }
       headers['Content-Type']=@content_type
       headers['X-mirage-file'] = 'true' if @response.kind_of?(IO)
-
+      headers['X-mirage-method'] = @method
+      headers['X-mirage-pattern'] = @pattern if @pattern
+      headers['X-mirage-default'] = @default if @default == true
+      headers['X-mirage-status'] = @status
+      headers['X-mirage-delay'] = @delay
       headers
     end
 
