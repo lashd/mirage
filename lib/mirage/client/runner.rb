@@ -4,11 +4,12 @@ require 'childprocess'
 require 'uri'
 module Mirage
   class << self
+    include Web
+
     def start options={:port => 7001}
       Runner.new.invoke(:start, [], options)
     end
 
-    #TODO - tests needed at this level
     def stop options={}
       if options[:port]
         options[:port] = [options[:port]] unless options[:port].is_a?(Array)
@@ -17,6 +18,13 @@ module Mirage
       Runner.new.invoke(:stop, [], options)
     rescue ClientError => e
       raise ClientError.new("Mirage is running multiple ports, please specify the port(s) see api/tests for details")
+    end
+
+    def running? options_or_url = {:port => 7001}
+      url = options_or_url.is_a?(Hash) ? "http://localhost:#{options_or_url[:port]}/mirage" : options_or_url
+      http_get(url) and return true
+    rescue Errno::ECONNREFUSED
+      return false
     end
 
   end

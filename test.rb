@@ -1,19 +1,23 @@
-require 'childprocess'
+require 'sinatra'
+require 'async_sinatra'
+
+#class App < Sinatra::Base
+
+#class App < Sinatra::Base
+  configure do |config|
+    config.register Sinatra::Async
+    #alias :get :aget
+
+  end
 
 
-#module Kernel
-#  def ` cmd
-#    puts "overiden"
-#  end
+
+aget '/' do
+  #EM.add_timer(5) do
+  #  body "hello"
+  #end
+  status 201
+  body "hello"
+end
 #end
-
-#process = ChildProcess.build("cmd","echo" "hello")
-#process.io.inherit!
-#process.start
-#
-#until process.exited?
-#  sleep 1
-#end
-
-`my command`
-
+#run App

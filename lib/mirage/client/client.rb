@@ -101,11 +101,7 @@ module Mirage
 
     # Check to see if Mirage is up and running
     def running?
-      begin
-        http_get(@url) and return true
-      rescue Errno::ECONNREFUSED
-        return false
-      end
+      Mirage.running?(@url)
     end
 
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
