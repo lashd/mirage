@@ -1,7 +1,6 @@
 @command_line
 Feature: stop
 
-
   Scenario: Calling stop without specifying the port when only one instance is running
     Given I run 'mirage start -p 7001'
     When I run 'mirage stop'

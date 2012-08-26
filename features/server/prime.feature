@@ -4,7 +4,7 @@ Feature: Mirage can be primed with a set of responses.
   of your choosing
 
   Responses can be added to the responses directory and used to prime Mirage after Mirage has been started.
-  
+
   Priming mirage causes any modifications to its state to be lost
 
 
@@ -59,9 +59,9 @@ Feature: Mirage can be primed with a set of responses.
     And I run 'mirage start'
     And I send DELETE to 'http://localhost:7001/mirage/templates'
     And I send PUT to 'http://localhost:7001/mirage/templates/a_new_response' with request entity
-      """
-      new response
-      """
+    """
+    new response
+    """
 
     When I send PUT to 'http://localhost:7001/mirage/defaults'
     When I send GET to 'http://localhost:7001/mirage/responses/greeting'
