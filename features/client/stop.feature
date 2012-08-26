@@ -52,7 +52,7 @@ Feature: The Mirage client provides a programmatic interface equivalent to the c
     And I run 'mirage start -p 10001'
     When I run
     """
-    Mirage.stop :port => :all
+    Mirage.stop :all
     """
     Then mirage should not be running on 'http://localhost:7001/mirage'
     Then mirage should not be running on 'http://localhost:9001/mirage'

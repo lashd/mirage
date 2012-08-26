@@ -95,7 +95,7 @@ module Mirage
     # Revert the state of Mirage back to the state that was last saved
     # If there is no snapshot to rollback to, nothing happens
     def revert
-      http_put("#{@url}", '').code == 200
+      http_put(@url, '').code == 200
     end
 
 

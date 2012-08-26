@@ -39,7 +39,7 @@ Given /^Mirage (is|is not) running$/ do |running|
   if running == 'is'
     start_mirage_in_scratch_dir unless Mirage.running?
   else
-    Mirage.stop :port => :all
+    Mirage.stop :all
   end
 end
 

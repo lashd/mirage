@@ -18,13 +18,13 @@ Before do
 end
 
 Before ('@command_line') do
-  Mirage.stop :port => :all
+  Mirage.stop :all
 end
 
 After('@command_line') do
-  Mirage.stop :port => :all
+  Mirage.stop :all
 end
 
 at_exit do
-  Mirage.stop :port => :all
+  Mirage.stop :all
 end

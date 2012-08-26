@@ -6,11 +6,23 @@ module Mirage
   class << self
     include Web
 
+    # Start Mirage locally on a given port
+    # Example Usage:
+    #
+    #   Mirage.start :port => 9001 -> Configured MirageClient ready to use.
     def start options={:port => 7001}
       Runner.new.invoke(:start, [], options)
     end
 
+    # Stop locally running instance(s) of Mirage
+    #
+    # Example Usage:
+    #   Mirage.stop -> Will stop mirage if there is only instance running. Can be running on any port.
+    #   Mirage.stop :port => port -> stop mirage on a given port
+    #   Mirage.stop :port => [port1, port2...] -> stops multiple running instances of Mirage
     def stop options={}
+      options = {:port => :all} if options == :all
+
       if options[:port]
         options[:port] = [options[:port]] unless options[:port].is_a?(Array)
       end
@@ -20,6 +32,13 @@ module Mirage
       raise ClientError.new("Mirage is running multiple ports, please specify the port(s) see api/tests for details")
     end
 
+
+    # Detect if Mirage is running on a URL or a local port
+    #
+    # Example Usage:
+    #   Mirage.running? -> boolean indicating whether Mirage is running on *locally* on port 7001
+    #   Mirage.running? :port => port -> boolean indicating whether Mirage is running on *locally* on the given port
+    #   Mirage.running? url -> boolean indicating whether Mirage is running on the given URL
     def running? options_or_url = {:port => 7001}
       url = options_or_url.is_a?(Hash) ? "http://localhost:#{options_or_url[:port]}/mirage" : options_or_url
       http_get(url) and return true
@@ -39,7 +58,6 @@ module Mirage
     method_option :debug, :type => :boolean, :default => false, :desc => "run in debug mode"
 
     def start
-
       unless mirage_process_ids([options[:port]]).empty?
         puts "Mirage is already running: #{mirage_process_ids([options[:port]]).values.join(",")}"
         return
