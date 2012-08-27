@@ -25,7 +25,6 @@ The client API now includes the ability to start and stop Mirage locally. No mor
 #### 3: Updated command line interface
 Now powered by the mighty Thor, the stop subcommand has been enhanced.  
 
-**Usage:**  
     mirage stop -> As it always did, stops the current instances of Mirage as long as there is only one running instance.  
     mirage stop -p port -> stops Mirage on a given port.    
     mirage stop -p port1, port2... -> stop multiple instances of Mirage.  
