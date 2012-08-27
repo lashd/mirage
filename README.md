@@ -22,7 +22,7 @@ What's New?
 ---------
 #### What do I get?
 ##### 1: Run more than one instance of Mirage per machine.
-##### 2: Programmatic interface starting and stopping mirage
+##### 2: Programmatic interface for starting and stopping mirage
 The client API now includes the ability to start and stop Mirage locally. No more calling out to the command line in your test suite.  
 
 **Example Usage:** (See rdoc for full details)  
