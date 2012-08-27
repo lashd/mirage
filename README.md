@@ -18,5 +18,16 @@ Installation
     
 What's New?
 --- 
-2.3.0
---
+### 2.3.0
+#### 1: Run more than one instance of Mirage per machine.
+#### 2: Programmatic interface starting and stopping mirage
+The client API now includes the ability to start and stop Mirage locally. No more calling out to the command line in your test suite.
+#### 3: Updated command line interface
+Now powered by the mighty Thor, the stop subcommand has been enhanced.  
+    *Usage:*
+    mirage stop -> As it always did, stops the current instances of Mirage as long as there is only one running instance.  
+    mirage stop -p port -> stops Mirage on a given port.    
+    mirage stop -p port1, port2... -> stop multiple instances of Mirage.  
+    mirage stop -p all -> stop all instances of mirage.  
+  
+start remains unchanged.
