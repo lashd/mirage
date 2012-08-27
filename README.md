@@ -19,8 +19,9 @@ Installation
 What's New?
 --- 
 ### 2.3.0
-#### 1: Run more than one instance of Mirage per machine.
-#### 2: Programmatic interface starting and stopping mirage
+#### What do I get?
+##### 1: Run more than one instance of Mirage per machine.
+##### 2: Programmatic interface starting and stopping mirage
 The client API now includes the ability to start and stop Mirage locally. No more calling out to the command line in your test suite.  
 
 **Example Usage:** (See rdoc for full details)  
@@ -28,7 +29,7 @@ The client API now includes the ability to start and stop Mirage locally. No mor
     mirage_client = Mirage.start :port => 9001 #with out args start mirage on 7001 by default
     Mirage.stop # stops the current running instance as long as only one is running  
     
-#### 3: Updated command line interface
+##### 3: Updated command line interface
 Now powered by the mighty Thor, the stop subcommand has been enhanced.  
 **Usage:**  
 
@@ -36,5 +37,5 @@ Now powered by the mighty Thor, the stop subcommand has been enhanced.
     mirage stop -p port -> stops Mirage on a given port.    
     mirage stop -p port1, port2... -> stop multiple instances of Mirage.  
     mirage stop -p all -> stop all instances of mirage.  
-#### What do I have to do to upgrade from the last version of Mirage?
+#### What do I have to do to upgrade?
 You shouldn't have to do anything to move from the last version of Mirage to this one. Let me know if something stops working!
