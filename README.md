@@ -16,5 +16,7 @@ Installation
 ------------
     gem install mirage 
     
-What's New:
+What's New?
 --- 
+2.3.0
+--
