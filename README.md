@@ -19,7 +19,6 @@ Installation
 What's New?
 ----------- 
 ### 2.3.0
----
 #### What do I get?
 ##### 1: Run more than one instance of Mirage per machine.
 ##### 2: Programmatic interface starting and stopping mirage
