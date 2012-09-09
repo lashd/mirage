@@ -66,7 +66,7 @@ Gem::Specification.new do |s|
     "server/extensions/hash.rb",
     "server/extensions/object.rb",
     "server/mock_response.rb",
-    "spec/running_via_api_spec.rb",
+    "spec/runner_spec.rb",
     "spec/running_via_api_windows_spec.rb",
     "test.rb",
     "views/index.erb"
