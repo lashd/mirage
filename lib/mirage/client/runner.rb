@@ -50,6 +50,7 @@ module Mirage
 
   class Runner < Thor
     include ::Mirage::Web
+    include CLIBridge
     RUBY_CMD = ChildProcess.jruby? ? 'jruby' : 'ruby'
 
     desc "start", "Starts mirage"
@@ -104,38 +105,12 @@ module Mirage
               end
 
       mirage_process_ids(ports).values.each do |process_id|
-        ChildProcess.windows? ? `taskkill /F /T /PID #{process_id}` : IO.popen("kill -9 #{process_id}")
+        kill process_id
       end
 
       wait_until do
         mirage_process_ids(ports).empty?
       end
-    end
-
-    private
-
-    def processes_with_name name
-      if ChildProcess.windows?
-
-        `tasklist /V | findstr "#{name.gsub(" ", '\\ ')}"`
-      else
-        IO.popen("ps aux | grep '#{name}' | grep -v grep | grep -v #{$$}")
-      end
-    end
-
-    def mirage_process_ids *ports
-      ports.flatten!
-      mirage_instances = {}
-      ["Mirage Server", "mirage_server", "mirage server"].each do |process_name|
-        processes_with_name(process_name).lines.collect { |line| line.chomp }.each do |process_line|
-          pid = process_line.split(' ')[1]
-          port = process_line[/port (\d+)/, 1]
-          mirage_instances[port] = pid
-        end
-      end
-
-      return mirage_instances if ports.first.to_s.downcase == "all"
-      Hash[mirage_instances.find_all { |port, pid| ports.include?(port.to_i) }]
     end
 
   end
