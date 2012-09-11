@@ -2,7 +2,7 @@ require 'ostruct'
 module Mirage
   class Response
 
-    attr_accessor :content_type,:method, :response_code, :pattern, :default, :status, :delay
+    attr_accessor :content_type,:method, :pattern, :default, :status, :delay
     attr_reader :value
 
     def initialize response
