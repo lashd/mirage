@@ -20,6 +20,7 @@ What's New?
 ----------- 
 ### 2.4.0
 ---------
+#### What do I get?
 ##### 1: Configure your client with defaults for each of your responses
 Remove the repetition of setting things like the content-type each to time you put a response on to Mirage
 
