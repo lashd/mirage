@@ -1,6 +1,7 @@
 require 'uri'
 module Mirage
   class Client
+    Defaults = Struct.new(:method, :status, :delay, :content_type, :default)
     include Mirage::Web
     attr_reader :url
 
@@ -11,12 +12,16 @@ module Mirage
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
     def initialize url="http://localhost:7001/mirage", &block
       @url = url
-      @defaults = Struct.new(:method, :status).new
+      @defaults = Defaults.new
       configure &block if block_given?
     end
 
     def configure &block
       yield @defaults
+    end
+
+    def reset
+      @defaults = Defaults.new
     end
 
     def stop
