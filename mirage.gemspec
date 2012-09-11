@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "2.3.0"
+  s.version = "2.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2012-08-26"
+  s.date = "2012-09-11"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/mirage",
     "features/client/clear.feature",
+    "features/client/configure.feature",
     "features/client/preview_responses.feature",
     "features/client/put.feature",
     "features/client/requests.feature",
@@ -54,6 +55,7 @@ Gem::Specification.new do |s|
     "features/support/mirage.rb",
     "full_build.sh",
     "lib/mirage/client.rb",
+    "lib/mirage/client/cli_bridge.rb",
     "lib/mirage/client/client.rb",
     "lib/mirage/client/error.rb",
     "lib/mirage/client/response.rb",
@@ -66,8 +68,9 @@ Gem::Specification.new do |s|
     "server/extensions/hash.rb",
     "server/extensions/object.rb",
     "server/mock_response.rb",
+    "spec/cli_bridge_spec.rb",
     "spec/runner_spec.rb",
-    "spec/running_via_api_windows_spec.rb",
+    "spec/spec_helper.rb",
     "test.rb",
     "views/index.erb"
   ]
