@@ -10,16 +10,30 @@ module Mirage
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
+    #
+    #   a block can be passed to configure the client with defaults: see configure
     def initialize url="http://localhost:7001/mirage", &block
       @url = url
-      @defaults = Defaults.new
+      reset
       configure &block if block_given?
     end
 
+
+    # Configures default settings to be applied to all response templates put on to Mirage
+    #
+    #   Example:
+    #   Client.new.configure do
+    #     defaults.method = :post
+    #     defaults.status = 202
+    #     defaults.default = true
+    #     defaults.delay = 2
+    #     defaults.content_type = "text/xml"
+    #   end
     def configure &block
       yield @defaults
     end
 
+    # Remove any defaults applied to this client
     def reset
       @defaults = Defaults.new
     end
