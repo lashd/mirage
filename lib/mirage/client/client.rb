@@ -4,12 +4,19 @@ module Mirage
     include Mirage::Web
     attr_reader :url
 
+
     # Creates an instance of the Mirage client that can be used to interact with the Mirage Server
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
-    def initialize url="http://localhost:7001/mirage"
+    def initialize url="http://localhost:7001/mirage", &block
       @url = url
+      @defaults = Struct.new(:method, :status).new
+      configure &block if block_given?
+    end
+
+    def configure &block
+      yield @defaults
     end
 
     def stop
@@ -31,7 +38,7 @@ module Mirage
     # end
     def put endpoint, response_value, &block
       response = Mirage::Response.new response_value
-
+      @defaults.each_pair{|key, value|response.send("#{key}=", value) if value}
       yield response if block_given?
 
       build_response(http_put("#{@url}/templates/#{endpoint}", response.value, response.headers))
