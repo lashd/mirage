@@ -32,6 +32,8 @@ Remove the repetition of setting things like the content-type each to time you p
     end  
     
     client.put("greeting", "hello") -> template put on to Mirage with a delay of 0.5 seconds and content-type text/xml configured
+#### What do I have to do to upgrade?
+Nothing, this is a new feature. Let me know if you have any problems :)
     
     
 
