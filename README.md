@@ -18,6 +18,23 @@ Installation
     
 What's New?
 ----------- 
+### 2.4.0
+---------
+##### 1: Configure your client with defaults for each of your responses
+Remove the repetition of setting things like the content-type each to time you put a response on to Mirage
+
+**Example Usage:** (See rdoc for full details)  
+
+    client = Mirage::Client.new do |defaults|
+      defaults.content_type = "text/xml"
+      defaults.delay = 0.5
+    end  
+    
+    client.put("greeting", "hello") -> template put on to Mirage with a delay of 0.5 seconds and content-type text/xml configured
+    
+    
+
+
 ### 2.3.0
 ---------
 #### What do I get?
