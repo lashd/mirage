@@ -1,3 +1,4 @@
+V2.4.2 - update eventmachine, make sure Mirage.start always returns a client
 V2.4.1 - adding rdoc for configure method
 V2.4.0 - Adding ability to set defaults
 V2.3.0 - Enhanced commandline/programmatic api
