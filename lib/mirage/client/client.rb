@@ -10,6 +10,8 @@ module Mirage
     #
     #   Client.new => a client that is configured to connect to Mirage on http://localhost:7001/mirage (the default settings for Mirage)
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
+    #   Client.new(hash) => a client that is configured to connect to an instance of Mirage running on the specified url or localhost port.
+    #     e.g: Client.new(:url => url) or Client.new(:port => port)
     #
     #   a block can be passed to configure the client with defaults: see configure
     def initialize options={:url => "http://localhost:7001/mirage"}, &block
