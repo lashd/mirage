@@ -12,6 +12,7 @@ module Mirage
     #   Mirage.start :port => 9001 -> Configured MirageClient ready to use.
     def start options={:port => 7001}
       Runner.new.invoke(:start, [], options)
+      Mirage::Client.new(options)
     end
 
     # Stop locally running instance(s) of Mirage
@@ -20,7 +21,7 @@ module Mirage
     #   Mirage.stop -> Will stop mirage if there is only instance running. Can be running on any port.
     #   Mirage.stop :port => port -> stop mirage on a given port
     #   Mirage.stop :port => [port1, port2...] -> stops multiple running instances of Mirage
-    def stop options={}
+    def stop options={:port => []}
       options = {:port => :all} if options == :all
 
       if options[:port]
@@ -40,7 +41,7 @@ module Mirage
     #   Mirage.running? :port => port -> boolean indicating whether Mirage is running on *locally* on the given port
     #   Mirage.running? url -> boolean indicating whether Mirage is running on the given URL
     def running? options_or_url = {:port => 7001}
-      url = options_or_url.is_a?(Hash) ? "http://localhost:#{options_or_url[:port]}/mirage" : options_or_url
+      url = options_or_url.kind_of?(Hash) ? "http://localhost:#{options_or_url[:port]}/mirage" : options_or_url
       http_get(url) and return true
     rescue Errno::ECONNREFUSED
       return false
@@ -59,15 +60,17 @@ module Mirage
     method_option :debug, :type => :boolean, :default => false, :desc => "run in debug mode"
 
     def start
-      unless mirage_process_ids([options[:port]]).empty?
-        puts "Mirage is already running: #{mirage_process_ids([options[:port]]).values.join(",")}"
+      port = options[:port]
+      process_ids = mirage_process_ids([port])
+      unless process_ids.empty?
+        warn "Mirage is already running: #{process_ids.values.join(",")}"
         return
       end
 
       mirage_server_file = "#{File.dirname(__FILE__)}/../../../mirage_server.rb"
 
       if ChildProcess.windows?
-        command = ["cmd", "/C", "start", "mirage server port #{options[:port]}", RUBY_CMD, mirage_server_file]
+        command = ["cmd", "/C", "start", "mirage server port #{port}", RUBY_CMD, mirage_server_file]
       else
         command = [RUBY_CMD, mirage_server_file]
       end
@@ -76,41 +79,24 @@ module Mirage
       command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
       ChildProcess.build(*command).start
 
-      mirage_client = Mirage::Client.new "http://localhost:#{options[:port]}/mirage"
-      wait_until(:timeout_after => 30.seconds) { mirage_client.running? }
+      wait_until(:timeout_after => 30.seconds) { Mirage.running?(options) }
 
       begin
-        mirage_client.prime
+        Mirage::Client.new(options).prime
       rescue Mirage::InternalServerException => e
         puts "WARN: #{e.message}"
       end
-      mirage_client
     end
 
     desc "stop", "Stops mirage"
-    method_option :port, :aliases => "-p", :type => :array, :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
+    method_option :port, :aliases => "-p", :type => :array, :default => [], :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
 
     def stop
-      ports = options[:port] || []
-      if  ports.empty?
-        mirage_process_ids = mirage_process_ids([:all])
-        raise ClientError.new("Mirage is running on ports #{mirage_process_ids.keys.sort.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if mirage_process_ids.size > 1
-      end
-
-      ports = case ports
-                when %w(all), [:all], []
-                  [:all]
-                else
-                  ports.collect { |port| port.to_i }
-              end
-
-      mirage_process_ids(ports).values.each do |process_id|
-        kill process_id
-      end
-
-      wait_until do
-        mirage_process_ids(ports).empty?
-      end
+      ports = options[:port].collect{|port| port=~/\d+/ ? port.to_i : port}
+      process_ids = mirage_process_ids(ports)
+      raise ClientError.new("Mirage is running on ports #{process_ids.keys.sort.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if (process_ids.size > 1 && ports.empty?)
+      process_ids.values.each { |process_id| kill process_id }
+      wait_until { mirage_process_ids(options[:port]).empty? }
     end
 
   end

@@ -13,7 +13,8 @@ describe Mirage do
 
     it 'should start Mirage on port 7001 by default' do
       @runner.should_receive(:invoke).with(:start, [], {:port => 7001})
-      Mirage.start
+      client = Mirage.start
+      client.should == Mirage::Client.new
     end
 
     it 'should start mirage on the given port' do
@@ -47,24 +48,31 @@ describe Mirage do
 
   describe Mirage::Runner do
     it 'should stop the running instance of Mirage' do
-
+      options = {:port => []}
       runner = Mirage::Runner.new
-      runner.should_receive(:mirage_process_ids).with([:all]).any_number_of_times.and_return({"7001" => "18901"})
+      runner.options = options
+
+      runner.should_receive(:mirage_process_ids).with([]).any_number_of_times.and_return({"7001" => "18901"})
 
       runner.should_receive(:kill).with("18901") do
         runner.rspec_reset
-        runner.should_receive(:mirage_process_ids).with([:all]).any_number_of_times.and_return({})
+        runner.should_receive(:mirage_process_ids).with([]).any_number_of_times.and_return({})
       end
 
-      runner.stop
+      Mirage::Runner.should_receive(:new).and_return(runner)
+      runner.invoke(:stop, [], options)
     end
 
     it 'should not stop any instances when more than one is running' do
+      options = {:port => []}
       runner = Mirage::Runner.new
-      runner.should_receive(:mirage_process_ids).with([:all]).any_number_of_times.and_return({"7001" => "18901", "7002" => "18902", "7003" => "18903"})
-      runner.should_not_receive(:kill)
+      runner.options = options
 
-      lambda { runner.stop }.should raise_error(Mirage::ClientError)
+      runner.should_receive(:mirage_process_ids).with([]).any_number_of_times.and_return({"7001" => "18901", "7002" => "18902", "7003" => "18903"})
+      runner.should_not_receive(:kill)
+      Mirage::Runner.should_receive(:new).and_return(runner)
+
+      lambda { runner.invoke(:stop, [], options) }.should raise_error(Mirage::ClientError)
     end
 
 

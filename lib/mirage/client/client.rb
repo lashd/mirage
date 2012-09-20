@@ -12,8 +12,18 @@ module Mirage
     #   Client.new(URL) => a client that is configured to connect to an instance of Mirage running on the specified url.
     #
     #   a block can be passed to configure the client with defaults: see configure
-    def initialize url="http://localhost:7001/mirage", &block
-      @url = url
+    def initialize options={:url => "http://localhost:7001/mirage"}, &block
+      if options.is_a?(String) && options =~ URI.regexp
+        warn("Client.new(url): Deprecated usage, please use :url => url | :port => port")
+        @url = options
+      elsif options.kind_of?(Hash) && options[:port]
+        @url = "http://localhost:#{options[:port]}/mirage"
+      elsif options.kind_of?(Hash) && options[:url]
+        @url = options[:url]
+      else
+        raise "specify a valid URL or port"
+      end
+
       reset
       configure &block if block_given?
     end
@@ -57,7 +67,7 @@ module Mirage
     # end
     def put endpoint, response_value, &block
       response = Mirage::Response.new response_value
-      @defaults.each_pair{|key, value|response.send("#{key}=", value) if value}
+      @defaults.each_pair { |key, value| response.send("#{key}=", value) if value }
       yield response if block_given?
 
       build_response(http_put("#{@url}/templates/#{endpoint}", response.value, response.headers))
@@ -133,6 +143,10 @@ module Mirage
     # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
       build_response(http_put("#{@url}/defaults", ''))
+    end
+
+    def == client
+      client.is_a?(Client) && @url == client.url
     end
 
     private
