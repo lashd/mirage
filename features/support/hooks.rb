@@ -1,11 +1,8 @@
 Before do
   FileUtils.mkdir_p(SCRATCH)
 
-  if Mirage.running?
-    $mirage.clear
-  else
-    $mirage = start_mirage_in_scratch_dir
-  end
+  $mirage = start_mirage_in_scratch_dir
+  $mirage.clear
 
   Dir["#{SCRATCH}/*"].each do |file|
     FileUtils.rm_rf(file) unless file == "#{SCRATCH}/mirage.log"

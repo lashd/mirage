@@ -10,7 +10,6 @@ describe Mirage::Client do
     @response = mock('response').as_null_object
   end
 
-
   it 'is configured to connect to local host port 7001 by default' do
     client = Client.new
     client.should_receive(:http_put).with(/localhost:7001/, anything, anything).and_return(@response)
@@ -32,7 +31,7 @@ describe Mirage::Client do
   end
 
   it 'raises an error if neither a port or url specified in the argument' do
-    expect{Client.new({})}.should raise_error()
-    expect{Client.new("rubbish")}.should raise_error()
+    expect{Client.new({})}.to raise_error()
+    expect{Client.new("rubbish")}.to raise_error()
   end
 end

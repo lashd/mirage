@@ -4,12 +4,17 @@ gem 'sinatra'
 gem 'childprocess'
 gem "waitforit"
 gem "thor"
+gem "httparty"
 
-group :development do
-  gem "thin"
-  gem 'rake'
+group :test do
   gem 'cucumber'
   gem 'rspec'
+  gem 'rack-test'
+  gem 'simplecov'
+end
+
+group :development do
+  gem 'rake'
   gem "jeweler"
   gem 'sinatra-contrib'
   gem 'mechanize'

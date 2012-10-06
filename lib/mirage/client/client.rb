@@ -72,7 +72,7 @@ module Mirage
       @defaults.each_pair { |key, value| response.send("#{key}=", value) if value }
       yield response if block_given?
 
-      build_response(http_put("#{@url}/templates/#{endpoint}", response.value, response.headers))
+      build_response(http_put("#{@url}/templates/#{endpoint}", response.value, :headers => response.headers))
     end
 
     # Use to look to preview the content of a response template would return to a client without actually triggering.

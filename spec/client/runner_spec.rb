@@ -72,7 +72,7 @@ describe Mirage do
       runner.should_not_receive(:kill)
       Mirage::Runner.should_receive(:new).and_return(runner)
 
-      lambda { runner.invoke(:stop, [], options) }.should raise_error(Mirage::ClientError)
+      expect { runner.invoke(:stop, [], options) }.to raise_error(Mirage::ClientError)
     end
 
 
@@ -131,7 +131,7 @@ describe Mirage do
       runner.should_receive(:mirage_process_ids).with([7001]).any_number_of_times.and_return({})
 
       Mirage::Runner.should_receive(:new).and_return(runner)
-      lambda { runner.invoke(:stop, [], options) }.should_not raise_error(Mirage::ClientError)
+      expect { runner.invoke(:stop, [], options) }.to_not raise_error(Mirage::ClientError)
     end
 
   end

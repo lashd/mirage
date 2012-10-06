@@ -3,7 +3,7 @@ Feature: Mirage can be configured to return particular responses conditionally b
 
   Patterns can be either plain text or a regular expression
 
-  A response with a pattern is not considered the same a response at the same address that has either no pattern or a diffferent one.
+  A response with a pattern is not considered the same a response at the same address that has either no pattern or a different one.
   This allows you to specify different behaviour depending on the request.
 
   Background: There is already a default response for 'greeting'
@@ -13,8 +13,8 @@ Feature: Mirage can be configured to return particular responses conditionally b
   Scenario: A plain text pattern found in the request body
 
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | <name>leon</name> |
-      | X-mirage-method  | POST              |
+      | x-mirage-required_body_content1 | %r{.*eon} |
+      | X-mirage-method                 | POST      |
     When I send POST to 'http://localhost:7001/mirage/responses/greeting' with request entity
     """
      <greetingRequest>
@@ -24,57 +24,34 @@ Feature: Mirage can be configured to return particular responses conditionally b
     Then 'Hello Leon, how are you?' should be returned
 
 
-  Scenario: A regex based pattern found in the request body
+  Scenario: Matching multiple request parameters
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | .*?leon<\/name> |
-      | X-mirage-method  | POST            |
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with request entity
-    """
-     <greetingRequest>
-      <name>leon</name>
-     </greetingRequest>
-    """
-    Then 'Hello Leon, how are you?' should be returned
-
-
-  Scenario: A plain text pattern found in the query string
-    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | leon |
-      | X-mirage-method  | POST |
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with parameters:
-      | name | leon |
-    Then 'Hello Leon, how are you?' should be returned
-
-
-  Scenario:  A regex based pattern found in the query string
-    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | name=[L\|l]eon |
-      | X-mirage-method  | POST           |
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with parameters:
-      | name | leon |
-
+      | x-mirage-required_parameter1 | firstname:leon    |
+      | x-mirage-required_parameter2 | surname:%r{davis} |
+    When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+      | surname   | davis |
+      | firstname | leon  |
     Then 'Hello Leon, how are you?' should be returned
 
 
   Scenario: The pattern is not matched
     Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | .*?leon<\/name> |
-      | X-mirage-method  | POST            |
+      | x-mirage-required_parameter1 | firstname:leon |
+      | X-mirage-method              | POST           |
     When I send POST to 'http://localhost:7001/mirage/responses/greeting' with request entity
     """
      <greetingRequest>
       <name>jim</name>
      </greetingRequest>
     """
-
     Then 'Hello Stranger' should be returned
 
   Scenario: Templates with different patterns on the same address
     When I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | 2 |
+      | x-mirage-required_parameter1 | firstname:leon |
 
     When I send PUT to 'http://localhost:7001/mirage/templates/greeting' with body 'Hello Leon, how are you?' and headers:
-      | X-mirage-pattern | 3 |
-    Then '3' should be returned
+      | x-mirage-required_parameter1 | firstname:leon |
+    Then '2' should be returned
     
       

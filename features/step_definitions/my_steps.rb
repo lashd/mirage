@@ -126,7 +126,7 @@ When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^
     parameter, value = row[0], row[1]
     headers[parameter]=value
   end
-  @response = http_put(url, body, headers)
+  @response = http_put(url, body, :headers => headers)
 end
 
 Then /^I should see '(.*?)' on the command line$/ do |content|
@@ -183,9 +183,22 @@ Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^'
   end
 
   Dir.chdir SCRATCH do
-    http_put(url, File.new(path), headers)
+    http_put(url, File.new(path), :headers => headers)
   end
 end
+
+Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with body '([^']*)' and parameters:$/ do |url, endpoint, body, table|
+  headers = {}
+  table.raw.each do |row|
+    parameter, value = row[0], row[1]
+    headers[parameter]=value
+  end
+
+  Dir.chdir SCRATCH do
+    http_put(url, File.new("/home/team/Projects/mirage/pkg/mirage-2.1.2.gem"), :parameters => headers)
+  end
+end
+
 
 When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
   @response.response[header].should include(value)

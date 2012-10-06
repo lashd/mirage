@@ -13,7 +13,10 @@ module Mirage
       end
     end
 
-    def http_put url, entity, headers={}
+    def http_put url, entity, options={}
+      if options[:parameters]
+        url << "?#{options[:parameters].to_a.collect{|pair|pair.join("=")}.join("&")}"
+      end
       uri = URI.parse(url)
       request = Net::HTTP::Put.new(uri.request_uri)
 
@@ -23,8 +26,15 @@ module Mirage
       else
         request.body=entity
       end
-      headers.each { |field, value| request.add_field(field, value) }
-      
+
+      if options[:headers]
+        options[:headers].each { |field, value| request.add_field(field, value) }
+      end
+
+      #if options[:parameters]
+      #  request.set_form_data options[:parameters]
+      #end
+
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 

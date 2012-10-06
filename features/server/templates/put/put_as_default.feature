@@ -12,11 +12,11 @@ Feature: A template can be configure as the default response for when there is n
   Root responses can cause unexpected behaviour and so in order to qualify as a default reponse a client must knowingly mark it as one.
 
   Scenario: A default response is returned
-    Given I send PUT to 'http://localhost:7001/mirage/templates/level0/level1' with body 'another level'
-    Given I send PUT to 'http://localhost:7001/mirage/templates/level1' with body 'level 1' and headers:
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level0' with body 'level 0'
+    Given I send PUT to 'http://localhost:7001/mirage/templates/level0/level1' with body 'level 1' and headers:
       | X-mirage-default | true |
     
-    When I send GET to 'http://localhost:7001/mirage/responses/level1/level2'
+    When I send GET to 'http://localhost:7001/mirage/responses/level0/level1/level2'
     Then 'level 1' should be returned
 
 
@@ -28,7 +28,7 @@ Feature: A template can be configure as the default response for when there is n
     Given I send PUT to 'http://localhost:7001/mirage/templates/level1/level2/level3' with body 'level 3' and headers:
       | X-mirage-default | false |
     Given I send PUT to 'http://localhost:7001/mirage/templates/level1/level2/level3/level4' with body 'level 4' and headers:
-      | X-mirage-pattern | a pattern that wont be matched |
+      | x-mirage-required_parameter1 | pattern:wont be matched |
     Given I send PUT to 'http://localhost:7001/mirage/templates/leve11/level2/level3/level4/level5' with body 'level 5' and headers:
       | X-mirage-default | true |
 

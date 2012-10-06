@@ -33,12 +33,12 @@ Feature: the Mirage client provides methods for setting responses and loading de
     Then 'Hello Leon' should be returned
 
 
-  Scenario Outline: Setting a response with a pattern
+  Scenario: Setting a response with required body content
     Given I run
     """
     Mirage::Client.new.put('greeting', 'Hello Leon') do |response|
       response.method = 'POST'
-      response.pattern = <pattern>
+      response.add_body_content_requirement /leon/
     end
     """
     When I send POST to 'http://localhost:7001/mirage/responses/greeting'
@@ -50,10 +50,21 @@ Feature: the Mirage client provides methods for setting responses and loading de
      </greetingRequest>
     """
     Then 'Hello Leon' should be returned
-  Examples:
-    | pattern             |
-    | /.*?>leon<\\/name>/ |
-    | 'leon'              |
+
+  Scenario: Setting a response with a request parameter requirement
+    Given I run
+    """
+    Mirage::Client.new.put('greeting', 'Hello Leon') do |response|
+      response.method = 'POST'
+      response.add_request_parameter_requirement :name, /leon/
+    end
+    """
+    When I send POST to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 404 should be returned
+    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+      | name | leon |
+
+    Then 'Hello Leon' should be returned
 
   Scenario: setting a response as default
     Given I run

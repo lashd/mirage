@@ -1,16 +1,20 @@
 module Mirage
   class ServerResponseNotFound < Exception
-    
+
   end
   class MockResponse
     class << self
 
       def find_by_id id
-        response_set_containing(id).values.find { |response| response.response_id == id } || raise(ServerResponseNotFound)
+        id = id.to_i
+        all.find{|response| response.response_id == id} || raise(ServerResponseNotFound)
       end
 
       def delete(id)
-        response_set_containing(id).delete_if { |http_method, response| response.response_id == id }
+        id = id.to_i
+        responses.values.each do |set|
+          set.values.each{|responses| responses.delete_if{|response|response.response_id == id}}
+        end
       end
 
       def delete_all
@@ -27,22 +31,28 @@ module Mirage
       end
 
       def all
-        all_responses = []
-        response_sets.each do |response_set|
-          response_set.values.each{|response|all_responses << response}
-        end
-        all_responses
+        responses.values.collect do|response_set|
+          response_set.values
+        end.flatten
       end
 
       def find_default(body, http_method, name, query_string)
-        default_response_sets = find_default_responses(name)
+        http_method.upcase!
+        default_responses = subdomains(name).collect do |domain|
+          if(responses_for_domain = responses[domain])
+            responses_for_domain[http_method].find_all{|response| response.default?} if responses_for_domain[http_method]
+          end
+        end.flatten.compact
 
-        until default_response_sets.empty?
-          record = find_in_response_set(body, query_string, default_response_sets.delete_at(0), http_method)
-          return record if record && record.default?
+        default_responses.find{|response| match?(body, query_string, response)} || raise(ServerResponseNotFound)
+      end
+
+      def subdomains(name)
+        domains=[]
+        name.split("/").each do |part|
+          domains << (domains.last ? "#{domains.last}/#{part}" : part)
         end
-
-        raise ServerResponseNotFound
+        domains.reverse
       end
 
       def find(body, query_string, name, http_method)
@@ -50,40 +60,55 @@ module Mirage
       end
 
       def add new_response
-        response_set = target_response_set(new_response)
-
-        old_response = response_set.delete(new_response.http_method)
-        response_set[new_response.http_method] = new_response
-        new_response.response_id = old_response ? old_response.response_id : next_id
+        response_set = responses_for_endpoint(new_response)
+        method_specific_responses = response_set[new_response.http_method]||=[]
+        old_response = method_specific_responses.delete_at(method_specific_responses.index(new_response)) if method_specific_responses.index(new_response)
+        if old_response
+          new_response.response_id = old_response.response_id
+        else
+          new_response.response_id = next_id
+        end
+        method_specific_responses<<new_response
       end
 
       private
-
       def find_in_response_set(body, query_string, response_set, http_method)
         return unless response_set
-        response_set = response_set[body] || response_set[query_string] || response_set[:basic]
-        response_set[http_method.upcase] if response_set
-      end
 
-      def response_set_containing id
-        response_sets.each do |response_set|
-          return response_set if response_set.find { |key, response| response.response_id == id }
+        responses_for_http_method = response_set[http_method.upcase] || []
+
+        responses = responses_for_http_method.find_all do |stored_response|
+          match?(body, query_string, stored_response)
         end
-        {}
+
+        responses.sort{|a, b| b.score <=> a.score}.first
+
       end
 
-      def response_sets
-        responses.values.collect { |response_sets| response_sets.values }.flatten
+      def match?(body, query_string, stored_response)
+        match = true
+        stored_response.options[:required_parameters].each do |key, value|
+          if value.is_a? Regexp
+            match = false unless value.match(query_string[key])
+          else
+            match = false unless value == query_string[key]
+          end
+        end
+
+        stored_response.options[:required_body_content].each do |value|
+          if value.is_a? Regexp
+            match = false unless body =~ value
+          else
+            match = false unless body.include?(value)
+          end
+
+        end
+
+        match
       end
 
-      def find_default_responses(name)
-        matches = responses.keys.find_all { |key| name.index(key) == 0 }.sort { |a, b| b.length <=> a.length }
-        matches.collect { |key| responses[key] }
-      end
-
-      def target_response_set response
-        responses_sets = responses[response.name]||={}
-        responses_sets[response.pattern] ||= {}
+      def responses_for_endpoint response
+        responses[response.name]||={}
       end
 
       def responses
@@ -101,12 +126,12 @@ module Mirage
 
     end
 
-    attr_reader  :name
+    attr_reader :name, :options
     attr_accessor :response_id
 
-    def initialize name, value,options
+    def initialize name, value, options={}
       @name, @value = name, value
-      @options = {:pattern => :basic, :http_method => 'GET', :delay => 0.0, :status => 200}.merge(options){|key, old_value, new_value| new_value || old_value}
+      @options = {:http_method => 'GET', :delay => 0.0, :status => 200, :required_parameters => {}, :required_body_content => {}}.merge(options) { |key, old_value, new_value| new_value || old_value }
       @options[:http_method].upcase!
       MockResponse.add self
     end
@@ -117,8 +142,14 @@ module Mirage
       method_name.to_s.end_with?('?') ? 'true' == @options[key] : @options[key]
     end
 
-    def pattern
-      @options[:pattern] == :basic ? :basic : /#{@options[:pattern]}/
+    def default?
+      @options[:default].to_s.downcase == "true"
+    end
+
+    def score
+      [@options[:required_parameters].values, @options[:required_body_content]].inject(0) do |score, matchers|
+        matchers.inject(score){|matcher_score, value| value.is_a?(Regexp) ? matcher_score+=1 :matcher_score+=2}
+      end
     end
 
     def value(body='', request_parameters={}, query_string='')
@@ -139,6 +170,10 @@ module Mirage
 
       end
       value
+    end
+
+    def == response
+      response.is_a?(MockResponse) && @name == response.send(:eval, "@name") && @options == response.send(:eval, "@options")
     end
 
     private
