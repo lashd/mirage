@@ -6,12 +6,10 @@ module Mirage
     class << self
 
       def find_by_id id
-        id = id.to_i
         all.find{|response| response.response_id == id} || raise(ServerResponseNotFound)
       end
 
       def delete(id)
-        id = id.to_i
         responses.values.each do |set|
           set.values.each{|responses| responses.delete_if{|response|response.response_id == id}}
         end

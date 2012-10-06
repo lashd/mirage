@@ -27,7 +27,7 @@ module Mirage
                        :required_body_content => required_body_content).response_id.to_s
     end
 
-    ['get', 'post', 'delete', 'put'].each do |http_method|
+    %w(get post delete put).each do |http_method|
       send(http_method, '/mirage/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
@@ -130,7 +130,7 @@ module Mirage
       end
 
       def prime &block
-        yield Mirage::Client.new "http://localhost:#{settings.port}/mirage"
+        block.call Mirage::Client.new "http://localhost:#{settings.port}/mirage"
       end
 
       def send_response(response, body='', request={}, query_string='')
