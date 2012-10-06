@@ -62,6 +62,8 @@ module Mirage
     # client.put('greeting', 'hello')
     #
     # client.put('greeting', 'hello') do |response|
+    #   response.add_body_content_requirement(pattern) #regex or string literal applied against the body
+    #   response.add_request_parameter_requirement(name,pattern) name of parameter and #regex or string that should be used to match against its value
     #   response.pattern = 'pattern' #regex or string literal applied against the request querystring and body
     #   response.method = :post #By default templates will respond to get requests
     #   response.content_type = 'text/html' #defaults text/plain

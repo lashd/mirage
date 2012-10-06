@@ -78,13 +78,6 @@ describe Mirage::MockResponse do
 
   end
 
-  describe 'templates' do
-    it 'should substitute values in to response value' do
-      #MockResponse.new("hello ${leon}", "hello").value
-      #TODO - write me
-    end
-  end
-
   describe "matching on request parameters" do
     it 'should find the response if all required parameters are present' do
       get_response = MockResponse.new("greeting", "get response", :http_method => "get", :required_parameters => {:firstname => "leon"})
@@ -122,7 +115,6 @@ describe Mirage::MockResponse do
     response = MockResponse.new("greeting", "hello1", :content_type => "text/xml",
                                 :http_method => "post",
                                 :status => 202,
-                                :pattern => "pattern",
                                 :delay => 1.0,
                                 :default => true,
                                 :file => false)
@@ -130,7 +122,6 @@ describe Mirage::MockResponse do
     response.should == MockResponse.new("greeting", "hello2", :content_type => "text/xml",
                                         :http_method => "post",
                                         :status => 202,
-                                        :pattern => "pattern",
                                         :delay => 1.0,
                                         :default => true,
                                         :file => false)

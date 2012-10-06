@@ -20,7 +20,6 @@ module Mirage
       headers['Content-Type']=@content_type
       headers['X-mirage-file'] = 'true' if @response.kind_of?(IO)
       headers['X-mirage-method'] = @method
-      headers['X-mirage-pattern'] = @pattern if @pattern
       headers['X-mirage-default'] = @default if @default == true
       headers['X-mirage-status'] = @status
       headers['X-mirage-delay'] = @delay
