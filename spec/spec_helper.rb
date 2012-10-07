@@ -16,7 +16,6 @@ shared_context :windows do
 end
 
 shared_context :linux do
-
   def process_string_for_mirage(mirage_port, pid)
     "team     #{pid}  6.2  0.4  84328 20760 pts/1    Sl   22:15   0:00 Mirage Server port #{mirage_port}"
   end
@@ -25,7 +24,9 @@ shared_context :linux do
     ChildProcess.should_receive(:windows?).any_number_of_times.and_return(false)
   end
 end
-
+shared_context :resources do
+  let(:resources_dir){"#{File.dirname(__FILE__)}/resources"}
+end
 
 shared_context :rack_test do |options|
   options = {:disable_sinatra_error_handling => false}.merge(options||{})
@@ -66,3 +67,4 @@ shared_context :rack_test do |options|
     end
   end
 end
+

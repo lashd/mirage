@@ -1,3 +1,5 @@
+require 'tempfile'
+require 'ptools'
 module Mirage
   class Server < Sinatra::Base
     module Helpers
@@ -13,6 +15,15 @@ module Mirage
         raw_requirements.collect do |string|
           string.start_with?("%r{") && string.end_with?("}") ? eval(string) : string
         end
+      end
+
+      def contains_binary_data? string
+        tmpfile = Tempfile.new("binary_check")
+        tmpfile.write(string)
+        tmpfile.close
+        binary = File.binary?(tmpfile.path)
+        FileUtils.rm(tmpfile.path)
+        binary
       end
 
       private

@@ -135,9 +135,7 @@ module Mirage
     end
 
     def method_missing *args
-      method_name = args.first
-      key = method_name.to_s.gsub(/\?$/, '').to_sym
-      method_name.to_s.end_with?('?') ? 'true' == @options[key] : @options[key]
+      @options[args.first.to_s.to_sym]
     end
 
     def default?
@@ -146,14 +144,14 @@ module Mirage
 
     def score
       [@options[:required_parameters].values, @options[:required_body_content]].inject(0) do |score, matchers|
-        matchers.inject(score){|matcher_score, value| value.is_a?(Regexp) ? matcher_score+=1 :matcher_score+=2}
+        matchers.inject(score){|matcher_score, value| value.is_a?(Regexp) ? matcher_score+=1 : matcher_score+=2}
       end
     end
 
     def value(body='', request_parameters={}, query_string='')
-      return @value if file?
+      return @value if binary
 
-      value = @value
+      value = @value.dup
       value.scan(/\$\{([^\}]*)\}/).flatten.each do |pattern|
 
         if (parameter_match = request_parameters[pattern])

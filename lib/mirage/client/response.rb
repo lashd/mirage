@@ -18,7 +18,6 @@ module Mirage
     def headers
       headers = {}
       headers['Content-Type']=@content_type
-      headers['X-mirage-file'] = 'true' if @response.kind_of?(IO)
       headers['X-mirage-method'] = @method
       headers['X-mirage-default'] = @default if @default == true
       headers['X-mirage-status'] = @status

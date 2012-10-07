@@ -4,7 +4,7 @@ gem 'sinatra'
 gem 'childprocess'
 gem "waitforit"
 gem "thor"
-gem "httparty"
+gem "ptools"
 
 group :test do
   gem 'cucumber'

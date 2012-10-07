@@ -28,7 +28,7 @@ describe Mirage::MockResponse do
 
     #TODO - file is a bit misguided it is the content type that decides what dialogue the browser offers you
     it 'should just return the value if it is a file' do
-      MockResponse.new("greeting", "hello ${name}", :file => "true").value("", {"name" => "leon"}).should == "hello ${name}"
+      MockResponse.new("greeting", "hello ${name}", :binary => true).value("", {"name" => "leon"}).should == "hello ${name}"
     end
 
     it 'should replace patterns with values found in request parameters' do

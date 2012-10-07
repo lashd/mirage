@@ -22,7 +22,7 @@ module Mirage
                        :status => @env['HTTP_X_MIRAGE_STATUS'],
                        :delay => @env['HTTP_X_MIRAGE_DELAY'].to_f,
                        :default => @env['HTTP_X_MIRAGE_DEFAULT'],
-                       :file => @env['HTTP_X_MIRAGE_FILE'],
+                       :binary => contains_binary_data?(response),
                        :required_parameters => required_parameters,
                        :required_body_content => required_body_content).response_id.to_s
     end
