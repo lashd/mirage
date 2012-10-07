@@ -1,2 +1,9 @@
-require 'ptools'
-puts File.binary?("/tmp/binary_check20121007-22590-aiu3n5")
+require './lib/mirage/client'
+
+Mirage.stop
+client = Mirage.start
+
+client.put("picture", File.open("/home/team/Desktop/picture.jpg")) do |response|
+  response.content_type = "image/jpeg"
+  response.add_body_content_requirement "hello"
+end
