@@ -5,7 +5,7 @@ module Mirage
   class MockResponse
     class << self
 
-      def find_by_id id
+      def find_by_id(id)
         all.find{|response| response.response_id == id} || raise(ServerResponseNotFound)
       end
 
@@ -20,6 +20,7 @@ module Mirage
         @next_id = 0
       end
 
+      #TODO - this is flakey, make a proper copy
       def backup
         snapshot.clear and snapshot.replace(responses.deep_clone)
       end
@@ -57,7 +58,7 @@ module Mirage
         find_in_response_set(body, query_string, responses[name], http_method) || raise(ServerResponseNotFound)
       end
 
-      def add new_response
+      def add(new_response)
         response_set = responses_for_endpoint(new_response)
         method_specific_responses = response_set[new_response.http_method]||=[]
         old_response = method_specific_responses.delete_at(method_specific_responses.index(new_response)) if method_specific_responses.index(new_response)
@@ -105,7 +106,7 @@ module Mirage
         match
       end
 
-      def responses_for_endpoint response
+      def responses_for_endpoint(response)
         responses[response.name]||={}
       end
 
