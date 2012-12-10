@@ -4,6 +4,8 @@ $LOAD_PATH.unshift "#{ROOT_DIR}/server"
 
 require 'simplecov' if ENV['coverage']
 require 'rspec'
+require 'json'
+require 'base64'
 
 shared_context :windows do
   def process_string_for_mirage(mirage_port, pid)

@@ -1,9 +1,22 @@
-require './lib/mirage/client'
+{
+    headers: [],
+    parameters: [],
+    body_content: [],
+    status: 200,
+    delay: 2.4,
+    content_type: "text/html"
+}
 
-Mirage.stop
-client = Mirage.start
-
-client.put("picture", File.open("/home/team/Desktop/picture.jpg")) do |response|
-  response.content_type = "image/jpeg"
-  response.add_body_content_requirement "hello"
-end
+{
+    request: {
+        headers: [],
+        parameters: [],
+        body_content: []
+    },
+    response: {
+        status: 200,
+        delay: 2.4,
+        content_type: "text/html",
+        entity: 'blah'
+    }
+}

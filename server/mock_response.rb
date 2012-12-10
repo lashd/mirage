@@ -1,7 +1,9 @@
+require 'ptools'
 module Mirage
   class ServerResponseNotFound < Exception
 
   end
+
   class MockResponse
     class << self
 
@@ -60,7 +62,7 @@ module Mirage
 
       def add(new_response)
         response_set = responses_for_endpoint(new_response)
-        method_specific_responses = response_set[new_response.http_method]||=[]
+        method_specific_responses = response_set[new_response.request_spec['http_method'].upcase]||=[]
         old_response = method_specific_responses.delete_at(method_specific_responses.index(new_response)) if method_specific_responses.index(new_response)
         if old_response
           new_response.response_id = old_response.response_id
@@ -86,24 +88,29 @@ module Mirage
 
       def match?(body, query_string, stored_response)
         match = true
-        stored_response.options[:required_parameters].each do |key, value|
+        stored_response.request_spec['parameters'].each do |key, value|
+          value = interpret_value(value)
           if value.is_a? Regexp
-            match = false unless value.match(query_string[key])
+            match = false unless value.match(query_string[key.to_sym])
           else
-            match = false unless value == query_string[key]
+            match = false unless value == query_string[key.to_sym]
           end
         end
 
-        stored_response.options[:required_body_content].each do |value|
+        stored_response.request_spec['body_content'].each do |value|
+          value = interpret_value(value)
           if value.is_a? Regexp
             match = false unless body =~ value
           else
             match = false unless body.include?(value)
           end
-
         end
 
         match
+      end
+
+      def interpret_value(value)
+        value.start_with?("%r{") && value.end_with?("}") ? eval(value) : value
       end
 
       def responses_for_endpoint(response)
@@ -122,44 +129,54 @@ module Mirage
         @next_id||= 0
         @next_id+=1
       end
-
     end
 
-    attr_reader :name, :options
+    attr_reader :name, :request_spec, :response_spec
     attr_accessor :response_id
 
-    def initialize name, value, options={}
-      @name, @value = name, value
-      @options = {:http_method => 'GET', :delay => 0.0, :status => 200, :required_parameters => {}, :required_body_content => {}}.merge(options) { |key, old_value, new_value| new_value || old_value }
-      @options[:http_method].upcase!
+    def initialize name, spec={}
+
+      request_defaults = JSON.parse({:parameters => {},
+                                     :body_content => [],
+                                     :http_method => 'get'}.to_json)
+      response_defaults = JSON.parse({:default => false,
+                                      :body => Base64.encode64(''),
+                                      :delay => 0,
+                                      :content_type => "text/plain",
+                                      :status => 200}.to_json)
+
+
+      @name = name
+      @spec = spec
+
+      @request_spec = request_defaults.merge(spec['request']||{})
+      @response_spec = response_defaults.merge(spec['response']||{})
+
       MockResponse.add self
     end
 
-    def method_missing *args
-      @options[args.first.to_s.to_sym]
-    end
-
     def default?
-      @options[:default].to_s.downcase == "true"
+      @response_spec["default"]
     end
 
     def score
-      [@options[:required_parameters].values, @options[:required_body_content]].inject(0) do |score, matchers|
-        matchers.inject(score){|matcher_score, value| value.is_a?(Regexp) ? matcher_score+=1 : matcher_score+=2}
+      [@request_spec['parameters'].values, @request_spec['body_content']].inject(0) do |score, matchers|
+        matchers.inject(score){|matcher_score, value| interpret_value(value).is_a?(Regexp) ? matcher_score+=1 : matcher_score+=2}
       end
     end
 
-    def value(body='', request_parameters={}, query_string='')
-      return @value if binary
+    def value(request_body='', request_parameters={}, query_string='')
+      body = Base64.decode64(response_spec['body'])
+      return body if contains_binary_data? body
 
-      value = @value.dup
+      value = body.dup
       value.scan(/\$\{([^\}]*)\}/).flatten.each do |pattern|
 
         if (parameter_match = request_parameters[pattern])
           value = value.gsub("${#{pattern}}", parameter_match)
         end
 
-        [body, query_string].each do |string|
+        [request_body, query_string].each do |string|
           if (string_match = find_match(string, pattern))
             value = value.gsub("${#{pattern}}", string_match)
           end
@@ -170,12 +187,29 @@ module Mirage
     end
 
     def == response
-      response.is_a?(MockResponse) && @name == response.send(:eval, "@name") && @options == response.send(:eval, "@options")
+      response.is_a?(MockResponse) && @name == response.send(:eval, "@name") && @request_spec == response.send(:eval, "@request_spec") && @response_spec == response.send(:eval, "@response_spec")
+    end
+
+    def to_json
+      @spec
     end
 
     private
     def find_match(string, regex)
       string.scan(/#{regex}/).flatten.first
+    end
+
+    def interpret_value(value)
+      value.start_with?("%r{") && value.end_with?("}") ? eval(value) : value
+    end
+
+    def contains_binary_data? string
+      tmpfile = Tempfile.new("binary_check")
+      tmpfile.write(string)
+      tmpfile.close
+      binary = File.binary?(tmpfile.path)
+      FileUtils.rm(tmpfile.path)
+      binary
     end
   end
 end

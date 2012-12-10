@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'helpers'
+require 'base64'
 module Mirage
 
   class Server < Sinatra::Base
@@ -10,21 +11,16 @@ module Mirage
     helpers Mirage::Server::Helpers
 
     put '/mirage/templates/*' do |name|
-      response = request.body.read
 
-      required_parameters = convert_raw_required_params(@env.select{ |key, value| key.start_with?("HTTP_X_MIRAGE_REQUIRED_PARAMETER") }.values)
-      required_body_content = convert_raw_required_body_content_requirements(@env.select{ |key, value| key.start_with?("HTTP_X_MIRAGE_REQUIRED_BODY_CONTENT") }.values)
 
+
+
+      total_spec = JSON.parse(request.body.read)
+
+
+      response_body = Base64.decode64(response_spec['body'])
       MockResponse.new(name,
-                       response,
-                       :content_type => @env['CONTENT_TYPE'],
-                       :http_method => @env['HTTP_X_MIRAGE_METHOD'],
-                       :status => @env['HTTP_X_MIRAGE_STATUS'],
-                       :delay => @env['HTTP_X_MIRAGE_DELAY'].to_f,
-                       :default => @env['HTTP_X_MIRAGE_DEFAULT'],
-                       :binary => contains_binary_data?(response),
-                       :required_parameters => required_parameters,
-                       :required_body_content => required_body_content).response_id.to_s
+                       total_spec).response_id.to_s
     end
 
     %w(get post delete put).each do |http_method|
@@ -66,6 +62,7 @@ module Mirage
     end
 
     get '/mirage/templates/:id' do
+      MockResponse.find_by_id(response_id).to_json
       send_response(MockResponse.find_by_id(response_id))
     end
 
