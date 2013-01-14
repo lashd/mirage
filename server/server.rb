@@ -11,16 +11,7 @@ module Mirage
     helpers Mirage::Server::Helpers
 
     put '/mirage/templates/*' do |name|
-
-
-
-
-      total_spec = JSON.parse(request.body.read)
-
-
-      response_body = Base64.decode64(response_spec['body'])
-      MockResponse.new(name,
-                       total_spec).response_id.to_s
+      MockResponse.new(name,JSON.parse(request.body.read)).response_id.to_s
     end
 
     %w(get post delete put).each do |http_method|
@@ -62,8 +53,7 @@ module Mirage
     end
 
     get '/mirage/templates/:id' do
-      MockResponse.find_by_id(response_id).to_json
-      send_response(MockResponse.find_by_id(response_id))
+      MockResponse.find_by_id(response_id).raw
     end
 
     get '/mirage/requests/:id' do
@@ -131,9 +121,9 @@ module Mirage
       end
 
       def send_response(response, body='', request={}, query_string='')
-        sleep response.delay
-        content_type(response.content_type)
-        status response.status
+        sleep response.response_spec['delay']
+        content_type(response.response_spec['content_type'])
+        status response.response_spec['status']
         response.value(body, request, query_string)
       end
     end

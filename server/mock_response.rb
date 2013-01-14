@@ -1,6 +1,10 @@
-require 'ptools'
+require 'binary_data_checker'
 module Mirage
   class ServerResponseNotFound < Exception
+
+  end
+
+  class MalformedResponse < Exception
 
   end
 
@@ -151,6 +155,7 @@ module Mirage
 
       @request_spec = request_defaults.merge(spec['request']||{})
       @response_spec = response_defaults.merge(spec['response']||{})
+      @binary = BinaryDataChecker.contains_binary_data? @response_spec['body']
 
       MockResponse.add self
     end
@@ -167,7 +172,7 @@ module Mirage
 
     def value(request_body='', request_parameters={}, query_string='')
       body = Base64.decode64(response_spec['body'])
-      return body if contains_binary_data? body
+      return body if @binary
 
       value = body.dup
       value.scan(/\$\{([^\}]*)\}/).flatten.each do |pattern|
@@ -190,8 +195,12 @@ module Mirage
       response.is_a?(MockResponse) && @name == response.send(:eval, "@name") && @request_spec == response.send(:eval, "@request_spec") && @response_spec == response.send(:eval, "@response_spec")
     end
 
-    def to_json
-      @spec
+    def raw
+      {:response => @response_spec, :request => @request_spec}.to_json
+    end
+
+    def binary?
+      @binary
     end
 
     private
@@ -203,13 +212,6 @@ module Mirage
       value.start_with?("%r{") && value.end_with?("}") ? eval(value) : value
     end
 
-    def contains_binary_data? string
-      tmpfile = Tempfile.new("binary_check")
-      tmpfile.write(string)
-      tmpfile.close
-      binary = File.binary?(tmpfile.path)
-      FileUtils.rm(tmpfile.path)
-      binary
-    end
+
   end
 end

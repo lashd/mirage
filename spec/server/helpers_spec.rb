@@ -31,21 +31,4 @@ describe "helpers" do
     end
   end
 
-  describe 'checking for binary data in strings' do
-    it 'should find binary data' do
-      @helper.contains_binary_data?(File.read("#{resources_dir}/binary.file")).should == true
-    end
-
-    it 'should not find binary data' do
-      @helper.contains_binary_data?("string").should == false
-    end
-
-    it 'should clean up the temporary file created when checking string content' do
-      tmpfile = Tempfile.new("file")
-      Tempfile.should_receive(:new).and_return tmpfile
-      FileUtils.should_receive(:rm).with(tmpfile.path)
-
-      @helper.contains_binary_data?("string")
-    end
-  end
 end

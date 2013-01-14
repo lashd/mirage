@@ -12,6 +12,22 @@ describe Mirage::MockResponse do
     JSON.parse(hash.to_json)
   end
 
+  describe 'initialisation' do
+    it 'should find binary data' do
+        string="string"
+        response_spec = convert_keys_to_strings({:response => {:body => string}})
+        BinaryDataChecker.should_receive(:contains_binary_data?).with(string).and_return(true)
+        MockResponse.new("greeting", response_spec).binary?.should == true
+    end
+
+    it 'should not find binary data' do
+      string="string"
+      response_spec = convert_keys_to_strings({:response => {:body => string}})
+      BinaryDataChecker.should_receive(:contains_binary_data?).with(string).and_return(false)
+      MockResponse.new("greeting", response_spec).binary?.should == false
+    end
+  end
+
   describe 'saving state' do
     it 'should store the current set of responses' do
       greeting = MockResponse.new("greeting")
@@ -26,22 +42,29 @@ describe Mirage::MockResponse do
   end
 
   describe "response values" do
+
     it 'should return the response value' do
       response_spec = convert_keys_to_strings({:response => {:body => Base64.encode64("hello")}})
       MockResponse.new("greeting", response_spec).value.should == "hello"
     end
 
-    it 'should just return the value if it is a file' do
+    it 'should return if the value contains binary data' do
       response_spec = convert_keys_to_strings({:response => {:body => Base64.encode64("hello ${name}")}})
-
+      BinaryDataChecker.should_receive(:contains_binary_data?).and_return(true)
       response = MockResponse.new("greeting", response_spec)
-      response.should_receive(:contains_binary_data?).and_return(true)
+
       response.value("", {"name" => "leon"}).should == "hello ${name}"
     end
 
     it 'should replace patterns with values found in request parameters' do
       response_spec = convert_keys_to_strings({:response => {:body => Base64.encode64("hello ${name}")}})
       MockResponse.new("greeting", response_spec).value("", {"name" => "leon"}).should == "hello leon"
+    end
+
+    it 'should base64 decode values' do
+      response_spec = convert_keys_to_strings({:response => {:body => "encoded value"}})
+      Base64.should_receive(:decode64).and_return("decoded value")
+      MockResponse.new("greeting", response_spec).value("")
     end
 
     it 'should replace patterns with values found in the body' do
@@ -346,8 +369,7 @@ describe Mirage::MockResponse do
   describe 'finding defaults' do
     it 'most appropriate response under parent resource and same http method' do
       level1_response = MockResponse.new("level1", convert_keys_to_strings({:response => {:body => "level1", :default => true}}))
-      level2_response = MockResponse.new("level1/level2", convert_keys_to_strings({:response => {:body => "level2", :default => true}, :request => {:body_content => %w(body)}}))
-      #MockResponse.find_default("body", "get", "level1/level2/level3", {}).should == level2_response
+      MockResponse.new("level1/level2", convert_keys_to_strings({:response => {:body => "level2", :default => true}, :request => {:body_content => %w(body)}}))
       MockResponse.find_default("", "get", "level1/level2/level3", {}).should == level1_response
     end
   end
@@ -366,11 +388,14 @@ describe Mirage::MockResponse do
                                                     :http_method => "post"
                                                 },
                                                 :response => {
-                                                    :body => "response"
+                                                    :body => "response",
+                                                    :delay => 0,
+                                                    :content_type => 'text/plain',
+                                                    :status => 200,
+                                                    :default => false
                                                 }
                                             })
-    MockResponse.new("greeting",
-                     response_spec).to_json.should == response_spec
+    JSON.parse(MockResponse.new("greeting",response_spec).raw).should == response_spec
   end
 
 end
