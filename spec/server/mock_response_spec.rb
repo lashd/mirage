@@ -14,10 +14,10 @@ describe Mirage::MockResponse do
 
   describe 'initialisation' do
     it 'should find binary data' do
-        string="string"
-        response_spec = convert_keys_to_strings({:response => {:body => string}})
-        BinaryDataChecker.should_receive(:contains_binary_data?).with(string).and_return(true)
-        MockResponse.new("greeting", response_spec).binary?.should == true
+      string="string"
+      response_spec = convert_keys_to_strings({:response => {:body => string}})
+      BinaryDataChecker.should_receive(:contains_binary_data?).with(string).and_return(true)
+      MockResponse.new("greeting", response_spec).binary?.should == true
     end
 
     it 'should not find binary data' do
@@ -25,6 +25,32 @@ describe Mirage::MockResponse do
       response_spec = convert_keys_to_strings({:response => {:body => string}})
       BinaryDataChecker.should_receive(:contains_binary_data?).with(string).and_return(false)
       MockResponse.new("greeting", response_spec).binary?.should == false
+    end
+  end
+
+  describe 'defaults' do
+    describe 'request' do
+      it 'should default http_method' do
+        MockResponse.new("greeting", {}).request_spec['http_method'].should == "get"
+      end
+    end
+
+    describe 'response' do
+
+      it 'should default content_type' do
+        MockResponse.new("greeting", {}).response_spec['content_type'].should == "text/plain"
+      end
+
+      it 'should default status code' do
+        MockResponse.new("greeting", {}).response_spec['status'].should == 200
+      end
+      it 'should default delay' do
+        MockResponse.new("greeting", {}).response_spec['delay'].should == 0
+      end
+
+      it 'should default default' do
+        MockResponse.new("greeting", {}).response_spec['default'].should == false
+      end
     end
   end
 
@@ -395,7 +421,7 @@ describe Mirage::MockResponse do
                                                     :default => false
                                                 }
                                             })
-    JSON.parse(MockResponse.new("greeting",response_spec).raw).should == response_spec
+    JSON.parse(MockResponse.new("greeting", response_spec).raw).should == response_spec
   end
 
 end
