@@ -189,9 +189,7 @@ module Mirage
   #
 
   #
-  #  def == client
-  #    client.is_a?(Client) && @url == client.url
-  #  end
+
   #
   #  private
   #  def build_response response

@@ -5,15 +5,6 @@ require 'mirage/client'
 describe Mirage::Template do
   include Mirage
 
-  describe 'loading' do
-    it 'should retreive template definition from mirage' do
-      response_id = 1
-      Template.should_receive(:get) do |url|
-        url.should == "/#{response_id}"
-      end
-      Template.find(response_id)
-    end
-  end
 
   describe 'creating' do
     it 'should create a template on mirage' do

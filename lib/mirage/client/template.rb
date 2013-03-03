@@ -12,11 +12,6 @@ module Mirage
     attr_accessor :content_type, :http_method, :default, :status, :delay, :required_parameters, :required_body_content, :required_headers, :endpoint, :id
     attr_reader :value
 
-    class << self
-      def find id
-        get("/#{id}")
-      end
-    end
 
     def initialize endpoint, response
       @endpoint = endpoint
