@@ -1,4 +1,4 @@
 require 'mirage/client'
 
 mirage = Mirage::Client.new
-mirage.templates.put("greeting","hello")
+puts mirage.templates.put("greeting","hello")

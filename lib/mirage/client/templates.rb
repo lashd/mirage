@@ -17,7 +17,7 @@ module Mirage
     end
 
     def put endpoint, response
-      template = Mirage::Template.new  "#{@base_url}/#{endpoint}", response, @default_config
+      template = Mirage::Template.new  "#{@base_url}/templates/#{endpoint}", response, @default_config
       yield template if block_given?
       template.create
     end

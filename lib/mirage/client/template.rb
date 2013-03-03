@@ -7,8 +7,6 @@ module Mirage
     include HTTParty
     include Searchable
 
-
-    base_uri "http://localhost:7001/mirage/templates"
     format :json
 
     attr_accessor :content_type, :http_method, :default, :status, :delay, :required_parameters, :required_body_content, :required_headers, :endpoint, :id
@@ -25,12 +23,12 @@ module Mirage
       @delay = default_config.delay
       @required_parameters = {}
       @required_headers = {}
-      @required_body_content = [],
+      @required_body_content = []
       @default = default_config.default
     end
 
     def create
-      @id = self.class.put("/#{@endpoint}", :body => self.to_json)['id']
+      @id = self.class.put("#{@endpoint}", :body => self.to_json)['id']
       self
     end
 

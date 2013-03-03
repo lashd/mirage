@@ -14,7 +14,7 @@ describe Mirage::Template do
       template = Template.new(endpoint,json)
 
       template.should_receive(:to_json).and_return(json)
-      Template.should_receive(:put).with("/#{endpoint}", :body => json).and_return(convert_keys_to_strings({:id => 1}))
+      Template.should_receive(:put).with(endpoint, :body => json).and_return(convert_keys_to_strings({:id => 1}))
       template.create
       template.id.should == 1
     end
@@ -54,6 +54,7 @@ describe Mirage::Template do
     end
 
     describe 'required request parameters' do
+
       it 'should contain expected request parameters' do
         response = Template.new "endpoint", "value"
         required_parameters = {:key => "value"}

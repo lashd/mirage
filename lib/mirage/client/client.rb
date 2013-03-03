@@ -9,7 +9,6 @@ module Mirage
 
     attr_reader :url
 
-
     def initialize options={:url => "http://localhost:7001/mirage"}
       if options.is_a?(String) && options =~ URI.regexp
         warn("Client.new(url): Deprecated usage, please use :url => url | :port => port")
