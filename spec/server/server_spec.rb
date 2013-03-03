@@ -96,7 +96,7 @@ describe "Mirage Server" do
     describe 'checking templates' do
       it 'should return the descriptor for a template' do
         response_body = "hello"
-        response_id = put('/mirage/templates/greeting', {:response => {:body => Base64.encode64(response_body)}}.to_json).body
+        response_id = JSON.parse(put('/mirage/templates/greeting', {:response => {:body => Base64.encode64(response_body)}}.to_json).body)['id']
         template = JSON.parse(get("/mirage/templates/#{response_id}").body)
         template.should == JSON.parse({:request => {:parameters => {}, :http_method => "get", :body_content => []},
                                        :response => {:default => false,
@@ -109,7 +109,7 @@ describe "Mirage Server" do
     end
 
     it 'should delete a template' do
-      response_id = put('/mirage/templates/greeting', {:response => {:body => Base64.encode64("hello")}}.to_json).body
+      response_id = JSON.parse(put('/mirage/templates/greeting', {:response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
       delete("/mirage/templates/#{response_id}")
       expect { get("/mirage/templates/#{response_id}") }.to raise_error(Mirage::ServerResponseNotFound)
     end

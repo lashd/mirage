@@ -1,7 +1,4 @@
-require 'ostruct'
+require 'mirage/client'
 
-struct = OpenStruct.new(:name => "leon")
-struct.freeze
-
-puts struct.name
-struct.name = "hello"
+mirage = Mirage::Client.new
+mirage.templates.put("greeting","hello")
