@@ -34,33 +34,8 @@ module Mirage
       Requests.new(@url)
     end
 
-
-    # Clear down the Mirage Server and load any defaults that are in Mirages default responses directory.
     def prime
       self.class.send(:put, "#{@url}/defaults")
-    end
-
-    def response id
-      Template.new(id)
-    end
-
-    def clear thing=nil
-      case thing
-        when :requests
-          self.class.send(:delete, "#{@url}/requests")
-        when Numeric then
-          self.class.send(:delete, "#{@url}/templates/#{thing}")
-        when Hash then
-          self.class.send(:delete, "#{@url}/requests/#{thing[:request]}") if thing[:request]
-        else
-          self.class.send(:delete, "#{@url}/templates")
-      end
-    end
-
-    private
-    def http_call method, endpoint, response
-
-
     end
   end
 

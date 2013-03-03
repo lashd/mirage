@@ -87,15 +87,6 @@ describe Mirage::Client do
 
   end
 
-  describe 'response' do
-    it 'should return response definition' do
-      response_id = 1
-      Template.should_receive(:new).with(response_id)
-      Client.new.response(response_id)
-    end
-
-  end
-
 
   describe 'save' do
 
