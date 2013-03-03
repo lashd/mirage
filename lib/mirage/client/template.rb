@@ -2,9 +2,11 @@ require 'ostruct'
 require 'json'
 require 'httparty'
 module Mirage
+
   class Template
     include HTTParty
     include Searchable
+
 
     base_uri "http://localhost:7001/mirage/templates"
     format :json
@@ -13,17 +15,18 @@ module Mirage
     attr_reader :value
 
 
-    def initialize endpoint, response
+    def initialize endpoint, response, default_config=TemplateConfiguration.new
+
       @endpoint = endpoint
-      @content_type = 'text/plain'
+      @content_type = default_config.content_type
       @value = response
-      @http_method = :get
-      @status = 200
-      @delay = 0
+      @http_method = default_config.http_method
+      @status = default_config.status
+      @delay = default_config.delay
       @required_parameters = {}
       @required_headers = {}
       @required_body_content = [],
-          @default = false
+      @default = default_config.default
     end
 
     def create
@@ -69,7 +72,6 @@ module Mirage
           end
           encoded
       end
-
     end
 
     def encode(value)

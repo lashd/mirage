@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
 require 'client/searchable'
+require 'client/template_configuration'
 require 'client/web'
 require 'client/error'
 require 'client/cli_bridge'

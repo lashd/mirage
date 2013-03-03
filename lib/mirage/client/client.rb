@@ -74,19 +74,6 @@ module Mirage
   #  end
   #
   #
-  #  # Configures default settings to be applied to all response templates put on to Mirage
-  #  #
-  #  #   Example:
-  #  #   Client.new.configure do
-  #  #     defaults.method = :post
-  #  #     defaults.status = 202
-  #  #     defaults.default = true
-  #  #     defaults.delay = 2
-  #  #     defaults.content_type = "text/xml"
-  #  #   end
-  #  def configure &block
-  #    yield @defaults
-  #  end
   #
   #  # Remove any defaults applied to this client
   #  def reset
@@ -133,31 +120,7 @@ module Mirage
   #
   #  end
   #
-  #  # Clear Content from Mirage
-  #  #
-  #  # If a response id is not valid, a ResponseNotFound exception will be thrown
-  #  #
-  #  # Example Usage:
-  #  #   client.clear -> clear all responses and associated requests
-  #  #   client.clear(response_id) -> Clear the response and tracked request for a given response id
-  #  #   client.clear(:requests) -> Clear all tracked request information
-  #  #   client.clear(:request => response_id) -> Clear the tracked request for a given response id
-  #  def clear thing=nil
-  #
-  #    case thing
-  #      when :requests
-  #        http_delete("#{@url}/requests")
-  #      when Numeric then
-  #        http_delete("#{@url}/templates/#{thing}")
-  #      when Hash then
-  #        puts "deleteing request #{thing[:request]}"
-  #        http_delete("#{@url}/requests/#{thing[:request]}") if thing[:request]
-  #      else
-  #        NilClass
-  #        http_delete("#{@url}/templates")
-  #    end
-  #
-  #  end
+
   #
   #
   #  # Retrieve the last request that triggered a response to be returned. If the request contained content in its body, this is returned. If the

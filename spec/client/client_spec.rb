@@ -29,10 +29,6 @@ describe Mirage::Client do
       expect { Client.new({}) }.to raise_error()
       expect { Client.new("rubbish") }.to raise_error()
     end
-
-    describe 'setting template defaults' do
-
-    end
   end
 
 

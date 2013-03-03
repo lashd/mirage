@@ -1,22 +1,7 @@
-class Thing
-  include Enumerable
+require 'ostruct'
 
-  def each &block
-    all().each &block
-  end
+struct = OpenStruct.new(:name => "leon")
+struct.freeze
 
-  def all
-    [1, 2, 3]
-  end
-
-  def [] num
-    all[num]
-  end
-end
-
-thing = Thing.new
-thing.each do |thing|
-  puts thing
-end
-
-puts thing[1]
+puts struct.name
+struct.name = "hello"

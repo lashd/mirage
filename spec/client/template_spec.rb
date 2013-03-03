@@ -7,15 +7,25 @@ describe Mirage::Template do
 
 
   describe 'creating' do
+    json = "reponse json"
+    endpoint = "greeting"
+
     it 'should create a template on mirage' do
-      json = "reponse json"
-      endpoint = "greeting"
       template = Template.new(endpoint,json)
 
       template.should_receive(:to_json).and_return(json)
       Template.should_receive(:put).with("/#{endpoint}", :body => json).and_return(convert_keys_to_strings({:id => 1}))
       template.create
       template.id.should == 1
+    end
+
+    it 'should have default values set' do
+      template = Template.new(endpoint,json)
+      template.http_method.should == :get
+      template.status.should == 200
+      template.content_type.should == "text/plain"
+      template.default.should == false
+      template.delay.should == 0
     end
   end
 
