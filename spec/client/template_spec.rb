@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'mirage/client'
 
 
+#TODO - this needs baseurl to be put in
+
 describe Mirage::Template do
   include Mirage
 
@@ -26,6 +28,7 @@ describe Mirage::Template do
       template.create
     end
   end
+
 
   describe 'deleting' do
 
