@@ -49,11 +49,11 @@ describe 'templates' do
     value = "hello"
 
     before :each do
-      base_url = "base_url"
-      @templates = Templates.new(base_url)
+      @base_url = "base_url"
+      @templates = Templates.new(@base_url)
 
       @template_mock = mock('template')
-      Template.should_receive(:new).with("#{base_url}/#{endpoint}", value, @templates.default_config).and_return(@template_mock)
+      Template.should_receive(:new).with("#{@base_url}/#{endpoint}", value, @templates.default_config).and_return(@template_mock)
       @template_mock.should_receive(:create)
     end
 

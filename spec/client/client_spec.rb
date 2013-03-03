@@ -67,49 +67,47 @@ describe Mirage::Client do
     end
   end
 
-
-
-
-
-
-  describe 'reset' do
-    #Client.should_receive(:put) do |url|
-    #  url.should == "http://localhost:7001/mirage/defaults"
-    #end
-    #Client.new.prime
-  end
-
-  describe 'stop' do
-
-  end
-
+  #describe 'stop' do
+  #
+  #end
 
   describe 'save' do
-
+    it 'should save the current template setup of mirage' do
+      mirage = Client.new
+      Client.should_receive(:put).with("#{mirage.url}/backup")
+      mirage.save
+    end
   end
 
   describe 'revert' do
-
-  end
-
-  describe 'running?' do
-
+    it 'should revert the current template set' do
+      mirage = Client.new
+      Client.should_receive(:put).with(mirage.url)
+      mirage.revert
+    end
   end
 
 
   describe 'interface to mirage' do
-    before :each do
-      Mirage.start
-    end
 
-    after do
+    after :each do
       Mirage.stop
     end
 
     it 'should set a response' do
-      client = Client.new
+      client = Mirage.start
       response = client.templates.put("greeting", "hello")
       response.id.should == 1
     end
+
+    it 'should find mirage running' do
+      Mirage.start
+      Mirage.running?.should == true
+    end
+
+    it 'should not find mirage running' do
+      Mirage.running?.should == false
+    end
+
   end
 end
