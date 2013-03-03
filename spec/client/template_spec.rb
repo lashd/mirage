@@ -15,6 +15,7 @@ describe Mirage::Template do
       template.should_receive(:to_json).and_return(json)
       Template.should_receive(:put).with("/#{endpoint}", :body => json).and_return(convert_keys_to_strings({:id => 1}))
       template.create
+      template.id.should == 1
     end
   end
 
