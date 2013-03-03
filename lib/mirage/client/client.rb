@@ -75,10 +75,6 @@ module Mirage
   #
   #
   #
-  #  # Remove any defaults applied to this client
-  #  def reset
-  #    @defaults = Defaults.new
-  #  end
   #
   #  def stop
   #    Mirage.stop :port => URI.parse(@url).port
