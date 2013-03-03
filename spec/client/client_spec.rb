@@ -101,19 +101,19 @@ describe Mirage::Client do
   end
 
 
-  #describe 'interface to mirage' do
-  #  before :each do
-  #    Mirage.start
-  #  end
-  #
-  #  after do
-  #    Mirage.stop
-  #  end
-  #
-  #  it 'should set a response' do
-  #    client = Client.new
-  #    response_id = client.put "greeting", "hello"
-  #    response_id.should == 1
-  #  end
-  #end
+  describe 'interface to mirage' do
+    before :each do
+      Mirage.start
+    end
+
+    after do
+      Mirage.stop
+    end
+
+    it 'should set a response' do
+      client = Client.new
+      response = client.templates.put("greeting", "hello")
+      response.id.should == 1
+    end
+  end
 end

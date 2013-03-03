@@ -11,7 +11,8 @@ module Mirage
     helpers Mirage::Server::Helpers
 
     put '/mirage/templates/*' do |name|
-      MockResponse.new(name,JSON.parse(request.body.read)).response_id.to_s
+      content_type :json
+      {:id => MockResponse.new(name,JSON.parse(request.body.read)).response_id}.to_json
     end
 
     %w(get post delete put).each do |http_method|

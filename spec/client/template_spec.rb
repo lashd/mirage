@@ -13,7 +13,7 @@ describe Mirage::Template do
       template = Template.new(endpoint,json)
 
       template.should_receive(:to_json).and_return(json)
-      Template.should_receive(:put).with("/#{endpoint}", :body => json,:headers => {"Content-Type" => "application/json"})
+      Template.should_receive(:put).with("/#{endpoint}", :body => json).and_return(convert_keys_to_strings({:id => 1}))
       template.create
     end
   end

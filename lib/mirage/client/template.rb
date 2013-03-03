@@ -27,7 +27,8 @@ module Mirage
     end
 
     def create
-      self.class.put("/#{@endpoint}", :body => self.to_json, :headers => {"Content-Type" => "application/json"})
+      @id = self.class.put("/#{@endpoint}", :body => self.to_json)['id']
+      self
     end
 
     def delete
