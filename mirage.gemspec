@@ -58,7 +58,7 @@ Gem::Specification.new do |s|
     "lib/mirage/client/cli_bridge.rb",
     "lib/mirage/client/client.rb",
     "lib/mirage/client/error.rb",
-    "lib/mirage/client/response.rb",
+    "lib/mirage/client/template.rb",
     "lib/mirage/client/runner.rb",
     "lib/mirage/client/web.rb",
     "mirage.gemspec",

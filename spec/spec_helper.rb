@@ -7,6 +7,16 @@ require 'rspec'
 require 'json'
 require 'base64'
 
+module JsonHelpers
+  def convert_keys_to_strings hash
+    JSON.parse(hash.to_json)
+  end
+end
+
+RSpec.configure do |config|
+  config.include JsonHelpers
+end
+
 shared_context :windows do
   def process_string_for_mirage(mirage_port, pid)
     %Q{ruby.exe                      #{pid} Console                    1      6,076 K Running         WIN-ATPGMMC0218\\\\leon        0:01:58 mirage server port #{mirage_port}}

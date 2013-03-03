@@ -8,10 +8,6 @@ describe Mirage::MockResponse do
     MockResponse.delete_all
   end
 
-  def convert_keys_to_strings hash
-    JSON.parse(hash.to_json)
-  end
-
   describe 'initialisation' do
     it 'should find binary data' do
       string="string"

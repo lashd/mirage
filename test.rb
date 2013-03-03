@@ -1,22 +1,22 @@
-{
-    headers: [],
-    parameters: [],
-    body_content: [],
-    status: 200,
-    delay: 2.4,
-    content_type: "text/html"
-}
+class Thing
+  include Enumerable
 
-{
-    request: {
-        headers: [],
-        parameters: [],
-        body_content: []
-    },
-    response: {
-        status: 200,
-        delay: 2.4,
-        content_type: "text/html",
-        entity: 'blah'
-    }
-}
+  def each &block
+    all().each &block
+  end
+
+  def all
+    [1, 2, 3]
+  end
+
+  def [] num
+    all[num]
+  end
+end
+
+thing = Thing.new
+thing.each do |thing|
+  puts thing
+end
+
+puts thing[1]

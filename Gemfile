@@ -5,6 +5,7 @@ gem 'childprocess'
 gem "waitforit"
 gem "thor"
 gem "ptools"
+gem "httparty"
 
 group :test do
   gem 'cucumber'
