@@ -37,6 +37,10 @@ module Mirage
     def prime
       self.class.send(:put, "#{@url}/defaults")
     end
+
+    def == client
+      client.instance_of?(Client) && self.url == client.url
+    end
   end
 
   #class Client
