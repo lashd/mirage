@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
     "features/server/templates/put/put.feature",
     "features/server/templates/put/put_as_default.feature",
     "features/server/templates/put/put_with_delay.feature",
-    "features/server/templates/put/put_with_pattern.feature",
+    "features/server/templates/put/required_content.feature",
     "features/server/templates/put/put_with_substitutions.feature",
     "features/server/web_user_interface.feature",
     "features/step_definitions/my_steps.rb",

@@ -23,7 +23,7 @@ module Mirage
     end
 
     def templates id=nil
-      return Template.get("#{@url}/#{id}") if id
+      return Template.get("#{@url}/templates/#{id}") if id
       Templates.new(@url)
     end
 
@@ -33,15 +33,15 @@ module Mirage
     end
 
     def prime
-      self.class.send(:put, "#{@url}/defaults")
+      self.class.send(:put, "#{@url}/defaults", :body => "")
     end
 
     def save
-      self.class.send(:put, "#{@url}/backup")
+      self.class.send(:put, "#{@url}/backup", :body => "")
     end
 
     def revert
-      self.class.send(:put, @url)
+      self.class.send(:put, @url, :body => "")
     end
 
     def == client

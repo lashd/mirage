@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'mock_response'
-require 'server'
+require 'sinatra'
 require 'helpers'
+
 
 describe "helpers" do
   include_context :resources

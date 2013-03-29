@@ -1,8 +1,9 @@
 require 'spec_helper'
 require 'binary_data_checker'
 
-include Mirage
-describe BinaryDataChecker do
+
+describe Mirage::BinaryDataChecker do
+  BinaryDataChecker = Mirage::BinaryDataChecker
   include_context :resources
   it 'should find binary data' do
     BinaryDataChecker.contains_binary_data?(File.read("#{resources_dir}/binary.file")).should == true

@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'mirage/client'
 
-include Mirage
 
 describe Mirage do
+  Runner = Mirage::Runner
 
   describe 'starting' do
     before(:each) do

@@ -1,14 +1,19 @@
 require 'spec_helper'
 require 'mirage/client'
-include Mirage
 
 describe 'templates' do
+  Templates = Mirage::Templates
+  Requests = Mirage::Requests
+  Template = Mirage::Template
 
   describe 'deleting' do
     it 'should delete all templates and associated request data' do
       base_url = "base_url"
-      Templates.should_receive(:delete).with(base_url)
-      Requests.should_receive(:delete_all)
+      requests = mock('requests')
+      Requests.should_receive(:new).with(base_url).and_return(requests)
+
+      Templates.should_receive(:delete).with("#{base_url}/templates")
+      requests.should_receive(:delete_all)
 
       Templates.new(base_url).delete_all
     end

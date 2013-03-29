@@ -2,7 +2,11 @@ require 'spec_helper'
 require 'mirage/client'
 
 describe Mirage::Client do
-  include Mirage
+  Client = Mirage::Client
+  Templates = Mirage::Templates
+  Template = Mirage::Template
+  Requests = Mirage::Requests
+  Request = Mirage::Request
 
   before :each do
     @response = mock('response').as_null_object
@@ -48,7 +52,7 @@ describe Mirage::Client do
     it 'should find a template' do
       id = 1
       mirage = Client.new
-      Template.should_receive(:get).with("#{mirage.url}/#{id}")
+      Template.should_receive(:get).with("#{mirage.url}/templates/#{id}")
       mirage.templates(1)
     end
   end
@@ -74,7 +78,7 @@ describe Mirage::Client do
   describe 'save' do
     it 'should save the current template setup of mirage' do
       mirage = Client.new
-      Client.should_receive(:put).with("#{mirage.url}/backup")
+      Client.should_receive(:put).with("#{mirage.url}/backup", :body => "")
       mirage.save
     end
   end
@@ -82,7 +86,7 @@ describe Mirage::Client do
   describe 'revert' do
     it 'should revert the current template set' do
       mirage = Client.new
-      Client.should_receive(:put).with(mirage.url)
+      Client.should_receive(:put).with(mirage.url, :body => "")
       mirage.revert
     end
   end

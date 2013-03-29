@@ -2,7 +2,7 @@ Before do
   FileUtils.mkdir_p(SCRATCH)
 
   $mirage = start_mirage_in_scratch_dir
-  $mirage.clear
+  $mirage.templates.delete_all
 
   Dir["#{SCRATCH}/*"].each do |file|
     FileUtils.rm_rf(file) unless file == "#{SCRATCH}/mirage.log"

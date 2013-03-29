@@ -95,9 +95,9 @@ module Mirage
         stored_response.request_spec['parameters'].each do |key, value|
           value = interpret_value(value)
           if value.is_a? Regexp
-            match = false unless value.match(query_string[key.to_sym])
+            match = false unless value.match(query_string[key])
           else
-            match = false unless value == query_string[key.to_sym]
+            match = false unless value == query_string[key]
           end
         end
 

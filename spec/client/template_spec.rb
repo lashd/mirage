@@ -3,7 +3,8 @@ require 'mirage/client'
 
 
 describe Mirage::Template do
-  include Mirage
+  Template = Mirage::Template
+  Request = Mirage::Request
 
 
   describe 'creating' do

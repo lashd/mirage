@@ -82,6 +82,7 @@ module Mirage
       wait_until(:timeout_after => 30.seconds) { Mirage.running?(options) }
 
       begin
+        puts "priming"
         Mirage::Client.new(options).prime
       rescue Mirage::InternalServerException => e
         puts "WARN: #{e.message}"

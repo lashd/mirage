@@ -5,7 +5,6 @@ module Mirage
 
   class Template
     include HTTParty
-    include Searchable
 
     format :json
 

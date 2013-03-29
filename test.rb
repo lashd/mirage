@@ -1,4 +1,3 @@
-require 'mirage/client'
+require './lib/mirage/client'
 
-mirage = Mirage::Client.new
-puts mirage.templates.put("greeting","hello")
+puts Mirage::Client.new.prime

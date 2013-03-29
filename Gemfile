@@ -12,6 +12,7 @@ group :test do
   gem 'rspec'
   gem 'rack-test'
   gem 'simplecov'
+  gem 'hashie'
 end
 
 group :development do

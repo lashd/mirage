@@ -27,6 +27,7 @@ GEM
     gherkin (2.7.2-x86-mingw32)
       json (>= 1.4.6)
     git (1.2.5)
+    hashie (2.0.3)
     httparty (0.9.0)
       multi_json (~> 1.0)
       multi_xml
@@ -102,6 +103,7 @@ PLATFORMS
 DEPENDENCIES
   childprocess
   cucumber
+  hashie
   httparty
   jeweler
   jruby-openssl

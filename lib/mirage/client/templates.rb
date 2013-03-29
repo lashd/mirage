@@ -2,7 +2,8 @@ module Mirage
   class Templates
     include HTTParty
     def initialize base_url
-      @base_url = base_url
+      @url = "#{base_url}/templates"
+      @requests = Requests.new(base_url)
       @default_config = TemplateConfiguration.new
     end
 
@@ -12,12 +13,12 @@ module Mirage
     end
 
     def delete_all
-      self.class.delete(@base_url)
-      Requests.delete_all
+      self.class.delete(@url)
+      @requests.delete_all
     end
 
     def put endpoint, response
-      template = Mirage::Template.new  "#{@base_url}/templates/#{endpoint}", response, @default_config
+      template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
       yield template if block_given?
       template.create
     end

@@ -1,31 +1,50 @@
-Feature: If you want to see the content of a particular response without triggering then it can be peeked instead.
-  To do this, the responses unique id is required to identify it
-    
-
-  #TODO should return headers as well
-  Scenario: Peeking a text based response
-    Given I send PUT to 'http://localhost:7001/mirage/templates/xml' with body '<xml></xml>' and headers:
-      | content-type | text/xml |
-
-    When I send GET to 'http://localhost:7001/mirage/templates/1'
-    Then '<xml></xml>' should be returned
-    And the response 'content-type' should be 'text/xml'
+Feature: Templates can be retrieved by using the ID that was returned when they were created
 
 
-  Scenario: Peeking a file based response
-    Given the file 'test_file.txt' contains:
+  Scenario: Retrieving a template
+    Given the following template template:
     """
-    test content
+      {
+         "response":{
+            "default":false,
+            "body":"Hello",
+            "delay":0,
+            "content_type":"text/plain",
+            "status":200
+         },
+         "request":{
+            "parameters":{
+
+            },
+            "body_content":[
+
+            ],
+            "http_method":"get"
+         }
+      }
     """
-    And I send PUT to 'http://localhost:7001/mirage/templates/some/location/download' with file: test_file.txt and headers:
-      | X-mirage-file | true |
+    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    When GET is sent to 'http://localhost:7001/mirage/templates/1'
+    Then the following should be returned:
+    """
+      {
+         "response":{
+            "default":false,
+            "body":"Hello",
+            "delay":0,
+            "content_type":"text/plain",
+            "status":200
+         },
+         "request":{
+            "parameters":{
 
-    When I send GET to 'http://localhost:7001/mirage/templates/1'
-    Then the response should be the same as the content of 'test_file.txt'
+            },
+            "body_content":[
 
-
-  Scenario: Peeking a response that does not exist
-    When I send GET to 'http://localhost:7001/mirage/templates/1'
-    Then a 404 should be returned
+            ],
+            "http_method":"get"
+         }
+      }
+    """
 
 

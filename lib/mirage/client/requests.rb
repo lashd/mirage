@@ -3,11 +3,11 @@ module Mirage
     include HTTParty
 
     def initialize base_url
-      @base_url = base_url
+      @url = "#{base_url}/requests"
     end
 
     def delete_all
-      self.class.delete(@base_url)
+      self.class.delete(@url)
     end
   end
 end

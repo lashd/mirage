@@ -1,9 +1,10 @@
 require 'spec_helper'
 require 'mirage/client'
 
-include Mirage
 
-describe TemplateConfiguration do
+
+describe Mirage::TemplateConfiguration do
+  TemplateConfiguration = Mirage::TemplateConfiguration
   it 'should have defaults' do
     configuration = TemplateConfiguration.new
     assert_defaults configuration

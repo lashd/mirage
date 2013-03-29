@@ -3,7 +3,9 @@ require 'extensions/object'
 require 'mock_response'
 
 describe Mirage::MockResponse do
-  include Mirage
+  MockResponse = Mirage::MockResponse
+  ServerResponseNotFound = Mirage::ServerResponseNotFound
+  BinaryDataChecker = Mirage::BinaryDataChecker
   before :each do
     MockResponse.delete_all
   end
@@ -352,8 +354,9 @@ describe Mirage::MockResponse do
 
 
     response = MockResponse.new("greeting", response_spec)
-    MockResponse.find("<action>login</action>", {:name => "leon"}, "greeting", "post").should == response
-    expect { MockResponse.find("<action>login</action>", {:name => "leon"}, "greeting", "get") }.to raise_error(ServerResponseNotFound)
+    #TODO tests are failing because keys to request parameters should be strings not symbols
+    MockResponse.find("<action>login</action>", {'name' => "leon"}, "greeting", "post").should == response
+    expect { MockResponse.find("<action>login</action>", {'name' => "leon"}, "greeting", "get") }.to raise_error(ServerResponseNotFound)
   end
 
   it 'should recycle response ids' do

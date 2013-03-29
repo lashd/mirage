@@ -1,13 +1,15 @@
 @command_line
-Feature: stop
+Feature: Mirage can be stopped from the commandline
+  If more than one instance of Mirage is running, you will be asked to supply the ports which represent the running instances
+  of mirage that you wish to stop.
 
-  Scenario: Calling stop without specifying the port when only one instance is running
+  Scenario: Stopping a single instance
     Given I run 'mirage start -p 7001'
     When I run 'mirage stop'
     Then mirage should not be running on 'http://localhost:7001/mirage'
 
 
-  Scenario: Calling stop without specifying the port when more than one instance is running
+  Scenario: Calling stop when there is more than one instance running
     Given I run 'mirage start -p 7001'
     Given I run 'mirage start -p 9001'
     When I run 'mirage stop'
@@ -16,7 +18,7 @@ Feature: stop
     And mirage should be running on 'http://localhost:9001/mirage'
 
 
-  Scenario: stopping on a single instance
+  Scenario: stopping on a single instance using the port
     Given I run 'mirage start -p 7001'
     And I run 'mirage start -p 9001'
     When I run 'mirage stop -p 7001'

@@ -1,3 +1,5 @@
+require 'base64'
+require 'hashie'
 Then /^'([^']*)' should be returned$/ do |expected_response|
   response_text = @response.body
   if response_text != expected_response
@@ -94,7 +96,7 @@ When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with requ
               end
 end
 
-When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:\d{4}\/mirage([^']*))'$/ do |method, url, endpoint|
+When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '(http:\/\/localhost:\d{4}\/mirage([^']*))'$/ do |method, url, endpoint|
   start_time = Time.now
   @response = case method
                 when 'GET' then
@@ -114,9 +116,15 @@ When /^I send (GET|PUT|POST|OPTIONS|HEAD|DELETE) to '(http:\/\/localhost:\d{4}\/
 end
 
 
-When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^']*)'$/ do |url, endpoint, body|
+When /^I send (PUT|POST) to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body:$/ do |method, url, endpoint, body|
   start_time = Time.now
-  @response = http_put(url, body)
+  @response = case method
+                when 'PUT'
+                  http_put(url, body)
+                when 'POST'
+                  http_post(url, body)
+              end
+
   @response_time = Time.now - start_time
 end
 
@@ -172,7 +180,7 @@ When /^I send (GET|POST) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with para
 end
 
 Then /^the following should be returned:$/ do |text|
-  @response.body.should == text
+  text.gsub("\n","").gsub(" ", "").should == @response.body
 end
 
 Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^']*) and headers:$/ do |url, endpoint, path, table|
@@ -208,4 +216,13 @@ Then /^the response should be the same as the content of '([^']*)'$/ do |path|
   Dir.chdir SCRATCH do
     @response.body.should == File.read(path)
   end
+end
+Given /^the following template template:$/ do |text|
+  @response_template = Hashie::Mash.new(JSON.parse(text))
+end
+When /^'(.*)' is base64 encoded$/ do |template_component|
+  @response_template.send(:eval, "#{template_component}=Base64.encode64(#{template_component})")
+end
+When /^the template is sent using PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, endpoint|
+  @response = http_put(url, @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
 end
