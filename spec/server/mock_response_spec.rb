@@ -354,9 +354,8 @@ describe Mirage::MockResponse do
 
 
     response = MockResponse.new("greeting", response_spec)
-    #TODO tests are failing because keys to request parameters should be strings not symbols
-    MockResponse.find("<action>login</action>", {'name' => "leon"}, "greeting", "post").should == response
-    expect { MockResponse.find("<action>login</action>", {'name' => "leon"}, "greeting", "get") }.to raise_error(ServerResponseNotFound)
+    MockResponse.find("<action>login</action>", {:name => "leon"}, "greeting", "post").should == response
+    expect { MockResponse.find("<action>login</action>", {:name => "leon"}, "greeting", "get") }.to raise_error(ServerResponseNotFound)
   end
 
   it 'should recycle response ids' do
