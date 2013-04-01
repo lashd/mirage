@@ -7,13 +7,13 @@ gem "thor"
 gem "ptools"
 gem "httparty"
 gem "haml"
+gem 'hashie'
 
 group :test do
   gem 'cucumber'
   gem 'rspec'
   gem 'rack-test'
   gem 'simplecov'
-  gem 'hashie'
 end
 
 group :development do
