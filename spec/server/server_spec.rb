@@ -10,69 +10,18 @@ describe "Mirage Server" do
       Mirage::MockResponse.delete_all
       @mock_response = Mirage::MockResponse.new('endpoint','value')
     end
-    it 'should accept parameter requirements' do
-      required_parameter = {'name' => 'leon'}
 
-      Mirage::MockResponse.should_receive(:new) do |name, spec|
-        spec['request']['parameters'].should == required_parameter
-        @mock_response
-      end
+    it 'should create a mock response with the supplied template spec' do
+      endpoint = 'greeting'
+      spec = {"somekeys" => 'some_values'}
 
-      put('/mirage/templates/greeting', {:request => {:parameters => required_parameter}}.to_json)
-    end
-
-    it 'should accept required body content' do
-      required_body_content = %w(leon)
-
-      Mirage::MockResponse.should_receive(:new) do |name, spec|
-        spec['request']['body_content'].should == required_body_content
-        @mock_response
-      end
-
-      put('/mirage/templates/greeting', {:request => {:body_content => required_body_content}}.to_json)
-    end
-
-
-    it 'should set the required delay to be used before responding to a request' do
-      required_delay = 0.3
-      Mirage::MockResponse.should_receive(:new) do |name, spec|
-        spec['response']['delay'].should == required_delay
-        @mock_response
-      end
-      put('/mirage/templates/greeting', {:response => {:delay => required_delay}}.to_json)
-    end
-
-    it 'should set the content_type to return' do
-      content_type = "text/xml"
-      Mirage::MockResponse.should_receive(:new) do |name, spec|
-        spec['response']['content_type'].should == content_type
-        @mock_response
-      end
-      put('/mirage/templates/greeting', {:response => {:content_type => content_type}}.to_json)
-    end
-
-    it 'should set the http status to return' do
-      http_status = 401
-      Mirage::MockResponse.should_receive(:new) do |name, spec|
-        spec['response']['status'].should == http_status
-        @mock_response
-      end
-      put('/mirage/templates/greeting', {:response => {:status => http_status}}.to_json)
-    end
-
-    it 'should set the http method to respond to' do
-      method = 'post'
-      Mirage::MockResponse.should_receive(:new) do |name, spec|
-        spec['request']['http_method'].should == method
-        @mock_response
-      end
-      put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
+      Mirage::MockResponse.should_receive(:new).with(endpoint, spec).and_return(@mock_response)
+      put('/mirage/templates/greeting', spec.to_json)
     end
 
     it 'should set the requests url against the template that is created' do
       method = 'post'
       response_id = 1
-      mock_response = mock('response', :response_id => response_id)
       Mirage::MockResponse.should_receive(:new).and_return(@mock_response)
       put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
       @mock_response.requests_url.should == "http://example.org/mirage/requests/#{response_id}"
@@ -81,21 +30,58 @@ describe "Mirage Server" do
   end
 
 
-  it 'should return the default response if a specific match is not found' do
-    Mirage::MockResponse.should_receive(:find_default).with("", "post", "greeting", {}).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
+  describe 'matching templates' do
 
-    response_template = {
-        :request => {
-            :body_content => %w(leon),
-            :content_type => "post"
-        },
-        :response => {
-            :body => "hello leon"
-        }
-    }
-    put('/mirage/templates/greeting', response_template.to_json)
-    post('/mirage/responses/greeting')
+    it 'should use request parameters' do
+      endpoint = 'greeting'
+      parameters = {:key => 'value'}
+      application_expectations do |app|
+        app.should_receive(:params).any_number_of_times.and_return(parameters)
+      end
+
+      Mirage::MockResponse.should_receive(:find).with(anything, parameters, endpoint, anything, anything).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
+      get('/mirage/responses/greeting')
+    end
+
+    it 'should use the request body' do
+      endpoint = 'greeting'
+      body = 'body'
+
+      Mirage::MockResponse.should_receive(:find).with(body, anything, endpoint, anything, anything).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
+      post('/mirage/responses/greeting', body)
+    end
+
+    it 'should use headers' do
+      headers = {"HEADER" => 'VALUE'}
+      endpoint = 'greeting'
+      parameters = {:key => 'value'}
+      application_expectations do |app|
+        app.should_receive(:env).any_number_of_times.and_return(headers)
+        app.should_receive(:extract_http_headers).with(headers).and_return(headers)
+      end
+
+      Mirage::MockResponse.should_receive(:find).with(anything, anything, endpoint, anything, headers).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
+      get('/mirage/responses/greeting')
+    end
+
+    it 'should return the default response if a specific match is not found' do
+      Mirage::MockResponse.should_receive(:find_default).with("", "post", "greeting", {}, anything).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
+
+      response_template = {
+          :request => {
+              :body_content => %w(leon),
+              :content_type => "post"
+          },
+          :response => {
+              :body => "hello leon"
+          }
+      }
+      put('/mirage/templates/greeting', response_template.to_json)
+      post('/mirage/responses/greeting')
+    end
   end
+
+
 
   describe "operations" do
     describe 'resolving responses' do
@@ -114,7 +100,7 @@ describe "Mirage Server" do
         template.should == JSON.parse({:endpoint => "greeting",
                                        :id => response_id,
                                        :requests_url => "http://example.org/mirage/requests/#{response_id}",
-                                       :request => {:parameters => {}, :http_method => "get", :body_content => []},
+                                       :request => {:parameters => {}, :http_method => "get", :body_content => [], :headers => {}},
                                        :response => {:default => false,
                                                      :body => Base64.encode64(response_body),
                                                      :delay => 0,

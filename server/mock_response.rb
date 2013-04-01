@@ -41,7 +41,7 @@ module Mirage
         end.flatten
       end
 
-      def find_default(body, http_method, name, query_string)
+      def find_default(body, http_method, name, query_string, headers)
         http_method.upcase!
         default_responses = subdomains(name).collect do |domain|
           if(responses_for_domain = responses[domain])
@@ -49,7 +49,7 @@ module Mirage
           end
         end.flatten.compact
 
-        default_responses.find{|response| match?(body, query_string, response)} || raise(ServerResponseNotFound)
+        default_responses.find{|response| match?(body, query_string, headers,response)} || raise(ServerResponseNotFound)
       end
 
       def subdomains(name)
@@ -60,8 +60,8 @@ module Mirage
         domains.reverse
       end
 
-      def find(body, query_string, name, http_method)
-        find_in_response_set(body, query_string, responses[name], http_method) || raise(ServerResponseNotFound)
+      def find(body, query_string, name, http_method, headers)
+        find_in_response_set(body, query_string, responses[name], http_method, headers) || raise(ServerResponseNotFound)
       end
 
       def add(new_response)
@@ -77,20 +77,20 @@ module Mirage
       end
 
       private
-      def find_in_response_set(body, query_string, response_set, http_method)
+      def find_in_response_set(body, query_string, response_set, http_method, headers)
         return unless response_set
 
         responses_for_http_method = response_set[http_method.upcase] || []
 
         responses = responses_for_http_method.find_all do |stored_response|
-          match?(body, query_string, stored_response)
+          match?(body, query_string, headers, stored_response)
         end
 
         responses.sort{|a, b| b.score <=> a.score}.first
 
       end
 
-      def match?(body, query_string, stored_response)
+      def match?(body, query_string, headers,stored_response)
         match = true
         stored_response.request_spec['parameters'].each do |key, value|
           value = interpret_value(value)
@@ -107,6 +107,16 @@ module Mirage
             match = false unless body =~ value
           else
             match = false unless body.include?(value)
+          end
+        end
+
+        headers = Hash[headers.collect{|key, value| [key.downcase, value]}]
+        stored_response.request_spec['headers'].each do |key, value|
+          value = interpret_value(value)
+          if value.is_a? Regexp
+            match = false unless value.match(headers[key.downcase])
+          else
+            match = false unless value == headers[key.downcase]
           end
         end
 
@@ -142,7 +152,8 @@ module Mirage
 
       request_defaults = JSON.parse({:parameters => {},
                                      :body_content => [],
-                                     :http_method => 'get'}.to_json)
+                                     :http_method => 'get',
+                                    :headers => {}}.to_json)
       response_defaults = JSON.parse({:default => false,
                                       :body => Base64.encode64(''),
                                       :delay => 0,

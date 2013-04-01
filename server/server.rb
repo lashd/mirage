@@ -22,9 +22,9 @@ module Mirage
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
         begin
-          record = MockResponse.find(body, params, name, http_method)
+          record = MockResponse.find(body, params, name, http_method, extract_http_headers(env))
         rescue ServerResponseNotFound
-          record = MockResponse.find_default(body, http_method, name, request.params)
+          record = MockResponse.find_default(body, http_method, name, request.params, extract_http_headers(env))
         end
 
         REQUESTS[record.response_id] = request.dup

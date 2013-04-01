@@ -29,6 +29,7 @@ module Mirage
         template.http_method = request_config.http_method
         template.url = url
         template.requests_url = response_hashie.requests_url
+        template.required_headers = request_config.headers
 
         template
       end
@@ -55,7 +56,7 @@ module Mirage
     end
 
     def create
-      @id = self.class.put("#{@endpoint}", :body => self.to_json)['id']
+      @id = self.class.put("#{@endpoint}", :body => self.to_json, :headers => {'content-type' => 'application/json'})['id']
       self
     end
 

@@ -1,3 +1,8 @@
-require 'httparty'
+require './lib/mirage/client'
 
-HTTParty.get("http://localhost:7002/mirage")
+mirage = Mirage.start
+mirage.templates.delete_all
+
+mirage.templates.put('greeting', 'hello') do |response|
+  response.required_headers['custom-header'] = /.eon/
+end

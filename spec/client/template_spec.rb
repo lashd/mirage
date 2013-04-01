@@ -18,8 +18,9 @@ describe Mirage::Template do
       status = 201
 
 
-      required_parameters = {:name => 'joe'}
+      required_parameters = {"name" => 'joe'}
       required_body_content = %{content}
+      required_headers = {"header" => 'value'}
       http_method = "get"
 
       template_json = {
@@ -36,6 +37,7 @@ describe Mirage::Template do
           request: {
               parameters: required_parameters,
               body_content: required_body_content,
+              headers: required_headers,
               http_method: http_method
           }
       }
@@ -46,7 +48,7 @@ describe Mirage::Template do
       template = Template.get(template_url)
       template.value.should == value
       template.endpoint.should == endpoint
-      template.id = id
+      template.id.should == id
 
       template.default.should == default
       template.default.should == default
@@ -54,11 +56,12 @@ describe Mirage::Template do
       template.content_type.should == content_type
       template.status.should == status
 
-      template.required_parameters = required_parameters
-      template.required_body_content = required_body_content
-      template.http_method = http_method
+      template.required_parameters.should  == required_parameters
+      template.required_body_content.should == required_body_content
+      template.required_headers.should  == required_headers
+      template.http_method.should == http_method
       template.url.should  == template_url
-      template.requests_url = requests_url
+      template.requests_url.should == requests_url
     end
   end
 
@@ -71,7 +74,7 @@ describe Mirage::Template do
       template = Template.new(endpoint,json)
 
       template.should_receive(:to_json).and_return(json)
-      Template.should_receive(:put).with(endpoint, :body => json).and_return(convert_keys_to_strings({:id => 1}))
+      Template.should_receive(:put).with(endpoint, :body => json, :headers => {'content-type' => 'application/json'}).and_return(convert_keys_to_strings({:id => 1}))
       template.create
       template.id.should == 1
     end
