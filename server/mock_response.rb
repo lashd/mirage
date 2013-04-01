@@ -41,15 +41,15 @@ module Mirage
         end.flatten
       end
 
-      def find_default(body, http_method, name, query_string, headers)
-        http_method.upcase!
-        default_responses = subdomains(name).collect do |domain|
+      def find_default(options)
+       http_method = options[:http_method].upcase!
+        default_responses = subdomains(options[:endpoint]).collect do |domain|
           if(responses_for_domain = responses[domain])
             responses_for_domain[http_method].find_all{|response| response.default?} if responses_for_domain[http_method]
           end
         end.flatten.compact
 
-        default_responses.find{|response| match?(body, query_string, headers,response)} || raise(ServerResponseNotFound)
+        default_responses.find{|response| match?(options,response)} || raise(ServerResponseNotFound)
       end
 
       def subdomains(name)
@@ -60,8 +60,9 @@ module Mirage
         domains.reverse
       end
 
-      def find(body, query_string, name, http_method, headers)
-        find_in_response_set(body, query_string, responses[name], http_method, headers) || raise(ServerResponseNotFound)
+      def find(options)
+        options[:response_set] = responses[options[:endpoint]]
+        find_in_response_set(options) || raise(ServerResponseNotFound)
       end
 
       def add(new_response)
@@ -77,46 +78,46 @@ module Mirage
       end
 
       private
-      def find_in_response_set(body, query_string, response_set, http_method, headers)
+      def find_in_response_set(options)
+        response_set = options.delete(:response_set)
         return unless response_set
 
-        responses_for_http_method = response_set[http_method.upcase] || []
+        responses_for_http_method = response_set[options[:http_method].upcase] || []
 
         responses = responses_for_http_method.find_all do |stored_response|
-          match?(body, query_string, headers, stored_response)
+          match?(options, stored_response)
         end
 
         responses.sort{|a, b| b.score <=> a.score}.first
 
       end
 
-      def match?(body, query_string, headers,stored_response)
+      def match?(options,stored_response)
+        parameters = options[:params]
+        headers = Hash[options[:headers].collect{|key, value| [key.downcase, value]}]
+
+        request_spec = stored_response.request_spec
+
         match = true
-        stored_response.request_spec['parameters'].each do |key, value|
-          value = interpret_value(value)
-          if value.is_a? Regexp
-            match = false unless value.match(query_string[key.to_sym])
-          else
-            match = false unless value == query_string[key.to_sym]
+
+        {request_spec['parameters'] => parameters,
+         request_spec['headers'] => headers}.each do |spec, actual|
+          spec.each do |key, value|
+            value = interpret_value(value)
+            if value.is_a? Regexp
+              match = false unless value.match(actual[key])
+            else
+              match = false unless value == actual[key]
+            end
           end
         end
 
-        stored_response.request_spec['body_content'].each do |value|
+        request_spec['body_content'].each do |value|
           value = interpret_value(value)
           if value.is_a? Regexp
-            match = false unless body =~ value
+            match = false unless options[:body] =~ value
           else
-            match = false unless body.include?(value)
-          end
-        end
-
-        headers = Hash[headers.collect{|key, value| [key.downcase, value]}]
-        stored_response.request_spec['headers'].each do |key, value|
-          value = interpret_value(value)
-          if value.is_a? Regexp
-            match = false unless value.match(headers[key.downcase])
-          else
-            match = false unless value == headers[key.downcase]
+            match = false unless options[:body].include?(value)
           end
         end
 
@@ -165,6 +166,8 @@ module Mirage
 
       @request_spec = request_defaults.merge(spec['request']||{})
       @response_spec = response_defaults.merge(spec['response']||{})
+
+      @request_spec['headers'] = Hash[@request_spec['headers'].collect{|key, value| [key.downcase, value]}]
       @binary = BinaryDataChecker.contains_binary_data? @response_spec['body']
 
       MockResponse.add self
@@ -175,7 +178,7 @@ module Mirage
     end
 
     def score
-      [@request_spec['parameters'].values, @request_spec['body_content']].inject(0) do |score, matchers|
+      [@request_spec['headers'].values, @request_spec['parameters'].values, @request_spec['body_content']].inject(0) do |score, matchers|
         matchers.inject(score){|matcher_score, value| interpret_value(value).is_a?(Regexp) ? matcher_score+=1 : matcher_score+=2}
       end
     end

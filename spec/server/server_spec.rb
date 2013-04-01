@@ -31,41 +31,38 @@ describe "Mirage Server" do
 
 
   describe 'matching templates' do
+    before :each do
+      @endpoint = "greeting"
+      @options = {:body => anything, :params => anything, :endpoint => @endpoint, :headers => anything, :http_method => anything}
+    end
 
     it 'should use request parameters' do
-      endpoint = 'greeting'
-      parameters = {:key => 'value'}
-      application_expectations do |app|
-        app.should_receive(:params).any_number_of_times.and_return(parameters)
-      end
+      parameters = {"key" => 'value'}
 
-      Mirage::MockResponse.should_receive(:find).with(anything, parameters, endpoint, anything, anything).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
-      get('/mirage/responses/greeting')
+      Mirage::MockResponse.should_receive(:find).with(@options.merge(:params => parameters)).and_return(Mirage::MockResponse.new(@endpoint, {:response => {:body => "hello"}}))
+      get("/mirage/responses/#{@endpoint}", parameters)
     end
 
     it 'should use the request body' do
-      endpoint = 'greeting'
       body = 'body'
 
-      Mirage::MockResponse.should_receive(:find).with(body, anything, endpoint, anything, anything).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
-      post('/mirage/responses/greeting', body)
+      Mirage::MockResponse.should_receive(:find).with(@options.merge(:body => body)).and_return(Mirage::MockResponse.new(@endpoint, {:response => {:body => "hello"}}))
+      post("/mirage/responses/#{@endpoint}", body)
     end
 
     it 'should use headers' do
       headers = {"HEADER" => 'VALUE'}
-      endpoint = 'greeting'
-      parameters = {:key => 'value'}
       application_expectations do |app|
         app.should_receive(:env).any_number_of_times.and_return(headers)
         app.should_receive(:extract_http_headers).with(headers).and_return(headers)
       end
 
-      Mirage::MockResponse.should_receive(:find).with(anything, anything, endpoint, anything, headers).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
-      get('/mirage/responses/greeting')
+      Mirage::MockResponse.should_receive(:find).with(@options.merge(:headers => headers)).and_return(Mirage::MockResponse.new(@endpoint, {:response => {:body => "hello"}}))
+      get("/mirage/responses/#{@endpoint}")
     end
 
     it 'should return the default response if a specific match is not found' do
-      Mirage::MockResponse.should_receive(:find_default).with("", "post", "greeting", {}, anything).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
+      Mirage::MockResponse.should_receive(:find_default).with(@options.merge(:http_method =>"post")).and_return(Mirage::MockResponse.new("greeting", {:response => {:body => "hello"}}))
 
       response_template = {
           :request => {
@@ -76,8 +73,8 @@ describe "Mirage Server" do
               :body => "hello leon"
           }
       }
-      put('/mirage/templates/greeting', response_template.to_json)
-      post('/mirage/responses/greeting')
+      put("/mirage/templates/#{@endpoint}", response_template.to_json)
+      post("/mirage/responses/#{@endpoint}")
     end
   end
 

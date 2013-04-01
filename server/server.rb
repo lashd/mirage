@@ -21,10 +21,15 @@ module Mirage
       send(http_method, '/mirage/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
+        options = {:body => body,
+                   :http_method => http_method,
+                   :endpoint => name,
+                   :params => request.params,
+                   :headers => extract_http_headers(env)}
         begin
-          record = MockResponse.find(body, params, name, http_method, extract_http_headers(env))
+          record = MockResponse.find(options)
         rescue ServerResponseNotFound
-          record = MockResponse.find_default(body, http_method, name, request.params, extract_http_headers(env))
+          record = MockResponse.find_default(options)
         end
 
         REQUESTS[record.response_id] = request.dup
