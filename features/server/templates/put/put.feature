@@ -36,6 +36,7 @@ Feature: Mirage can be configured with templates that are returned when addresse
          "request":{
             "parameters":{},
             "http_method":"get",
+            "headers": {},
             "body_content":[]
          },
          "response":{
