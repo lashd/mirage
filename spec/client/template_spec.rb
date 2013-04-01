@@ -92,14 +92,18 @@ describe Mirage::Template do
     it 'should clear a response' do
       id = 1
       template_url = "base_url/templates/#{id}"
+      request_url = "base_url/requests/#{id}"
 
       template = Template.new("", "")
       template.url = template_url
+      template.requests_url = request_url
+
 
       template.stub(:id).and_return(id)
 
       Template.should_receive(:delete).with(template_url)
-      Request.should_receive(:delete).with("base_url/requests/#{id}")
+
+      Mirage::Request.should_receive(:delete).with(request_url)
       template.delete
     end
 

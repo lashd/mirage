@@ -22,5 +22,5 @@ else
   MIRAGE_CMD = "#{RUBY_CMD} ../bin/mirage"
 end
 
-World(Mirage::Web)
+
 

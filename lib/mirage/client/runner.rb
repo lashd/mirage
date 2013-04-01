@@ -2,9 +2,9 @@ require 'thor'
 require 'waitforit'
 require 'childprocess'
 require 'uri'
+require 'httparty'
 module Mirage
   class << self
-    include Web
 
     # Start Mirage locally on a given port
     # Example Usage:
@@ -43,7 +43,7 @@ module Mirage
     #   Mirage.running? url -> boolean indicating whether Mirage is running on the given URL
     def running? options_or_url = {:port => 7001}
       url = options_or_url.kind_of?(Hash) ? "http://localhost:#{options_or_url[:port]}/mirage" : options_or_url
-      http_get(url) and return true
+      HTTParty.get(url) and return true
     rescue Errno::ECONNREFUSED
       return false
     end
@@ -51,7 +51,6 @@ module Mirage
   end
 
   class Runner < Thor
-    include ::Mirage::Web
     include CLIBridge
     RUBY_CMD = ChildProcess.jruby? ? 'jruby' : 'ruby'
 

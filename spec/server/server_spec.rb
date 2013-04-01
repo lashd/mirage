@@ -6,12 +6,16 @@ describe "Mirage Server" do
   include_context :rack_test, :disable_sinatra_error_handling => true
 
   describe "when adding responses" do
+    before :each do
+      Mirage::MockResponse.delete_all
+      @mock_response = Mirage::MockResponse.new('endpoint','value')
+    end
     it 'should accept parameter requirements' do
       required_parameter = {'name' => 'leon'}
 
       Mirage::MockResponse.should_receive(:new) do |name, spec|
         spec['request']['parameters'].should == required_parameter
-        mock(:response_id => 1)
+        @mock_response
       end
 
       put('/mirage/templates/greeting', {:request => {:parameters => required_parameter}}.to_json)
@@ -22,7 +26,7 @@ describe "Mirage Server" do
 
       Mirage::MockResponse.should_receive(:new) do |name, spec|
         spec['request']['body_content'].should == required_body_content
-        mock(:response_id => 1)
+        @mock_response
       end
 
       put('/mirage/templates/greeting', {:request => {:body_content => required_body_content}}.to_json)
@@ -33,7 +37,7 @@ describe "Mirage Server" do
       required_delay = 0.3
       Mirage::MockResponse.should_receive(:new) do |name, spec|
         spec['response']['delay'].should == required_delay
-        mock(:response_id => 1)
+        @mock_response
       end
       put('/mirage/templates/greeting', {:response => {:delay => required_delay}}.to_json)
     end
@@ -42,7 +46,7 @@ describe "Mirage Server" do
       content_type = "text/xml"
       Mirage::MockResponse.should_receive(:new) do |name, spec|
         spec['response']['content_type'].should == content_type
-        mock(:response_id => 1)
+        @mock_response
       end
       put('/mirage/templates/greeting', {:response => {:content_type => content_type}}.to_json)
     end
@@ -51,7 +55,7 @@ describe "Mirage Server" do
       http_status = 401
       Mirage::MockResponse.should_receive(:new) do |name, spec|
         spec['response']['status'].should == http_status
-        mock(:response_id => 1)
+        @mock_response
       end
       put('/mirage/templates/greeting', {:response => {:status => http_status}}.to_json)
     end
@@ -60,7 +64,7 @@ describe "Mirage Server" do
       method = 'post'
       Mirage::MockResponse.should_receive(:new) do |name, spec|
         spec['request']['http_method'].should == method
-        mock(:response_id => 1)
+        @mock_response
       end
       put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
     end
@@ -69,9 +73,9 @@ describe "Mirage Server" do
       method = 'post'
       response_id = 1
       mock_response = mock('response', :response_id => response_id)
-      Mirage::MockResponse.should_receive(:new).and_return(mock_response)
-      mock_response.should_receive(:requests_url=).with("http://example.org/mirage/requests/#{response_id}")
+      Mirage::MockResponse.should_receive(:new).and_return(@mock_response)
       put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
+      @mock_response.requests_url.should == "http://example.org/mirage/requests/#{response_id}"
     end
 
   end

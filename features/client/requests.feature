@@ -1,14 +1,13 @@
-Feature: Requests made to the Mirage Server can be tracked using the Mirage client
+Feature: Requests made to the Mirage Server can be retrieved using the Mirage client
 
   Background:
-    Given the following gems are required to run the Mirage client test code:
+    Given the following require statements are needed:
     """
     require 'rubygems'
-    require 'rspec'
     require 'mirage/client'
     """
 
-  Scenario: The MockServer returns a response
+  Scenario: Retrieving request data
     Given a template for 'greeting' has been set with a value of 'Hello'
 
     When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:

@@ -66,3 +66,4 @@ module Mirage
 
   end
 end
+World(Mirage::Web)
