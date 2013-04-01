@@ -80,6 +80,10 @@ Then /^I run$/ do |text|
   end
 end
 
+Given /^the following require statements are needed:$/ do |text|
+  @code_snippet = text.gsub("\"", "\\\\\"")
+end
+
 Given /^the following gems are required to run the Mirage client test code:$/ do |text|
   @code_snippet = text.gsub("\"", "\\\\\"")
 end
@@ -225,4 +229,15 @@ When /^'(.*)' is base64 encoded$/ do |template_component|
 end
 When /^the template is sent using PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, endpoint|
   @response = http_put(url, @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
+end
+Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint, value|
+  $mirage.templates.put(endpoint, value)
+end
+Then /^request data should have been retrieved$/ do
+  puts @response.body
+  request_data = JSON.parse(@response.body)
+  request_data.include?('parameters').should == true
+  request_data.include?('headers').should == true
+  request_data.include?('body').should == true
+  request_data.include?('request_url').should == true
 end

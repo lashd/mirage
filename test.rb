@@ -1,3 +1,4 @@
 require './lib/mirage/client'
-
-puts Mirage::Client.new.prime
+Mirage.stop
+mirage = Mirage.start
+puts Mirage::Client.new.requests(1).parameters

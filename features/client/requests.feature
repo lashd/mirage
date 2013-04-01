@@ -9,14 +9,11 @@ Feature: Requests made to the Mirage Server can be tracked using the Mirage clie
     """
 
   Scenario: The MockServer returns a response
-    Given I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
-    """
-    Hello
-    """
+    Given a template for 'greeting' has been set with a value of 'Hello'
 
     When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
       | name | leon  |
     Then I run
     """
-       Mirage::Client.new.request(1).should == 'name=leon'
+       Mirage::Client.new.requests(1).parameters.should == {'name' => 'leon'}
     """

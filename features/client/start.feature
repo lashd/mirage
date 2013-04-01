@@ -1,18 +1,19 @@
-Feature: The Mirage client provides a programmatic interface equivalent to the command line interface. This gives an
-  easy method for bringing a local instance of Mirage in situ inside a test suite.
+@command_line
+Feature: The client API can be used to start Mirage.
 
-  The client can only be used to stop Mirage if it is was used to start the running instance.
+  Both the port and default templates directory can be specified
+
+  On starting Mirage a client is returned.
+
 
   Background:
-    Given the following gems are required to run the Mirage client test code:
+    Given the following require statements are needed:
     """
     require 'rubygems'
-    require 'rspec'
     require 'mirage/client'
     """
 
-
-  Scenario: Starting mirage with defaults
+  Scenario: Starting Mirage on the default port
     When I run
     """
     Mirage.start
@@ -21,16 +22,23 @@ Feature: The Mirage client provides a programmatic interface equivalent to the c
 
 
   Scenario: Starting Mirage on a custom port
-    Given Mirage is not running
+    When I run
+    """
+    Mirage.start :port => 9001
+    """
+    Then mirage should be running on 'http://localhost:9001/mirage'
+
+
+  Scenario: Specifying a custom templates directory.
     And the file './custom_responses_location/default_greetings.rb' contains:
     """
     prime do |mirage|
-      mirage.put('greeting', 'hello')
+      mirage.templates.put('greeting', 'hello')
     end
     """
     When I run
     """
-    Mirage.start :port => 9001, :defaults => './custom_responses_location'
+    Mirage.start :defaults => './custom_responses_location'
     """
-    And I send GET to 'http://localhost:9001/mirage/responses/greeting'
+    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
     Then 'hello' should be returned

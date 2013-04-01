@@ -136,7 +136,7 @@ module Mirage
     end
 
     attr_reader :name, :request_spec, :response_spec
-    attr_accessor :response_id
+    attr_accessor :response_id, :requests_url
 
     def initialize name, spec={}
 
@@ -148,7 +148,6 @@ module Mirage
                                       :delay => 0,
                                       :content_type => "text/plain",
                                       :status => 200}.to_json)
-
 
       @name = name
       @spec = spec
@@ -196,7 +195,7 @@ module Mirage
     end
 
     def raw
-      {:response => @response_spec, :request => @request_spec}.to_json
+      {:id =>response_id, :endpoint => @name, :requests_url => requests_url, :response => @response_spec, :request => @request_spec}.to_json
     end
 
     def binary?

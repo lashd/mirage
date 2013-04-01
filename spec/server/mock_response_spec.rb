@@ -403,7 +403,12 @@ describe Mirage::MockResponse do
   end
 
   it 'should generate a json representation of itself' do
+    endpoint = "greeting"
+    requests_url = "requests_url"
     response_spec = convert_keys_to_strings({
+                                                :id => 1,
+                                                :endpoint => endpoint,
+                                                :requests_url => requests_url,
                                                 :request => {
                                                     :body_content => %w(login),
                                                     :parameters => {
@@ -419,7 +424,10 @@ describe Mirage::MockResponse do
                                                     :default => false
                                                 }
                                             })
-    JSON.parse(MockResponse.new("greeting", response_spec).raw).should == response_spec
+
+    mock_response = MockResponse.new(endpoint, response_spec)
+    mock_response.requests_url = requests_url
+    JSON.parse(mock_response.raw).should == response_spec
   end
 
 end

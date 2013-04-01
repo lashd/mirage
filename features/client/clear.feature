@@ -1,91 +1,82 @@
-Feature: The client can be used for clearing response templates from Mirage
+Feature: The client can be used for clearing down Mirage.
+
+  As with the restful interface, clearing a template also clears any associated request data
 
   Background:
-    Given the following gems are required to run the Mirage client test code:
+    Given the following require statements are needed:
     """
     require 'rubygems'
-    require 'rspec'
     require 'mirage/client'
     """
 
-    And I send PUT to 'http://localhost:7001/mirage/templates/greeting' with request entity
-    """
-    Hello
-    """
+    And a template for 'greeting' has been set with a value of 'Hello'
+
     And I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
       | message | hello there |
+    And a template for 'leaving' has been set with a value of 'Goodbye'
 
-    And I send PUT to 'http://localhost:7001/mirage/templates/leaving' with request entity
-    """
-    Goodbye
-    """
     And I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
       | message | I'm going |
 
 
-  Scenario: Clearing everything
-    When I run
-    """
-    Mirage::Client.new.clear
-    """
-    And I send GET to 'http://localhost:7001/mirage/responses/greeting'
-    Then a 404 should be returned
-
-    When I send GET to 'http://localhost:7001/mirage/requests/1'
-    Then a 404 should be returned
-
-    And I send GET to 'http://localhost:7001/mirage/responses/leaving'
-    Then a 404 should be returned
-
-    When I send GET to 'http://localhost:7001/mirage/requests/2'
-    Then a 404 should be returned
-
-
-  Scenario: Clearing all requests
-    When I run
-    """
-    Mirage::Client.new.clear :requests
-    """
-    When I send GET to 'http://localhost:7001/mirage/requests/1'
-    Then a 404 should be returned
-
-    When I send GET to 'http://localhost:7001/mirage/requests/2'
-    Then a 404 should be returned
-
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
-    Then a 200 should be returned
-    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
-    Then a 200 should be returned
-
-
-  Scenario: Clearning a response
+  Scenario: Clearing a template
     Given I run
     """
-    Mirage::Client.new.clear 1 
+    Mirage::Client.new.templates(1).delete
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
     Then a 404 should be returned
-    When I send GET to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
-    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
+
+    When GET is sent to 'http://localhost:7001/mirage/responses/leaving'
     Then a 200 should be returned
-    When I send GET to 'http://localhost:7001/mirage/requests/2'
+    When GET is sent to 'http://localhost:7001/mirage/requests/2'
     Then a 200 should be returned
 
 
   Scenario: Clearning a request
     Given I run
     """
-    Mirage::Client.new.clear :request => 1
+    Mirage::Client.new.requests(1).delete
     """
-    When I send GET to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to 'http://localhost:7001/mirage/requests/1'
     Then a 404 should be returned
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
     Then a 200 should be returned
-    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
-    Then a 200 should be returned
-    When I send GET to 'http://localhost:7001/mirage/requests/2'
-    Then a 200 should be returned
+
+
+  Scenario: Clearing everything
+    When I run
+    """
+    Mirage::Client.new.templates.delete_all
+    """
+    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 404 should be returned
+
+    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    Then a 404 should be returned
+
+    And GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+    Then a 404 should be returned
+
+    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    Then a 404 should be returned
+
+
+  Scenario: Clearing all request data
+    When I run
+    """
+    Mirage::Client.new.requests.delete_all
+    """
+    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    Then a 404 should be returned
+
+    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    Then a 404 should be returned
+
+
+
 
 
 

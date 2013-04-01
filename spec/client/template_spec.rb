@@ -6,6 +6,62 @@ describe Mirage::Template do
   Template = Mirage::Template
   Request = Mirage::Request
 
+  describe 'get' do
+    it 'should load a template given its id' do
+      endpoint = "endpoint"
+      id = 1
+      requests_url = 'request_url'
+      value = "Hello"
+      default = false
+      delay = 1.2
+      content_type = "application/json"
+      status = 201
+
+
+      required_parameters = {:name => 'joe'}
+      required_body_content = %{content}
+      http_method = "get"
+
+      template_json = {
+          endpoint: endpoint,
+          id: id,
+          requests_url: requests_url,
+          response:{
+              default: default,
+              body: value,
+              delay: delay,
+              content_type: content_type,
+              status: status,
+          },
+          request: {
+              parameters: required_parameters,
+              body_content: required_body_content,
+              http_method: http_method
+          }
+      }
+
+      template_url = "url"
+      Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return(template_json)
+
+      template = Template.get(template_url)
+      template.value.should == value
+      template.endpoint.should == endpoint
+      template.id = id
+
+      template.default.should == default
+      template.default.should == default
+      template.delay.should == delay
+      template.content_type.should == content_type
+      template.status.should == status
+
+      template.required_parameters = required_parameters
+      template.required_body_content = required_body_content
+      template.http_method = http_method
+      template.url.should  == template_url
+      template.requests_url = requests_url
+    end
+  end
+
 
   describe 'creating' do
     json = "reponse json"
@@ -35,11 +91,15 @@ describe Mirage::Template do
 
     it 'should clear a response' do
       id = 1
+      template_url = "base_url/templates/#{id}"
+
       template = Template.new("", "")
+      template.url = template_url
+
       template.stub(:id).and_return(id)
 
-      Template.should_receive(:delete).with("/#{id}")
-      Request.should_receive(:delete).with("/#{id}")
+      Template.should_receive(:delete).with(template_url)
+      Request.should_receive(:delete).with("base_url/requests/#{id}")
       template.delete
     end
 

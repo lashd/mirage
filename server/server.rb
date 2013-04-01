@@ -12,7 +12,9 @@ module Mirage
 
     put '/mirage/templates/*' do |name|
       content_type :json
-      {:id => MockResponse.new(name,JSON.parse(request.body.read)).response_id}.to_json
+      mock_response = MockResponse.new(name, JSON.parse(request.body.read))
+      mock_response.requests_url = request.url.gsub("/mirage/templates/#{name}", "/mirage/requests/#{mock_response.response_id}")
+      {:id => mock_response.response_id}.to_json
     end
 
     %w(get post delete put).each do |http_method|
@@ -25,7 +27,7 @@ module Mirage
           record = MockResponse.find_default(body, http_method, name, request.params)
         end
 
-        REQUESTS[record.response_id] = body.empty? ? query_string : body
+        REQUESTS[record.response_id] = request.dup
 
         send_response(record, body, request, query_string)
       end
@@ -57,8 +59,47 @@ module Mirage
       MockResponse.find_by_id(response_id).raw
     end
 
+    helpers do
+      def extract_http_headers(env)
+        headers = env.reject do |k, v|
+          !(/^HTTP_[A-Z_]+$/ === k) || v.nil?
+        end.map do |k, v|
+          [reconstruct_header_name(k), v]
+        end.inject(Rack::Utils::HeaderHash.new) do |hash, k_v|
+          k, v = k_v
+          hash[k] = v
+          hash
+        end
+
+        x_forwarded_for = (headers["X-Forwarded-For"].to_s.split(/, +/) << env["REMOTE_ADDR"]).join(", ")
+
+        headers.merge!("X-Forwarded-For" => x_forwarded_for)
+      end
+
+      def reconstruct_header_name(name)
+        name.sub(/^HTTP_/, "").gsub("_", "-")
+      end
+
+    end
+
     get '/mirage/requests/:id' do
-      REQUESTS[response_id] || 404
+      content_type :json
+      tracked_request = REQUESTS[response_id]
+      if tracked_request
+
+        tracked_request.body.rewind
+        body = tracked_request.body.read
+
+        parameters = tracked_request.params.dup.select{|key, value| key != body}
+
+        { request_url: request.url,
+          headers: extract_http_headers(tracked_request.env),
+          parameters: parameters,
+          body: body}.to_json
+
+      else
+        404
+      end
     end
 
     get '/mirage' do

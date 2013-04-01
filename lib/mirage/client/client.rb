@@ -28,7 +28,7 @@ module Mirage
     end
 
     def requests id=nil
-      return Request.get "#{@url}/#{id}" if id
+      return Request.get "#{@url}/requests/#{id}" if id
       Requests.new(@url)
     end
 

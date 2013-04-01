@@ -52,8 +52,9 @@ describe Mirage::Client do
     it 'should find a template' do
       id = 1
       mirage = Client.new
-      Template.should_receive(:get).with("#{mirage.url}/templates/#{id}")
-      mirage.templates(1)
+      mock_template = mock('template')
+      Template.should_receive(:get).with("#{mirage.url}/templates/#{id}").and_return(mock_template)
+      mirage.templates(1).should == mock_template
     end
   end
 
@@ -66,7 +67,7 @@ describe Mirage::Client do
     it 'should find a request' do
       id = 1
       mirage = Client.new
-      Request.should_receive(:get).with("#{mirage.url}/#{id}")
+      Request.should_receive(:get).with("#{mirage.url}/requests/#{id}")
       mirage.requests(id)
     end
   end

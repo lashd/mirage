@@ -65,6 +65,15 @@ describe "Mirage Server" do
       put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
     end
 
+    it 'should set the requests url against the template that is created' do
+      method = 'post'
+      response_id = 1
+      mock_response = mock('response', :response_id => response_id)
+      Mirage::MockResponse.should_receive(:new).and_return(mock_response)
+      mock_response.should_receive(:requests_url=).with("http://example.org/mirage/requests/#{response_id}")
+      put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
+    end
+
   end
 
 
@@ -98,7 +107,10 @@ describe "Mirage Server" do
         response_body = "hello"
         response_id = JSON.parse(put('/mirage/templates/greeting', {:response => {:body => Base64.encode64(response_body)}}.to_json).body)['id']
         template = JSON.parse(get("/mirage/templates/#{response_id}").body)
-        template.should == JSON.parse({:request => {:parameters => {}, :http_method => "get", :body_content => []},
+        template.should == JSON.parse({:endpoint => "greeting",
+                                       :id => response_id,
+                                       :requests_url => "http://example.org/mirage/requests/#{response_id}",
+                                       :request => {:parameters => {}, :http_method => "get", :body_content => []},
                                        :response => {:default => false,
                                                      :body => Base64.encode64(response_body),
                                                      :delay => 0,
@@ -107,6 +119,22 @@ describe "Mirage Server" do
                                       }.to_json)
       end
     end
+
+    it 'should return tracked request data' do
+      response_id = JSON.parse(put('/mirage/templates/greeting', {:request => {:http_method => :post}, :response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
+
+
+      header "MYHEADER", "my_header_value"
+      post("/mirage/responses/greeting?param=value", 'body')
+      request_data = JSON.parse(get("/mirage/requests/#{response_id}").body)
+
+      request_data['parameters'].should == {'param' => 'value'}
+      request_data['headers']["MYHEADER"].should == "my_header_value"
+      request_data['body'].should == "body"
+      request_data['request_url'].should == "http://example.org/mirage/requests/#{response_id}"
+
+    end
+
 
     it 'should delete a template' do
       response_id = JSON.parse(put('/mirage/templates/greeting', {:response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
