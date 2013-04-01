@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0.alpha.1"
+  s.version = "3.0.0.alpha.2"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
@@ -113,6 +113,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<ptools>, [">= 0"])
       s.add_runtime_dependency(%q<httparty>, [">= 0"])
       s.add_runtime_dependency(%q<haml>, [">= 0"])
+      s.add_runtime_dependency(%q<hashie>, [">= 0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<sinatra-contrib>, [">= 0"])
@@ -127,6 +128,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<ptools>, [">= 0"])
       s.add_dependency(%q<httparty>, [">= 0"])
       s.add_dependency(%q<haml>, [">= 0"])
+      s.add_dependency(%q<hashie>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<sinatra-contrib>, [">= 0"])
@@ -142,6 +144,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<ptools>, [">= 0"])
     s.add_dependency(%q<httparty>, [">= 0"])
     s.add_dependency(%q<haml>, [">= 0"])
+    s.add_dependency(%q<hashie>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<sinatra-contrib>, [">= 0"])
