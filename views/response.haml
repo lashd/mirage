@@ -1,0 +1,24 @@
+- response = locals[:mock_response]
+
+%div
+  %label{:style => 'font-weight: bold'}
+    endpoint:
+  #{response.name}
+  %br
+  %label{:style => 'font-weight: bold'}
+    required http method:
+  #{response.request_spec.http_method}
+  %br
+  %label{:style => 'font-weight: bold'}
+    required headers:
+  #{response.request_spec.headers.to_hash}
+  %br
+  %label{:style => 'font-weight: bold'}
+    required parameters:
+  #{response.request_spec.parameters.to_hash}
+  %br
+  %label{:style => 'font-weight: bold'}
+    required body content:
+  #{response.request_spec.body_content}
+  %br
+  %br

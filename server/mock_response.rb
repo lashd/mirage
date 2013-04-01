@@ -1,4 +1,5 @@
 require 'binary_data_checker'
+require 'hashie/mash'
 module Mirage
   class ServerResponseNotFound < Exception
 
@@ -164,8 +165,8 @@ module Mirage
       @name = name
       @spec = spec
 
-      @request_spec = request_defaults.merge(spec['request']||{})
-      @response_spec = response_defaults.merge(spec['response']||{})
+      @request_spec = Hashie::Mash.new request_defaults.merge(spec['request']||{})
+      @response_spec = Hashie::Mash.new response_defaults.merge(spec['response']||{})
 
       @request_spec['headers'] = Hash[@request_spec['headers'].collect{|key, value| [key.downcase, value]}]
       @binary = BinaryDataChecker.contains_binary_data? @response_spec['body']

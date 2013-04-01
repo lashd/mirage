@@ -1,8 +1,26 @@
 require './lib/mirage/client'
 
-mirage = Mirage.start
-mirage.templates.delete_all
+Mirage.stop
+client = Mirage.start
 
-mirage.templates.put('greeting', 'hello') do |response|
-  response.required_headers['custom-header'] = /.eon/
+
+client.put "greeting", 'hello' do |response|
+  response.http_method = :post
+  response.delay = 1.2
+  response.required_parameters = {:name => 'leon'}
+  response.required_body_content = %w(profile)
+  response.required_headers = {:header => 'value'}
 end
+
+
+client.put "greeting/something/hello", 'hello' do |response|
+  response.http_method = :post
+  response.delay = 1.2
+  response.required_parameters = {:name => 'leon'}
+  response.required_body_content = %w(profile)
+  response.required_headers = {:header => 'value'}
+end
+
+Mirage.stop
+
+

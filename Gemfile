@@ -6,6 +6,7 @@ gem "waitforit"
 gem "thor"
 gem "ptools"
 gem "httparty"
+gem "haml"
 
 group :test do
   gem 'cucumber'

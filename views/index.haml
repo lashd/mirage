@@ -1,0 +1,22 @@
+%html
+  %head
+  %body
+    %h1 Welcome to Mirage
+
+    %p
+      Below are any responses you are currently hosting. Click the response itself to peek at it and click 'track' to view the last request that triggered it.
+      %br
+      %br
+      Patterns and delays are shown for responses that have them.
+      %br
+      %br
+      Responses with '*' at the end are default responses. I.e. they will be returned, where appropriate, for requests to a sub endpoint if a response is not found at that level.
+      %br
+      %br
+      %strong Note:
+      if requests or responses contain xml, you will need to view page source to see it properly.
+      %br
+
+      %h2 Responses
+      - ::Mirage::MockResponse.all.each do |mock_response|
+        #{haml :response, :locals => {:mock_response => mock_response}}

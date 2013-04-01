@@ -44,6 +44,14 @@ module Mirage
       self.class.send(:put, @url, :body => "")
     end
 
+    def put endpoint, value, &block
+      templates.put endpoint, value, &block
+    end
+
+    def clear
+      templates.delete_all
+    end
+
     def == client
       client.instance_of?(Client) && self.url == client.url
     end

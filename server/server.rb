@@ -64,29 +64,6 @@ module Mirage
       MockResponse.find_by_id(response_id).raw
     end
 
-    helpers do
-      def extract_http_headers(env)
-        headers = env.reject do |k, v|
-          !(/^HTTP_[A-Z_]+$/ === k) || v.nil?
-        end.map do |k, v|
-          [reconstruct_header_name(k), v]
-        end.inject(Rack::Utils::HeaderHash.new) do |hash, k_v|
-          k, v = k_v
-          hash[k] = v
-          hash
-        end
-
-        x_forwarded_for = (headers["X-Forwarded-For"].to_s.split(/, +/) << env["REMOTE_ADDR"]).join(", ")
-
-        headers.merge!("X-Forwarded-For" => x_forwarded_for)
-      end
-
-      def reconstruct_header_name(name)
-        name.sub(/^HTTP_/, "").gsub("_", "-")
-      end
-
-    end
-
     get '/mirage/requests/:id' do
       content_type :json
       tracked_request = REQUESTS[response_id]
@@ -108,15 +85,7 @@ module Mirage
     end
 
     get '/mirage' do
-      @responses = {}
-
-      MockResponse.all.each do |response|
-        pattern = response.pattern.is_a?(Regexp) ? "pattern = #{response.pattern.source}" : ''
-        delay = response.delay > 0 ? "delay = #{response.delay}" : ''
-        pattern << ' ,' unless pattern.empty? || delay.empty?
-        @responses["#{response.name}#{'/*' if response.default?}: #{pattern} #{delay}"] = response
-      end
-      erb :index
+      haml :index
     end
 
 
@@ -172,6 +141,26 @@ module Mirage
         content_type(response.response_spec['content_type'])
         status response.response_spec['status']
         response.value(body, request, query_string)
+      end
+
+      def extract_http_headers(env)
+        headers = env.reject do |k, v|
+          !(/^HTTP_[A-Z_]+$/ === k) || v.nil?
+        end.map do |k, v|
+          [reconstruct_header_name(k), v]
+        end.inject(Rack::Utils::HeaderHash.new) do |hash, k_v|
+          k, v = k_v
+          hash[k] = v
+          hash
+        end
+
+        x_forwarded_for = (headers["X-Forwarded-For"].to_s.split(/, +/) << env["REMOTE_ADDR"]).join(", ")
+
+        headers.merge!("X-Forwarded-For" => x_forwarded_for)
+      end
+
+      def reconstruct_header_name(name)
+        name.sub(/^HTTP_/, "").gsub("_", "-")
       end
     end
   end

@@ -35,6 +35,15 @@ describe Mirage::Client do
     end
   end
 
+  it 'should clear mirage' do
+    templates_mock = mock('templates')
+    Templates.should_receive(:new).and_return(templates_mock)
+    templates_mock.should_receive(:delete_all)
+    Client.new.clear
+  end
+
+
+
 
   it 'should prime mirage' do
     Client.should_receive(:put) do |url|
@@ -55,6 +64,18 @@ describe Mirage::Client do
       mock_template = mock('template')
       Template.should_receive(:get).with("#{mirage.url}/templates/#{id}").and_return(mock_template)
       mirage.templates(1).should == mock_template
+    end
+
+    it 'should put a response on mirage' do
+      endpoint, value, block = 'greeting', 'hello', Proc.new{}
+
+      templates_mock = mock('templates')
+      Templates.should_receive(:new).and_return(templates_mock)
+
+      templates_mock.should_receive(:put).with(endpoint, value, &block)
+
+      mirage = Client.new
+      mirage.put endpoint, value, &block
     end
   end
 
