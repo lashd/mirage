@@ -17,7 +17,28 @@ Installation
     gem install mirage 
     
 What's New?
------------ 
+-----------
+### 3.0.0 (Currently in alpha)
+------------------------------
+3.0.0 is not out yet but I am going to spend the next few days filling in the what's new section in preparation for its release.
+#### What's new in the Server:
+##### 1: Mirage uses JSON as its communucations medium
+Mirage is now configured using JSON. JSON is also used as the output format for Mirage's other operations.
+##### 2: Full Request Data now tracked
+You can now retrieve all data associated with a request that triggers a response. Previously only the the request body/query string was tracked.
+Now the full request, including HTTP headers are returned when querying '/requests/template_id'
+##### 3. Parameters and body content matchers are now specified seperately
+Now you can specify as many parameter and body matchers as you want. These can be both litteral strings or Regex's
+  
+Previously, it was only possible to specify a single matcher and this would be applied against both the querystring and the request body.
+##### 4. HTTP Header matchers
+You can now also specify matchers against HTTP headers.
+##### 5. More advanced template resolution.
+Templates are now scored to find the most appropriate template when finding a match for a particular request. Previously the first potential match was returned even
+if there was a more appropriate template.
+
+Litteral matchers are worth more in the scoring process than regex based ones for example.
+
 ### 2.4.0
 ---------
 #### What do I get?
