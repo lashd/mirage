@@ -38,6 +38,7 @@ Templates are now scored to find the most appropriate template when finding a ma
 if there was a more appropriate template.
 
 Litteral matchers are worth more in the scoring process than regex based ones for example.
+#### What's new in the Client:
 
 ### 2.4.0
 ---------
