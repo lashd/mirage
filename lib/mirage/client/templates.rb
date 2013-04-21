@@ -26,6 +26,7 @@ module Mirage
         template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
         yield template if block_given?
       end
+      yield template if block_given?
       template.create
     end
   end

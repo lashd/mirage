@@ -69,6 +69,17 @@ describe 'templates' do
         @templates.put template
         template.endpoint.should == "#{@base_url}/templates/endpoint"
       end
+
+      it 'should accept a block to allow the template to be customised' do
+        block_called = false
+        template = Template.new 'endpoint', 'value'
+        template.should_receive(:create)
+        @templates.put(template) do |the_same_template|
+          block_called = true
+          the_same_template.should == template
+        end
+        block_called.should == true
+      end
     end
 
     context 'endpoint and value as parameters' do
