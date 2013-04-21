@@ -14,14 +14,7 @@ module JsonHelpers
 end
 
 RSpec.configure do |config|
-  Templates = Mirage::Templates
-  Requests = Mirage::Requests
-  Template = Mirage::Template
-  Client = Mirage::Client
-  Request = Mirage::Request
-  Runner = Mirage::Runner
-  TemplateConfiguration = Mirage::TemplateConfiguration
-
+  include Mirage
   config.include JsonHelpers
 end
 
