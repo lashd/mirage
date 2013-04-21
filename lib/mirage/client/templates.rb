@@ -17,9 +17,15 @@ module Mirage
       @requests.delete_all
     end
 
-    def put endpoint, response
-      template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
-      yield template if block_given?
+    def put *args
+      if args.first.is_a?(Template)
+        template = args.first
+        template.endpoint = "#{@url}/#{template.endpoint}"
+      else
+        endpoint, response = args
+        template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
+        yield template if block_given?
+      end
       template.create
     end
   end

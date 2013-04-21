@@ -66,7 +66,7 @@ describe Mirage::Client do
       mirage.templates(1).should == mock_template
     end
 
-    it 'should put a response on mirage' do
+    it "should put a response on mirage by passing args on to template's put method "  do
       endpoint, value, block = 'greeting', 'hello', Proc.new{}
 
       templates_mock = mock('templates')
@@ -92,10 +92,6 @@ describe Mirage::Client do
       mirage.requests(id)
     end
   end
-
-  #describe 'stop' do
-  #
-  #end
 
   describe 'save' do
     it 'should save the current template setup of mirage' do
