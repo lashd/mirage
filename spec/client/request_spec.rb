@@ -1,8 +1,19 @@
 require 'spec_helper'
-require 'mirage/client'
 
+describe Request do
+  let(:request_url) { "url" }
+  let(:trigger_url) { "trigger url" }
 
-describe Mirage::Request do
+  let(:body) { "body" }
+  let(:parameters) { {"name" => "joe"} }
+  let(:headers) { {"header" => "value"} }
+
+  let(:request_json) do
+    {body: body,
+     headers: headers,
+     parameters: parameters,
+     request_url: trigger_url}
+  end
 
   it 'delete a request' do
     request_url = "url"
@@ -13,21 +24,7 @@ describe Mirage::Request do
   end
 
   it 'should load request data' do
-    request_url = "url"
-    trigger_url = "trigger url"
-
-    body = "body"
-    parameters = {"name" => "joe"}
-    headers = {"header" => "value"}
-
-    request_json = {
-        body: body,
-        headers: headers,
-        parameters: parameters,
-        request_url: trigger_url
-    }
-
-    Request.should_receive(:backedup_get).with(request_url,format: :json).and_return(request_json)
+    Request.should_receive(:backedup_get).with(request_url, format: :json).and_return(request_json)
 
     request = Request.get(request_url)
     request.headers.should == headers
