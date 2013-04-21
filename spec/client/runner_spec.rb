@@ -3,7 +3,6 @@ require 'mirage/client'
 
 
 describe Mirage do
-  Runner = Mirage::Runner
 
   describe 'starting' do
     before(:each) do

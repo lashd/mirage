@@ -2,11 +2,7 @@ require 'spec_helper'
 require 'mirage/client'
 
 describe Mirage::Client do
-  Client = Mirage::Client
-  Templates = Mirage::Templates
-  Template = Mirage::Template
-  Requests = Mirage::Requests
-  Request = Mirage::Request
+
 
   before :each do
     @response = mock('response').as_null_object

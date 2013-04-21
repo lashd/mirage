@@ -2,9 +2,7 @@ require 'spec_helper'
 require 'mirage/client'
 
 describe 'templates' do
-  Templates = Mirage::Templates
-  Requests = Mirage::Requests
-  Template = Mirage::Template
+
 
   describe 'deleting' do
     it 'should delete all templates and associated request data' do

@@ -1,8 +1,8 @@
 ROOT_DIR = "#{File.dirname(__FILE__)}/.."
 $LOAD_PATH.unshift "#{ROOT_DIR}/lib"
 $LOAD_PATH.unshift "#{ROOT_DIR}/server"
-
 require 'simplecov' if ENV['coverage']
+require 'mirage/client'
 require 'rspec'
 require 'json'
 require 'base64'
@@ -14,6 +14,14 @@ module JsonHelpers
 end
 
 RSpec.configure do |config|
+  Templates = Mirage::Templates
+  Requests = Mirage::Requests
+  Template = Mirage::Template
+  Client = Mirage::Client
+  Request = Mirage::Request
+  Runner = Mirage::Runner
+  TemplateConfiguration = Mirage::TemplateConfiguration
+
   config.include JsonHelpers
 end
 

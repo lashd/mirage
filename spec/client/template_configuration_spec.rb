@@ -3,8 +3,8 @@ require 'mirage/client'
 
 
 
-describe Mirage::TemplateConfiguration do
-  TemplateConfiguration = Mirage::TemplateConfiguration
+describe TemplateConfiguration do
+
   it 'should have defaults' do
     configuration = TemplateConfiguration.new
     assert_defaults configuration

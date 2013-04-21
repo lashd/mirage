@@ -3,7 +3,6 @@ require 'mirage/client'
 
 
 describe Mirage::Request do
-  Request = Mirage::Request
 
   it 'delete a request' do
     request_url = "url"

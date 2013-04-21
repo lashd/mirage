@@ -3,8 +3,6 @@ require 'mirage/client'
 
 
 describe Mirage::Template do
-  Template = Mirage::Template
-  Request = Mirage::Request
 
   describe 'get' do
     it 'should load a template given its id' do
