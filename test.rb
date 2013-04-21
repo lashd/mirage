@@ -1,26 +1,27 @@
 require './lib/mirage/client'
 
-Mirage.stop
-client = Mirage.start
+
+mirage = Mirage.start
+
+#mirage.clear
+#mirage.put('some/path/greeting', 'hello') do |response|
+#  response.http_method = :post
+#end
+#
+#template = mirage.put('some/path/greeting', 'hello Michele') do |response|
+#  response.http_method = :post
+#  response.required_parameters['name']='Michele'
+#  response.required_body_content << 'stara'
+#  response.required_headers['Custom-Header']='special'
+#end
+#
 
 
-client.put "greeting", 'hello' do |response|
-  response.http_method = :post
-  response.delay = 1.2
-  response.required_parameters = {:name => 'leon'}
-  response.required_body_content = %w(profile)
-  response.required_headers = {:header => 'value'}
-end
 
 
-client.put "greeting/something/hello", 'hello' do |response|
-  response.http_method = :post
-  response.delay = 1.2
-  response.required_parameters = {:name => 'leon'}
-  response.required_body_content = %w(profile)
-  response.required_headers = {:header => 'value'}
-end
 
-Mirage.stop
+
+
+
 
 

@@ -174,6 +174,10 @@ module Mirage
       MockResponse.add self
     end
 
+    def headers
+      @response_spec['headers']
+    end
+
     def default?
       @response_spec["default"]
     end

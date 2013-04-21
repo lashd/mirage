@@ -136,11 +136,12 @@ module Mirage
         block.call Mirage::Client.new "http://localhost:#{settings.port}/mirage"
       end
 
-      def send_response(response, body='', request={}, query_string='')
-        sleep response.response_spec['delay']
-        content_type(response.response_spec['content_type'])
-        status response.response_spec['status']
-        response.value(body, request, query_string)
+      def send_response(mock_response, body='', request={}, query_string='')
+        sleep mock_response.response_spec['delay']
+        content_type(mock_response.response_spec['content_type'])
+        status mock_response.response_spec['status']
+        headers mock_response.headers
+        mock_response.value(body, request, query_string)
       end
 
       def extract_http_headers(env)

@@ -4,10 +4,13 @@ require 'base64'
 
 describe "Mirage Server" do
   include_context :rack_test, :disable_sinatra_error_handling => true
+  before :each do
+    Mirage::MockResponse.delete_all
+  end
+
 
   describe "when adding responses" do
     before :each do
-      Mirage::MockResponse.delete_all
       @mock_response = Mirage::MockResponse.new('endpoint','value')
     end
 
@@ -86,6 +89,12 @@ describe "Mirage Server" do
         put('/mirage/templates/level1', {:response => {:body => Base64.encode64("level1")}}.to_json)
         put('/mirage/templates/level1/level2', {:response => {:body => Base64.encode64("level2"), :default => true}}.to_json)
         get('/mirage/responses/level1/level2/level3').body.should == "level2"
+      end
+
+      it 'should set any headers specified' do
+        headers = {header: 'value'}
+        put('/mirage/templates/greeting', {:response => {headers: headers, :body => ''}}.to_json)
+        get('/mirage/responses/greeting').headers['header'].should == 'value'
       end
     end
 

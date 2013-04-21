@@ -67,6 +67,14 @@ describe Mirage::MockResponse do
 
   describe "response values" do
 
+    it 'should return any headers set' do
+      headers = {
+          'header' => 'value'
+      }
+      response_spec = convert_keys_to_strings({:response => {:headers => headers}})
+      MockResponse.new("greeting", response_spec).headers.should == headers
+    end
+
     it 'should return the response value' do
       response_spec = convert_keys_to_strings({:response => {:body => Base64.encode64("hello")}})
       MockResponse.new("greeting", response_spec).value.should == "hello"

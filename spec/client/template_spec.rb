@@ -16,6 +16,7 @@ describe Mirage::Template do
       delay = 1.2
       content_type = "application/json"
       status = 201
+      headers = {'header' => 'value'}
 
 
       required_parameters = {"name" => 'joe'}
@@ -33,6 +34,7 @@ describe Mirage::Template do
               delay: delay,
               content_type: content_type,
               status: status,
+              headers: headers
           },
           request: {
               parameters: required_parameters,
@@ -55,6 +57,7 @@ describe Mirage::Template do
       template.delay.should == delay
       template.content_type.should == content_type
       template.status.should == status
+      template.headers.should == headers
 
       template.required_parameters.should  == required_parameters
       template.required_body_content.should == required_body_content
@@ -235,6 +238,13 @@ describe Mirage::Template do
         response.content_type = content_type
         JSON.parse(response.to_json)["response"]["content_type"].should == content_type
       end
+    end
+
+    it 'should set headers' do
+      header, value = 'header', 'value'
+      template = Template.new 'endpoint', value
+      template.headers[header] = value
+      JSON.parse(template.to_json)["response"]["headers"].should == {header => value}
     end
 
   end

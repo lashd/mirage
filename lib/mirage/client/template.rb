@@ -2,6 +2,7 @@ require 'ostruct'
 require 'json'
 require 'httparty'
 require 'hashie/mash'
+
 module Mirage
 
   class Template
@@ -23,6 +24,7 @@ module Mirage
         template.delay = response_config.delay
         template.content_type = response_config.content_type
         template.status = response_config.status
+        template.headers = response_config.headers
 
         template.required_parameters = request_config.parameters
         template.required_body_content = request_config.body_content
@@ -37,7 +39,7 @@ module Mirage
 
     format :json
 
-    attr_accessor :content_type, :http_method, :default, :status, :delay, :required_parameters, :required_body_content, :required_headers, :endpoint, :id, :url, :requests_url
+    attr_accessor :content_type, :http_method, :default, :status, :delay, :required_parameters, :required_body_content, :required_headers, :endpoint, :id, :url, :requests_url, :headers
     attr_reader :value
 
 
@@ -52,6 +54,7 @@ module Mirage
       @required_parameters = {}
       @required_headers = {}
       @required_body_content = []
+      @headers = {}
       @default = default_config.default
     end
 
@@ -72,15 +75,15 @@ module Mirage
               :body => Base64.encode64(@value),
               :status => status,
               :default => default,
-              :content_type => content_type
+              :content_type => content_type,
+              :headers => headers
 
           },
           :request => {
               :parameters => encode_regexs(required_parameters),
               :headers => encode_regexs(required_headers),
               :body_content => encode_regexs(required_body_content),
-              :http_method => http_method
-
+              :http_method => http_method,
           },
           :delay => delay
       }.to_json
