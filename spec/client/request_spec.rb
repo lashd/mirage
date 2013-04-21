@@ -36,16 +36,4 @@ describe Mirage::Request do
     request.parameters.should == parameters
   end
 
-  it 'should contain parameters' do
-
-  end
-
-  it 'should contain the request body' do
-
-  end
-
-  it 'should contain the triggering url' do
-
-  end
-
 end
