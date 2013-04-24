@@ -2,7 +2,7 @@ module Mirage
   class Template
     module Model
       module InstanceMethods
-        extend Helpers::Builder
+        extend Helpers::MethodBuilder
 
         def initialize endpoint, response, default_config=TemplateConfiguration.new
           @endpoint = endpoint

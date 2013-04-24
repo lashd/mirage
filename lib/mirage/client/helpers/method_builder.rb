@@ -1,6 +1,6 @@
 module Mirage
   module Helpers
-    module Builder
+    module MethodBuilder
       def builder_methods *method_names
 
         method_names.each do |method_name|

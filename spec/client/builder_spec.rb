@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Helpers::Builder do
+describe Helpers::MethodBuilder do
   it 'should give a builder_method builder method' do
     model_class = Class.new do
-      extend Helpers::Builder
+      extend Helpers::MethodBuilder
 
       builder_method :name
       builder_method :age
@@ -18,7 +18,7 @@ describe Helpers::Builder do
 
   it 'should let you define more than one builder method at a time' do
     model_class = Class.new do
-      extend Helpers::Builder
+      extend Helpers::MethodBuilder
 
       builder_methods :name, :age
     end
