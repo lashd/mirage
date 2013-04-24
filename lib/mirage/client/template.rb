@@ -3,6 +3,7 @@ require 'json'
 require 'httparty'
 require 'hashie/mash'
 
+require 'client/template/configuration'
 require 'client/template/model'
 
 module Mirage
