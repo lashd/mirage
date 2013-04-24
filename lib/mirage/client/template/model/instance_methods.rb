@@ -4,7 +4,7 @@ module Mirage
       module InstanceMethods
         extend Helpers::MethodBuilder
 
-        def initialize endpoint, response, default_config=TemplateConfiguration.new
+        def initialize endpoint, response, default_config=Template::Configuration.new
           @endpoint = endpoint
           @content_type = default_config.content_type
           @value = response

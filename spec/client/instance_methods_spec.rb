@@ -39,7 +39,7 @@ describe Template::Model::InstanceMethods do
     end
 
     it 'can use configuration for all http related config' do
-      config = TemplateConfiguration.new
+      config = Mirage::Template::Configuration.new
       config.content_type='content_type'
       config.http_method='method'
       config.status='status'

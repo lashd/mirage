@@ -4,7 +4,7 @@ module Mirage
     def initialize base_url
       @url = "#{base_url}/templates"
       @requests = Requests.new(base_url)
-      @default_config = TemplateConfiguration.new
+      @default_config = Template::Configuration.new
     end
 
     def default_config &block

@@ -3,15 +3,15 @@ require 'mirage/client'
 
 
 
-describe TemplateConfiguration do
+describe Template::Configuration do
 
   it 'should have defaults' do
-    configuration = TemplateConfiguration.new
+    configuration = Template::Configuration.new
     assert_defaults configuration
   end
 
   it 'should be reset' do
-    configuration = TemplateConfiguration.new
+    configuration = Template::Configuration.new
     configuration.http_method = :post
     configuration.status = 202
     configuration.delay = 3
