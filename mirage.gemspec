@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0.alpha.3"
+  s.version = "3.0.0.alpha.4"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2013-04-21"
+  s.date = "2013-04-24"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -58,14 +58,19 @@ Gem::Specification.new do |s|
     "lib/mirage/client/cli_bridge.rb",
     "lib/mirage/client/client.rb",
     "lib/mirage/client/error.rb",
+    "lib/mirage/client/helpers/method_builder.rb",
     "lib/mirage/client/request.rb",
     "lib/mirage/client/requests.rb",
     "lib/mirage/client/runner.rb",
     "lib/mirage/client/template.rb",
-    "lib/mirage/client/template_configuration.rb",
+    "lib/mirage/client/template/configuration.rb",
+    "lib/mirage/client/template/model.rb",
+    "lib/mirage/client/template/model/class_methods.rb",
+    "lib/mirage/client/template/model/instance_methods.rb",
     "lib/mirage/client/templates.rb",
     "mirage.gemspec",
     "mirage_server.rb",
+    "profiles.rb",
     "rakefile",
     "responses/default_responses.rb",
     "server/app.rb",
@@ -77,10 +82,14 @@ Gem::Specification.new do |s|
     "server/server.rb",
     "spec/client/cli_bridge_spec.rb",
     "spec/client/client_spec.rb",
+    "spec/client/helpers/method_builder_spec.rb",
     "spec/client/request_spec.rb",
     "spec/client/requests_spec.rb",
     "spec/client/runner_spec.rb",
-    "spec/client/template_configuration_spec.rb",
+    "spec/client/template/configuration_spec.rb",
+    "spec/client/template/model/class_methods_spec.rb",
+    "spec/client/template/model/instance_methods_spec.rb",
+    "spec/client/template/model_spec.rb",
     "spec/client/template_spec.rb",
     "spec/client/templates_spec.rb",
     "spec/resources/binary.file",
