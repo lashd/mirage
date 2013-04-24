@@ -54,23 +54,29 @@ describe 'templates' do
 
 
 
-    context 'template as parameter' do
+
+    context 'model as parameter' do
+      let!(:endpoint){'endpoint'}
+      let!(:model_class) do
+        Class.new do
+          extend Template::Model
+          endpoint endpoint
+        end
+      end
       before :each do
         @base_url = "base_url"
         @templates = Templates.new(@base_url)
       end
-
-      it 'should take a preconfigured template as a parameter' do
-
-        template = Template.new 'endpoint', 'value'
+      it 'should take a model as a parameter' do
+        template = model_class.new
         template.should_receive(:create)
         @templates.put template
-        template.endpoint.should == "#{@base_url}/templates/endpoint"
+        template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
       end
 
       it 'should accept a block to allow the template to be customised' do
         block_called = false
-        template = Template.new 'endpoint', 'value'
+        template = model_class.new
         template.should_receive(:create)
         @templates.put(template) do |the_same_template|
           block_called = true

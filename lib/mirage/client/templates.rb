@@ -18,9 +18,9 @@ module Mirage
     end
 
     def put *args
-      if args.first.is_a?(Template)
+      if args.first.class.is_a?(Template::Model)
         template = args.first
-        template.endpoint = "#{@url}/#{template.endpoint}"
+        template.endpoint "#{@url}/#{template.endpoint}"
       else
         endpoint, response = args
         template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
