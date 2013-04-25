@@ -26,6 +26,10 @@ module Mirage
       set :server, 'webrick'
       set :views, "#{ROOT_DIR}/views"
 
+      if options["bind"]
+        set :bind, options["bind"]
+      end
+
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
       use Rack::CommonLogger, log_file
