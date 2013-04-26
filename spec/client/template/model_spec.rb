@@ -1,9 +1,16 @@
 require 'spec_helper'
 
 describe Template::Model do
+  let(:endpoint){'endpoint'}
   let!(:test_class) do
     Class.new do
       extend Template::Model
+
+      endpoint 'endpoint'
+
+      def initialize
+        super
+      end
     end
   end
   context 'class' do
@@ -11,6 +18,23 @@ describe Template::Model do
       test_class.is_a?(Template::Model::ClassMethods).should == true
       test_class.is_a?(Helpers::MethodBuilder).should == true
     end
+
+    context 'inherited constructor' do
+      it 'should set the endpoint of the class' do
+        test_class.new.endpoint.should == 'endpoint'
+      end
+
+      it 'calls to super should not fail if a constructor has been defined that takes args' do
+        test_class.class_eval do
+          def initialize arg
+            super
+          end
+        end
+        test_class.new('arg').endpoint.should == endpoint
+
+      end
+    end
+
   end
 
   context 'instances' do

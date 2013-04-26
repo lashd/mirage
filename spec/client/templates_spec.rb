@@ -51,6 +51,8 @@ describe 'templates' do
 
     endpoint = "greeting"
     value = "hello"
+    let(:base_url){ "base_url"}
+    let!(:templates){Templates.new(base_url)}
 
 
 
@@ -74,16 +76,7 @@ describe 'templates' do
         template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
       end
 
-      it 'should accept a block to allow the template to be customised' do
-        block_called = false
-        template = model_class.new
-        template.should_receive(:create)
-        @templates.put(template) do |the_same_template|
-          block_called = true
-          the_same_template.should == template
-        end
-        block_called.should == true
-      end
+
     end
 
     context 'endpoint and value as parameters' do
@@ -100,14 +93,21 @@ describe 'templates' do
         @templates.put(endpoint, value)
       end
 
-      it 'should accept a block to allow the template to be customised' do
-        block_called = false
-        @templates.put(endpoint, value) do |template|
-          block_called = true
-          template.should == @template_mock
-        end
-        block_called.should == true
-      end
+
     end
+
+    describe 'block parameter that can be used for template customisation' do
+      it 'it is called in the context of the template' do
+        template = Template.new('','')
+        template.stub(:create)
+        Template.should_receive(:new).and_return(template)
+        templates.put(endpoint, value) do
+          status 404
+        end
+        template.status.should == 404
+      end
+
+    end
+
   end
 end

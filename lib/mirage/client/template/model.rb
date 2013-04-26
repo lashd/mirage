@@ -13,12 +13,14 @@ module Mirage
           clazz.send(:include, HTTParty)
           clazz.send(:include, InstanceMethods)
 
-          clazz.class_eval do
-            def initialize
+          mod = Module.new do
+            def initialize *args
               super self.class.endpoint, ''
               status self.class.status if self.class.status
             end
           end
+
+          clazz.send(:include, mod)
 
           clazz.format :json
           clazz
