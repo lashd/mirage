@@ -46,5 +46,5 @@ mirage.clear
 leons_user_profile = UserServiceProfile.new leon
 mirage.put leons_user_profile do
   status 404
-  method get
+  method :get
 end
