@@ -44,8 +44,8 @@ module Mirage
       self.class.send(:put, @url, :body => "")
     end
 
-    def put *args
-      templates.put *args
+    def put *args, &block
+      templates.put *args, &block
     end
 
     def clear
