@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0.alpha.5"
+  s.version = "3.0.0.alpha.6"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2013-04-26"
+  s.date = "2013-04-28"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
