@@ -39,6 +39,58 @@ if there was a more appropriate template.
 
 Litteral matchers are worth more in the scoring process than regex based ones for example.
 #### What's new in the Client:
+##### 1. Template Models
+Perhaps the biggest addition to the client. Simply mixin Mirage::Template::Model in to a class, give it a method called body and there you have it... a class that can be used to put objects straight on to Mirage.
+ 
+* All the methods you find on a standard response can then be used at the class level to set defaults. 
+ 
+* Add builder methods to your class using the builder_methods class method.
+ 
+**Example Usage:** (See rdoc for full details)  
+
+    class UserProfile
+      extend Mirage::Template::Model
+      
+      endpoint '/users'
+      http_method :get
+      status 200
+      content_type 'application/json'
+      
+      builder_methods :firstname, :lastname, :age
+      
+      def body
+        {firstname: firstname, lastname: lastname, age: age}.to_json
+      end
+    end
+    
+    
+    Mirage::Client.new.put UserProfile.new.firstname('Joe').lastname('blogs')
+    
+##### Client interface
+The client interface has been overhauled to make it more usable. It supports a couple of different ways of specifying a template
+to let to specify templates in the style that best suites your code.
+
+**Example Usage:** (See rdoc for full details)  
+
+    mirage = Mirage::Client.new
+    mirage.put('/users') do
+      status 201
+      http_method :put
+      body 'response'
+      
+      required_body_content << 'Abracadabra'
+      required_headers['Header'] = 'value'
+      
+      delay 1.5
+    end
+    
+    # Template Model classes can be customised in exactly the same way
+    
+    mirage.put UserProfile.new do
+      status 404
+      required_parameters[:name] = /joe.*/
+    end
+
 
 ### 2.4.0
 ---------
