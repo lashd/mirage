@@ -66,6 +66,16 @@ describe Mirage::Template do
     end
   end
 
+  describe 'initialize' do
+    it 'throws and exception if an endpoint is not supplied as the first parameter' do
+      expect{Template.new}.to raise_error(ArgumentError)
+    end
+
+    it 'throws and exception if first argument is not a string' do
+      expect{Template.new(:endpoint)}.to raise_error(ArgumentError)
+    end
+  end
+
 
   describe 'creating' do
     json = "reponse json"

@@ -62,16 +62,18 @@ describe Mirage::Client do
       mirage.templates(1).should == mock_template
     end
 
-    it "should put a response on mirage by passing args on to template's put method "  do
-      endpoint, value, block = 'greeting', 'hello', Proc.new{}
+    describe 'put' do
+      it "should put a response on mirage by passing args on to template's put method "  do
+        endpoint, value, block = 'greeting', 'hello', Proc.new{}
 
-      templates_mock = mock('templates')
-      Templates.should_receive(:new).and_return(templates_mock)
+        templates_mock = mock('templates')
+        Templates.should_receive(:new).and_return(templates_mock)
 
       templates_mock.should_receive(:put).with(endpoint, value, &block)
 
-      mirage = Client.new
-      mirage.put endpoint, value, &block
+        mirage = Client.new
+        mirage.put endpoint, value, &block
+      end
     end
   end
 

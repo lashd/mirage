@@ -13,24 +13,15 @@ describe Template::Model::InstanceMethods do
     model.new '', ''
   end
 
-  it 'should provide methods for customising the model' do
-    instance.methods.should include(:content_type,
-                                 :http_method,
-                                 :default,
-                                 :status,
-                                 :delay,
-                                 :required_parameters,
-                                 :required_body_content,
-                                 :required_headers,
-                                 :endpoint,
-                                 :id,
-                                 :url,
-                                 :requests_url,
-                                 :headers,
-                                 :value)
-  end
 
   context 'initialize' do
+
+    it 'requires an endpoint' do
+      endpoint = 'value'
+      instance = model.new endpoint
+      instance.endpoint.should == endpoint
+    end
+
     it 'requires an endpoint and value to be provided' do
       endpoint, value = 'endpoint', 'value'
       instance = model.new endpoint, value
@@ -46,6 +37,12 @@ describe Template::Model::InstanceMethods do
       config.default=true
 
       instance = model.new 'endpoint', 'value', config
+      instance.content_type.should == config.content_type
+      instance.http_method.should == config.http_method
+      instance.status.should == config.status
+      instance.default.should == config.default
+
+      instance = model.new 'endpoint', config
       instance.content_type.should == config.content_type
       instance.http_method.should == config.http_method
       instance.status.should == config.status

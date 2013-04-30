@@ -3,11 +3,17 @@ module Mirage
     module Model
       module InstanceMethods
         extend Helpers::MethodBuilder
+        include CommonMethods
 
-        def initialize endpoint, response, default_config=Template::Configuration.new
-          @endpoint = endpoint
+        def initialize *args
+          if args.last.is_a?(Template::Configuration)
+            default_config = args.delete_at(-1)
+          else
+            default_config = Template::Configuration.new
+          end
+
+          @endpoint, @body = *args
           @content_type = default_config.content_type
-          @value = response
           @http_method = default_config.http_method
           @status = default_config.status
           @delay = default_config.delay
@@ -18,20 +24,10 @@ module Mirage
           @default = default_config.default
         end
 
-        builder_method :content_type,
-                       :http_method,
-                       :default,
-                       :status,
-                       :delay,
-                       :required_parameters,
-                       :required_body_content,
-                       :required_headers,
-                       :endpoint,
-                       :id,
+        builder_method :id,
                        :url,
-                       :requests_url,
-                       :headers,
-                       :value
+                       :requests_url
+
 
         def create
           @id = self.class.put("#{@endpoint}", :body => self.to_json, :headers => {'content-type' => 'application/json'})['id']

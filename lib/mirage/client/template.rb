@@ -12,6 +12,7 @@ module Mirage
 
     include HTTParty
     include Model::InstanceMethods
+    include Model::CommonMethods
 
     class << self
       alias_method :backedup_get, :get
@@ -40,6 +41,14 @@ module Mirage
 
         template
       end
+    end
+
+    def initialize *args
+      endpoint = args.first
+
+      raise ArgumentError, "You must specify a string endpoint as the first argument" unless endpoint && endpoint.is_a?(String)
+      super *args
+
     end
   end
 end
