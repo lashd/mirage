@@ -68,7 +68,9 @@ Perhaps the biggest addition to the client. Simply mixin Mirage::Template::Model
     
 ##### Client interface
 The client interface has been overhauled to make it more usable. It supports a couple of different ways of specifying a template
-to let to specify templates in the style that best suites your code.
+to let to specify templates in the style that best suites your code. The block in the examples is executed in the scope of the template
+object itself so any method in it can be called. The template is also passed in to the block if you prefer to to call the methods
+on a variable.
 
 **Example Usage:** (See rdoc for full details)  
 
