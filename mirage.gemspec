@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0.alpha.6"
+  s.version = "3.0.0.alpha.7"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2013-04-28"
+  s.date = "2013-04-30"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -65,7 +65,7 @@ Gem::Specification.new do |s|
     "lib/mirage/client/template.rb",
     "lib/mirage/client/template/configuration.rb",
     "lib/mirage/client/template/model.rb",
-    "lib/mirage/client/template/model/class_methods.rb",
+    "lib/mirage/client/template/model/common_methods.rb",
     "lib/mirage/client/template/model/instance_methods.rb",
     "lib/mirage/client/templates.rb",
     "mirage.gemspec",
@@ -87,7 +87,7 @@ Gem::Specification.new do |s|
     "spec/client/requests_spec.rb",
     "spec/client/runner_spec.rb",
     "spec/client/template/configuration_spec.rb",
-    "spec/client/template/model/class_methods_spec.rb",
+    "spec/client/template/model/common_methods_spec.rb",
     "spec/client/template/model/instance_methods_spec.rb",
     "spec/client/template/model_spec.rb",
     "spec/client/template_spec.rb",
