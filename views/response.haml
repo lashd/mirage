@@ -6,6 +6,18 @@
   #{response.name}
   %br
   %label{:style => 'font-weight: bold'}
+    status:
+  #{response.response_spec.status}
+  %br
+  %label{:style => 'font-weight: bold'}
+    delay:
+  #{response.response_spec.delay}
+  %br
+  %label{:style => 'font-weight: bold'}
+    default:
+  #{response.default? ? 'true' : 'false'}
+  %br
+  %label{:style => 'font-weight: bold'}
     required http method:
   #{response.request_spec.http_method}
   %br
