@@ -43,7 +43,7 @@ module Mirage
         def to_json
           {
               :response => {
-                  :body => Base64.encode64(value),
+                  :body => Base64.encode64(body),
                   :status => status,
                   :default => default,
                   :content_type => content_type,
