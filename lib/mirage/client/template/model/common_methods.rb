@@ -16,8 +16,6 @@ module Mirage
                         :headers,
                         :endpoint,
                         :body
-
-        alias value body
       end
 
     end
