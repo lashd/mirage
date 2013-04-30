@@ -92,7 +92,8 @@ on a variable.
       status 404
       required_parameters[:name] = /joe.*/
     end
-
+#### What you don't get
+A better UI :) it's on its way though!
 
 ### 2.4.0
 ---------
