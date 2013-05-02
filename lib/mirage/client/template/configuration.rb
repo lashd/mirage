@@ -1,7 +1,11 @@
+require 'client/helpers/method_builder'
+
 module Mirage
   class Template
     class Configuration
-      attr_accessor :http_method, :status, :delay, :content_type, :default
+      extend Helpers::MethodBuilder
+      builder_methods :http_method, :status, :delay, :content_type, :default
+      attr_accessor :caller_binding
       DEFAULT_HTTP_METHOD=:get
       DEFAULT_STATUS=200
       DEFAULT_DELAY=0
@@ -18,6 +22,11 @@ module Mirage
         @delay = DEFAULT_DELAY
         @content_type = DEFAULT_CONTENT_TYPE
         @default = DEFAULT_DEFAULT
+      end
+
+
+      def method_missing(method, *args, &block)
+        @caller_binding.send method, *args, &block if @caller_binding
       end
 
     end

@@ -12,11 +12,11 @@ describe Template::Configuration do
 
   it 'should be reset' do
     configuration = Template::Configuration.new
-    configuration.http_method = :post
-    configuration.status = 202
-    configuration.delay = 3
-    configuration.default = true
-    configuration.content_type = "text/xml"
+    configuration.http_method :post
+    configuration.status 202
+    configuration.delay 3
+    configuration.default true
+    configuration.content_type "text/xml"
 
     configuration.reset
     assert_defaults configuration

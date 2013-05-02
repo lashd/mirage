@@ -69,7 +69,8 @@ module Mirage
       def add(new_response)
         response_set = responses_for_endpoint(new_response)
         method_specific_responses = response_set[new_response.request_spec['http_method'].upcase]||=[]
-        old_response = method_specific_responses.delete_at(method_specific_responses.index(new_response)) if method_specific_responses.index(new_response)
+        duplicate_response_location = method_specific_responses.index{|response| response.request_spec == new_response.request_spec}
+        old_response = method_specific_responses.delete_at(duplicate_response_location) if duplicate_response_location
         if old_response
           new_response.response_id = old_response.response_id
         else

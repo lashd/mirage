@@ -26,15 +26,15 @@ describe Template::Model::InstanceMethods do
       endpoint, value = 'endpoint', 'value'
       instance = model.new endpoint, value
       instance.endpoint.should == endpoint
-      instance.value.should == value
+      instance.body.should == value
     end
 
     it 'can use configuration for all http related config' do
       config = Mirage::Template::Configuration.new
-      config.content_type='content_type'
-      config.http_method='method'
-      config.status='status'
-      config.default=true
+      config.content_type 'content_type'
+      config.http_method 'method'
+      config.status 'status'
+      config.default true
 
       instance = model.new 'endpoint', 'value', config
       instance.content_type.should == config.content_type

@@ -29,6 +29,18 @@ describe Mirage::Client do
       expect { Client.new({}) }.to raise_error()
       expect { Client.new("rubbish") }.to raise_error()
     end
+
+
+    it 'can be configured with template defaults' do
+      templates, config = Templates.new("url"), proc{}
+      Templates.should_receive(:new).and_return(templates)
+      templates.should_receive(:default_config) do |&block|
+        block.should == config
+      end
+      Client.new &config
+    end
+
+
   end
 
   it 'should clear mirage' do

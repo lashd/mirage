@@ -9,7 +9,10 @@ module Mirage
 
     def default_config &block
       return @default_config unless block_given?
-      yield @default_config
+      calling_instance = eval "self", block.binding
+      @default_config.caller_binding = calling_instance
+      @default_config.instance_eval &block
+      @default_config.caller_binding = nil
     end
 
     def delete_all
@@ -25,7 +28,14 @@ module Mirage
         endpoint, response = args
         template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
       end
-      template.instance_eval &block if block
+
+      if block
+        calling_instance = eval "self", block.binding
+        template.caller_binding = calling_instance
+        template.instance_exec(template,&block)
+        template.caller_binding = nil
+      end
+
       template.create
     end
   end

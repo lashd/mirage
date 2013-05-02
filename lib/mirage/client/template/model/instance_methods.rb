@@ -5,6 +5,8 @@ module Mirage
         extend Helpers::MethodBuilder
         include CommonMethods
 
+        attr_accessor :caller_binding
+
         def initialize *args
           if args.last.is_a?(Template::Configuration)
             default_config = args.delete_at(-1)
@@ -76,6 +78,16 @@ module Mirage
 
         def encode(value)
           value.is_a?(Regexp) ? "%r{#{value.source}}" : value
+        end
+
+        def method_missing(method, *args, &block)
+
+          if @caller_binding
+            @caller_binding.send method, *args, &block
+          else
+            super method, *args, &block
+          end
+
         end
       end
 

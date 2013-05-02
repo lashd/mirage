@@ -470,6 +470,7 @@ describe Mirage::MockResponse do
                                                 }
                                             })
     response1 = MockResponse.new("greeting", response_spec)
+    response_spec['response']['body'] = 'response2'
     response2 = MockResponse.new("greeting", response_spec)
 
     response1.response_id.should_not == nil

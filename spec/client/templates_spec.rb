@@ -18,6 +18,7 @@ describe 'templates' do
   end
 
   describe 'setting default config' do
+
     it 'should preset configuration for templates' do
       Template.stub(:put).and_return(convert_keys_to_strings({:id => 1}))
       templates = Templates.new "base_url"
@@ -28,12 +29,12 @@ describe 'templates' do
       delay = 2
       content_type = "text/xml"
 
-      templates.default_config do |defaults|
-        defaults.http_method = http_method
-        defaults.status = status
-        defaults.default = default
-        defaults.delay = delay
-        defaults.content_type = content_type
+      templates.default_config do
+        http_method http_method
+        status status
+        default default
+        delay delay
+        content_type content_type
       end
 
       template = templates.put('greeting', 'hello')
@@ -44,6 +45,37 @@ describe 'templates' do
       template.delay.should == delay
       template.content_type.should == content_type
     end
+
+    it 'should fall over to methods on the caller if the method does not exist on the configuration object' do
+      templates_wrapper = Class.new do
+        def initialize
+          @templates = Templates.new "base_url"
+          @outer_method_called = false
+        end
+
+        def outer_method_call
+          @outer_method_called = true
+        end
+
+
+        def outer_method_called?
+          @outer_method_called
+        end
+
+        def test
+          @templates.default_config do
+            outer_method_call
+          end
+        end
+      end
+
+
+      wrapper = templates_wrapper.new
+
+      wrapper.test
+      wrapper.outer_method_called?.should == true
+
+    end
   end
 
   describe 'putting templates' do
@@ -51,14 +83,12 @@ describe 'templates' do
 
     endpoint = "greeting"
     value = "hello"
-    let(:base_url){ "base_url"}
-    let!(:templates){Templates.new(base_url)}
-
-
+    let(:base_url) { "base_url" }
+    let!(:templates) { Templates.new(base_url) }
 
 
     context 'model as parameter' do
-      let!(:endpoint){'endpoint'}
+      let!(:endpoint) { 'endpoint' }
       let!(:model_class) do
         Class.new do
           extend Template::Model
@@ -74,6 +104,40 @@ describe 'templates' do
         template.should_receive(:create)
         @templates.put template
         template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+      end
+
+      it 'should fall over to methods on the caller if the method does not exist on the template object' do
+        template_wrapper = Class.new do
+          def initialize
+            @templates = Templates.new "base_url"
+            @outer_method_called = false
+          end
+
+          def outer_method_call
+            @outer_method_called = true
+          end
+
+          def outer_method_called?
+            @outer_method_called
+          end
+
+          def test
+            template = Template.new 'endpoint'
+            Template.should_receive(:new).and_return template
+            template.stub(:create).and_return(template)
+            @templates.put('endpoint', 'value') do |response|
+              puts response
+              outer_method_call
+            end
+          end
+        end
+
+        wrapper = template_wrapper.new
+
+        template = wrapper.test
+        wrapper.outer_method_called?.should == true
+        template.caller_binding.should == nil
+
       end
 
 
@@ -98,7 +162,7 @@ describe 'templates' do
 
     describe 'block parameter that can be used for template customisation' do
       it 'it is called in the context of the template' do
-        template = Template.new('','')
+        template = Template.new('', '')
         template.stub(:create)
         Template.should_receive(:new).and_return(template)
         templates.put(endpoint, value) do

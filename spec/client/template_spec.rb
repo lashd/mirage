@@ -9,7 +9,7 @@ describe Mirage::Template do
       endpoint = "endpoint"
       id = 1
       requests_url = 'request_url'
-      value = "Hello"
+      body = "Hello"
       default = false
       delay = 1.2
       content_type = "application/json"
@@ -28,7 +28,7 @@ describe Mirage::Template do
           requests_url: requests_url,
           response:{
               default: default,
-              body: value,
+              body: body,
               delay: delay,
               content_type: content_type,
               status: status,
@@ -46,7 +46,7 @@ describe Mirage::Template do
       Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return(template_json)
 
       template = Template.get(template_url)
-      template.value.should == value
+      template.body.should == body
       template.endpoint.should == endpoint
       template.id.should == id
 
@@ -121,5 +121,19 @@ describe Mirage::Template do
       template.delete
     end
 
+  end
+
+  describe 'method missing' do
+    it 'should delagate to the caller if it is set' do
+      caller = Object.new
+      caller.should_receive(:some_method)
+      template = Template.new('endpoint')
+      template.caller_binding = caller
+      template.some_method
+    end
+
+    it 'should throw a standard method missing error if a caller binding is not set' do
+      expect{Template.new('endpoint').some_method}.should raise_error(NameError)
+    end
   end
 end
