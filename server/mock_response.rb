@@ -169,7 +169,9 @@ module Mirage
       @request_spec = Hashie::Mash.new request_defaults.merge(spec['request']||{})
       @response_spec = Hashie::Mash.new response_defaults.merge(spec['response']||{})
 
-      @request_spec['headers'] = Hash[@request_spec['headers'].collect{|key, value| [key.downcase, value]}]
+      @request_spec['headers'] = Hash[@request_spec['headers'].collect{|key, value| [key.downcase, value.to_s]}]
+      @request_spec['parameters'] = Hash[@request_spec['parameters'].collect{|key, value| [key, value.to_s]}]
+      @request_spec['body_content'] = @request_spec['body_content'].collect{|value|value.to_s}
       @binary = BinaryDataChecker.contains_binary_data? @response_spec['body']
 
       MockResponse.add self

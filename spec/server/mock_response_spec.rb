@@ -110,7 +110,7 @@ describe Mirage::MockResponse do
       response_spec = convert_keys_to_strings({:request => {:http_method => "post"}})
       response = MockResponse.new("greeting", response_spec)
 
-      options = {:body => "", :params => {}, :endpoint => "greeting", :http_method => "post",:headers => {}}
+      options = {:body => "", :params => {}, :endpoint => "greeting", :http_method => "post", :headers => {}}
       MockResponse.find(options).should == response
       options[:http_method] = "get"
       expect { MockResponse.find(options) }.to raise_error(ServerResponseNotFound)
@@ -142,75 +142,15 @@ describe Mirage::MockResponse do
 
   end
 
-  describe "matching on request parameters" do
-    it 'should find the response if all required parameters are present' do
-      get_spec = convert_keys_to_strings(
-          {
-              :request => {
-                  :http_method => "get",
-                  :parameters => {
-                      :firstname => "leon"
-                  }
-              },
-              :response => {
-                  :body => Base64.encode64("get response")
-              }
-          }
-      )
-
-      post_spec = convert_keys_to_strings(
-          {
-              :request => {
-                  :http_method => "post",
-                  :parameters => {
-                      :firstname => "leon"
-                  }
-              },
-              :response => {
-                  :body => Base64.encode64("post response")
-              }
-          }
-      )
-      get_response = MockResponse.new("greeting", get_spec)
-      post_response = MockResponse.new("greeting", post_spec)
-
-      options = {:body => "", :params => {"firstname" => "leon"}, :endpoint => "greeting", :http_method => "post",:headers => {}}
-
-      MockResponse.find(options).should == post_response
-      MockResponse.find(options.merge(:http_method => "get")).should == get_response
-    end
-
-    it 'should match request parameter values using regexps' do
-      response_spec = convert_keys_to_strings(
-          {
-              :request => {
-                  :parameters => {:firstname => "%r{leon.*}"}
-              },
-              :response => {
-                  :body => 'response'
-              }
-
-          }
-      )
-      response = MockResponse.new("greeting", response_spec)
-
-      options = {:body => "", :params => {"firstname" => "leon"}, :endpoint => "greeting", :http_method => "get",:headers => {}}
-      MockResponse.find(options).should == response
-      MockResponse.find(options.merge(:params => {"firstname" => "leonard"})).should == response
-      expect { MockResponse.find(options.merge(:params => {"firstname" => "leo"})) }.to raise_error(ServerResponseNotFound)
-    end
-  end
-
-  describe 'matching against request http_headers' do
-    it 'should match using literals' do
-      required_headers = {
-          'HEADER-1' => 'value1',
-          'HEADER-2' => 'value2'
-      }
+  describe 'matching' do
+    it 'should convert requirements in to strings before matching' do
+      requirement = 1234
       spec = convert_keys_to_strings(
           {
               :request => {
-                  :headers => required_headers
+                  :parameters => {:number => requirement},
+                  :body_content => [requirement],
+                  :headers => {:number => requirement}
               },
               :response => {
                   :body => 'response'
@@ -218,81 +158,169 @@ describe Mirage::MockResponse do
 
           }
       )
-      response = MockResponse.new("greeting", spec)
 
-      options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => required_headers}
-      MockResponse.find(options).should == response
-      expect{MockResponse.find(options.merge(:headers => {}))}.to raise_error(ServerResponseNotFound)
+      MockResponse.new("greeting", spec)
+      options = {:headers => {'number' => '1234'},
+                 :params => {'number' => "1234"},
+                 :endpoint => "greeting",
+                 :http_method => "get",
+                 :body => "1234", }
 
+      expect { MockResponse.find(options) }.to_not raise_error
     end
 
-    it 'should match using regex' do
-      required_headers = {
-          'CONTENT-TYPE' => '%r{.*/json}',
-      }
-      spec = convert_keys_to_strings(
-          {
-              :request => {
-                  :headers => required_headers
-              },
-              :response => {
-                  :body => 'response'
-              }
+    describe "matching on request parameters" do
+      it 'should find the response if all required parameters are present' do
+        get_spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :http_method => "get",
+                    :parameters => {
+                        :firstname => "leon"
+                    }
+                },
+                :response => {
+                    :body => Base64.encode64("get response")
+                }
+            }
+        )
 
-          }
-      )
-      response = MockResponse.new("greeting", spec)
+        post_spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :http_method => "post",
+                    :parameters => {
+                        :firstname => "leon"
+                    }
+                },
+                :response => {
+                    :body => Base64.encode64("post response")
+                }
+            }
+        )
+        get_response = MockResponse.new("greeting", get_spec)
+        post_response = MockResponse.new("greeting", post_spec)
 
-      options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => {'CONTENT-TYPE' => 'application/json'}}
-      MockResponse.find(options).should == response
-      expect{MockResponse.find(options.merge(:headers => {'CONTENT-TYPE' => 'text/xml'}))}.to raise_error(ServerResponseNotFound)
+        options = {:body => "", :params => {"firstname" => "leon"}, :endpoint => "greeting", :http_method => "post", :headers => {}}
 
+        MockResponse.find(options).should == post_response
+        MockResponse.find(options.merge(:http_method => "get")).should == get_response
+      end
+
+      it 'should match request parameter values using regexps' do
+        response_spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :parameters => {:firstname => "%r{leon.*}"}
+                },
+                :response => {
+                    :body => 'response'
+                }
+
+            }
+        )
+        response = MockResponse.new("greeting", response_spec)
+
+        options = {:body => "", :params => {"firstname" => "leon"}, :endpoint => "greeting", :http_method => "get", :headers => {}}
+        MockResponse.find(options).should == response
+        MockResponse.find(options.merge(:params => {"firstname" => "leonard"})).should == response
+        expect { MockResponse.find(options.merge(:params => {"firstname" => "leo"})) }.to raise_error(ServerResponseNotFound)
+      end
     end
-  end
 
-  describe 'matching against the request body' do
-    it 'should match required fragments in the request body' do
+    describe 'matching against request http_headers' do
+      it 'should match using literals' do
+        required_headers = {
+            'HEADER-1' => 'value1',
+            'HEADER-2' => 'value2'
+        }
+        spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :headers => required_headers
+                },
+                :response => {
+                    :body => 'response'
+                }
 
-      response_spec = convert_keys_to_strings(
-          {
-              :request => {
-                  :body_content => %w(leon)
-              },
-              :response => {
-                  :body => 'response'
-              }
+            }
+        )
+        response = MockResponse.new("greeting", spec)
 
-          }
-      )
+        options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => required_headers}
+        MockResponse.find(options).should == response
+        expect { MockResponse.find(options.merge(:headers => {})) }.to raise_error(ServerResponseNotFound)
 
-      response = MockResponse.new("greeting", response_spec)
+      end
 
-      options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => {} }
+      it 'should match using regex' do
+        required_headers = {
+            'CONTENT-TYPE' => '%r{.*/json}',
+        }
+        spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :headers => required_headers
+                },
+                :response => {
+                    :body => 'response'
+                }
 
-      MockResponse.find(options).should == response
-      expect { MockResponse.find(options.merge(:body => "<name>jeff</name>")) }.to raise_error(ServerResponseNotFound)
+            }
+        )
+        response = MockResponse.new("greeting", spec)
+
+        options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => {'CONTENT-TYPE' => 'application/json'}}
+        MockResponse.find(options).should == response
+        expect { MockResponse.find(options.merge(:headers => {'CONTENT-TYPE' => 'text/xml'})) }.to raise_error(ServerResponseNotFound)
+
+      end
     end
 
-    it 'should use regexs to match required fragements in the request body' do
-      response_spec = convert_keys_to_strings(
-          {
-              :request => {
-                  :body_content => %w(%r{leon.*})
-              },
-              :response => {
-                  :body => 'response'
-              }
+    describe 'matching against the request body' do
+      it 'should match required fragments in the request body' do
 
-          }
-      )
+        response_spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :body_content => %w(leon)
+                },
+                :response => {
+                    :body => 'response'
+                }
 
-      response = MockResponse.new("greeting", response_spec)
+            }
+        )
+
+        response = MockResponse.new("greeting", response_spec)
+
+        options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => {}}
+
+        MockResponse.find(options).should == response
+        expect { MockResponse.find(options.merge(:body => "<name>jeff</name>")) }.to raise_error(ServerResponseNotFound)
+      end
+
+      it 'should use regexs to match required fragements in the request body' do
+        response_spec = convert_keys_to_strings(
+            {
+                :request => {
+                    :body_content => %w(%r{leon.*})
+                },
+                :response => {
+                    :body => 'response'
+                }
+
+            }
+        )
+
+        response = MockResponse.new("greeting", response_spec)
 
 
-      options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => {} }
-      MockResponse.find(options).should == response
-      MockResponse.find(options.merge(:body => "<name>leonard</name>")).should == response
-      expect { MockResponse.find(options.merge(:body => "<name>jeff</name>")) }.to raise_error(ServerResponseNotFound)
+        options = {:body => "<name>leon</name>", :params => {}, :endpoint => "greeting", :http_method => "get", :headers => {}}
+        MockResponse.find(options).should == response
+        MockResponse.find(options.merge(:body => "<name>leonard</name>")).should == response
+        expect { MockResponse.find(options.merge(:body => "<name>jeff</name>")) }.to raise_error(ServerResponseNotFound)
+      end
     end
   end
 
@@ -427,7 +455,7 @@ describe Mirage::MockResponse do
 
       MockResponse.new("greeting", default_response_spec)
       expected_response = MockResponse.new("greeting", specific_response_spec)
-      options = {:body => "<action>login</action>", :params => {"name" => "leon"}, :endpoint => "greeting", :http_method => "get",:headers => {}}
+      options = {:body => "<action>login</action>", :params => {"name" => "leon"}, :endpoint => "greeting", :http_method => "get", :headers => {}}
       MockResponse.find(options).should == expected_response
     end
   end
@@ -449,7 +477,7 @@ describe Mirage::MockResponse do
 
 
     response = MockResponse.new("greeting", response_spec)
-    options = {:body => "<action>login</action>", :params => {"name" => "leon"}, :endpoint => "greeting", :http_method => "post",:headers => {}}
+    options = {:body => "<action>login</action>", :params => {"name" => "leon"}, :endpoint => "greeting", :http_method => "post", :headers => {}}
     MockResponse.find(options).should == response
 
     options[:http_method] = 'get'
@@ -478,7 +506,7 @@ describe Mirage::MockResponse do
   end
 
   it 'should raise an exception when a response is not found' do
-    expect { MockResponse.find(:body => "<action>login</action>", :params => {:name => "leon"}, :endpoint => "greeting", :http_method => "post",:headers => {}) }.to raise_error(ServerResponseNotFound)
+    expect { MockResponse.find(:body => "<action>login</action>", :params => {:name => "leon"}, :endpoint => "greeting", :http_method => "post", :headers => {}) }.to raise_error(ServerResponseNotFound)
   end
 
   it 'should return all responses' do
@@ -493,7 +521,7 @@ describe Mirage::MockResponse do
     it 'most appropriate response under parent resource and same http method' do
       level1_response = MockResponse.new("level1", convert_keys_to_strings({:response => {:body => "level1", :default => true}}))
       MockResponse.new("level1/level2", convert_keys_to_strings({:response => {:body => "level2", :default => true}, :request => {:body_content => %w(body)}}))
-      MockResponse.find_default(:body => "", :http_method => "get", :endpoint => "level1/level2/level3", :params =>{}, :headers =>{}).should == level1_response
+      MockResponse.find_default(:body => "", :http_method => "get", :endpoint => "level1/level2/level3", :params => {}, :headers => {}).should == level1_response
     end
   end
 
@@ -513,7 +541,7 @@ describe Mirage::MockResponse do
                                                     :parameters => {
                                                         :name => "leon"
                                                     },
-                                                    :headers =>{
+                                                    :headers => {
                                                         :header => 'header'
                                                     },
                                                     :http_method => "post"
