@@ -66,11 +66,11 @@ Given /^the file '(.*)' contains:$/ do |file_path, content|
 end
 
 Then /^the usage information should be displayed$/ do
-  @usage.each { |line| @commandline_output.should include(line) }
+  @usage.each_line { |line| @commandline_output.should include(line) }
 end
 
-Given /^usage information:$/ do |table|
-  @usage = table.raw.flatten.collect { |line| normalise(line) }
+Given /^usage information:$/ do |usage|
+  @usage = normalise(usage.to_s)
 end
 
 Then /^I run$/ do |text|

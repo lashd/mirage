@@ -14,7 +14,7 @@ module CommandLine
   end
 
   def normalise text
-    text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ')
+    text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ').strip
   end
 end
 
