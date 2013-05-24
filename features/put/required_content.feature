@@ -1,4 +1,5 @@
-Feature: Templates set requirements on the following in order for them to be used to generate responses:
+Feature: Placing requirements on requests
+  Templates set requirements on the following in order for them to be used to generate responses:
 
   * request parameters
   * body content
@@ -29,27 +30,26 @@ Feature: Templates set requirements on the following in order for them to be use
     And 'response.body' is base64 encoded
     And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
 
-  #TODO support http header matching
-#  Scenario: Configuring a template with requirements on HTTP headers
-#    Given the following template template:
-#    """
-#      {
-#         "request":{
-#            "parameters":{},
-#            "http_method":"get",
-#            "body_content":[]
-#         },
-#         "response":{
-#            "default":false,
-#            "body":"Hello Stranger",
-#            "delay":0,
-#            "content_type":"text/plain",
-#            "status":200
-#         }
-#      }
-#    """
-#    And 'response.body' is base64 encoded
-#    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+  Scenario: Configuring a template with requirements on HTTP headers
+    Given the following template template:
+    """
+      {
+         "request":{
+            "parameters":{},
+            "http_method":"get",
+            "body_content":[]
+         },
+         "response":{
+            "default":false,
+            "body":"Hello Stranger",
+            "delay":0,
+            "content_type":"text/plain",
+            "status":200
+         }
+      }
+    """
+    And 'response.body' is base64 encoded
+    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
 
 
   Scenario: Configuring a template with requirements on request parameters

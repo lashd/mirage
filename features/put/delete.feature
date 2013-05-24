@@ -1,4 +1,5 @@
-Feature: Tracked request data can be deleted
+Feature: Deleting
+  When a template is deleted, any tracked request data is also removed.
 
   Background: The MockServer has already got a response for greeting and leaving on it.
     Given the following template template:
@@ -24,24 +25,21 @@ Feature: Tracked request data can be deleted
     And the template is sent using PUT to 'http://localhost:7001/mirage/templates/leaving'
 
 
-    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
-    And GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+  Scenario: Deleting all templates
+    Given DELETE is sent to 'http://localhost:7001/mirage/templates'
+    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 404 should be returned
+    When GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+    Then a 404 should be returned
+
+
+  Scenario: Deleting a particular template
+    Given DELETE is sent to 'http://localhost:7001/mirage/templates/1'
+
+    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    Then a 404 should be returned
+
+    When GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+    Then a 200 should be returned
 
     
-  Scenario: Deleting all requests
-    And DELETE is sent to 'http://localhost:7001/mirage/requests'
-
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
-    Then a 404 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
-    Then a 404 should be returned
-
-
-
-  Scenario: Deleting a stored request for a particular response
-    And DELETE is sent to 'http://localhost:7001/mirage/requests/1'
-
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
-    Then a 404 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
-    Then a 200 should be returned

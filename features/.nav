@@ -1,0 +1,19 @@
+- commandline_interface (Commandline interface):
+  - help.feature
+  - start.feature
+  - stop.featre
+- put (Templates):
+  - put.feature
+  - required_content.feature
+  - put_with_substitutions.feature
+  - get.feature
+  - delete.feature
+- requests:
+- get.feature
+- delete.feature
+- requests:
+- save_and_revert.feature (Snapshot)
+- prime.feature
+- logging.feature (Logs)
+- web_user_interface.feature
+- client (Ruby client):

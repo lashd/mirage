@@ -1,4 +1,5 @@
-Feature: Templates can be retrieved by using the ID that was returned when they were created
+Feature: Retrieving
+  Templates can be retrieved by using the ID that was returned when they were created
 
 
   Scenario: Retrieving a template

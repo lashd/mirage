@@ -1,4 +1,5 @@
-Feature: After a response has been served from Mirage, the request that triggered it can be retrieved. This is useful
+Feature: Checking tracked requests
+  After a response has been served from Mirage, the request that triggered it can be retrieved. This is useful
   for testing that the correct information was sent by your application code.
 
   Use a template's ID to retrieve the last request that was last received.

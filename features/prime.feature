@@ -1,6 +1,7 @@
 #TODO - rename responses directory to templates
 @command_line
-Feature: Mirage can be primed with a set of templates.
+Feature: Preloading templates
+  Mirage can be primed with a set of templates.
   By default, Mirage loads any .rb files found in ./responses on startup. Mirage can also be made to load responses from a directory
   of your choosing by using the -d/--defaults option
 

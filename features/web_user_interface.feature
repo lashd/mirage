@@ -1,4 +1,5 @@
-Feature: Mirage's home page allows you to see what response are currently being hosted.
+Feature: Web interface
+  Mirage's home page allows you to see what response are currently being hosted.
   From this page you can:
   - Peek at a responses content
   - Track the response to see if a request has been made to it

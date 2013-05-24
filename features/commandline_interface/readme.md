@@ -1,0 +1,1 @@
+Mirage has a fully functional commandline interface

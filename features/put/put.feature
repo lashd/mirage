@@ -1,4 +1,5 @@
-Feature: Mirage can be configured with templates that are returned when addressed from ${mirage_url}/responses
+Feature: Creating a template
+  Mirage can be configured with templates that are returned when addressed from ${mirage_url}/responses
   On setting a template, a unique id is returned. This is a key that can be used to manage the template.
 
   Templates can be configured to respond to either, GET, POST, PUT, or DELETE. If you put more than one template to the same resource address

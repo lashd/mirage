@@ -1,6 +1,6 @@
 @command_line
-Feature: Mirage is started from the command line.
-  more than instance of Mirage can be started on different ports at the same time.
+Feature: Starting Mirage
+  Mirage is started from the command line. more than instance of Mirage can be started on different ports at the same time.
 
   By default mirage runs on port 7001.
 

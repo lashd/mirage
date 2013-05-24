@@ -1,5 +1,6 @@
 @command_line
-Feature: Mirage can be stopped from the commandline
+Feature: Stopping Mirage
+  Mirage can be stopped from the commandline
   If more than one instance of Mirage is running, you will be asked to supply the ports which represent the running instances
   of mirage that you wish to stop.
 
