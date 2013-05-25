@@ -2,7 +2,7 @@
   - help.feature
   - start.feature
   - stop.featre
-- put (Templates):
+- templates (Templates):
   - put.feature
   - required_content.feature
   - put_with_substitutions.feature
