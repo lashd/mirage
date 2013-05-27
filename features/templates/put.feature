@@ -1,11 +1,13 @@
-Feature: Creating a template
-  Mirage can be configured with templates that are returned when addressed from ${mirage_url}/responses
+Feature: Creating a Template
+  Mirage can be configured with templates. These templates describe the characteristics of responses that should be returned to a client. In addition to this a templates also describe the conditions under which a template may be used to generate a response.
+
   On setting a template, a unique id is returned. This is a key that can be used to manage the template.
 
-  Templates can be configured to respond to either, GET, POST, PUT, or DELETE. If you put more than one template to the same resource address
-  but configure them to respond to different HTTP methods, then they are held as seperate resources and are assigned different ids.
+  Templates can be configured to respond to either, GET, POST, PUT, or DELETE.
 
-  The following can be configured as required in order to invoke a response:
+  More than one template can be placed at the same resource address as long as they have different request contraints. In this case they are given different IDs. For example if two templates are configured to respond to request using different HTTP methods then they will not overwrite each other but both be stored.
+
+  Requirements can be specified as required when configuring a Template:
   * request parameters
   * body content - defaults to text/plain
   * HTTP Headers
@@ -14,24 +16,35 @@ Feature: Creating a template
   The following attributes of a response can be configured
   * HTTP status code - defaults to 200
   * Whether this template is to be treated as the default response if a match is not found for a sub URI
-  * A delay before the response is returned to the client. This is in seconds, floats are accepted
+  * A delay before the response is returned to the client. This is in seconds and floats are accepted
   * Content-Type
 
-  Request defaults
-  |required request parameters | none |
-  |required body content       | none |
-  |require HTTP headers        | none |
-  |required HTTP method        | GET  |
+  Request Defaults
+  ----------------
+  <table>
+    <tr><th>Attribute</th><th>Value</th></tr>
+    <tr><td>Required request parameters</td><td>none</td</tr>
+    <tr><td>Required body content</td><td>none</td</tr>
+    <tr><td>Require HTTP headers</td><td>none</td</tr>
+    <tr><td>Required HTTP method</td><td>GET</td</tr>
+  </table>
 
-  Response defaults
-  | HTTP status code | 200        |
-  | treat as default | false      |
-  | delay            | 0          |
-  | Content-Type     | text/plain |
+  Response Defaults
+  -----------------
+  <table>
+    <tr><th>Attribute</th><th>Value</th></tr>
+    <tr><td>HTTP status code</td><td>200</td</tr>
+    <tr><td>Treat as default</td><td>false</td</tr>
+    <tr><td>Delay</td><td>0</td</tr>
+    <tr><td>Content-Type</td><td>text/plain</td</tr>
+  </table>
 
+  Things to note:
+  ---------------
+  The body attribute of the response should be Base64 encoded. This is so that you may specify binary data if that is what you would like to send back to clients.
 
-  Scenario: Setting a template on mirage
-    Given the following template template:
+  Scenario: Setting a Template on Mirage
+    Given the following Template JSON:
     """
       {
          "request":{
@@ -49,15 +62,14 @@ Feature: Creating a template
          }
       }
     """
-    And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
-    And '{"id":1}' should be returned
+    When the template is sent using PUT to '/templates/greeting'
+    Then '{"id":1}' should be returned
 
-    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    When GET is sent to '/responses/greeting'
     Then 'Hello' should be returned
     And a 200 should be returned
 
   Scenario: Making a request that is unmatched
-    When GET is sent to 'http://localhost:7001/mirage/responses/unmatched'
+    When GET is sent to '/responses/unmatched'
     Then a 404 should be returned
 

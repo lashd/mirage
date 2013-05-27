@@ -10,7 +10,7 @@ describe Mirage::Client do
 
   describe 'configuration' do
     it 'is configured to connect to local host port 7001 by default' do
-      Client.new.url.should == "http://localhost:7001/mirage"
+      Client.new.url.should == "http://localhost:7001"
     end
 
     it 'can be configured with a url pointing to Mirage' do
@@ -22,7 +22,7 @@ describe Mirage::Client do
 
     it 'can be configured with a port refering to which port Mirage is running on on localhost' do
       port = 9001
-      Client.new(:port => port).url.should == "http://localhost:#{port}/mirage"
+      Client.new(:port => port).url.should == "http://localhost:#{port}"
     end
 
     it 'raises an error if neither a port or url specified in the argument' do
@@ -55,7 +55,7 @@ describe Mirage::Client do
 
   it 'should prime mirage' do
     Client.should_receive(:put) do |url|
-      url.should == "http://localhost:7001/mirage/defaults"
+      url.should == "http://localhost:7001/defaults"
     end
     Client.new.prime
   end

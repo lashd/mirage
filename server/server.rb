@@ -10,15 +10,15 @@ module Mirage
 
     helpers Mirage::Server::Helpers
 
-    put '/mirage/templates/*' do |name|
+    put '/templates/*' do |name|
       content_type :json
       mock_response = MockResponse.new(name, JSON.parse(request.body.read))
-      mock_response.requests_url = request.url.gsub("/mirage/templates/#{name}", "/mirage/requests/#{mock_response.response_id}")
+      mock_response.requests_url = request.url.gsub("/templates/#{name}", "/requests/#{mock_response.response_id}")
       {:id => mock_response.response_id}.to_json
     end
 
     %w(get post delete put).each do |http_method|
-      send(http_method, '/mirage/responses/*') do |name|
+      send(http_method, '/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
         options = {:body => body,
@@ -38,33 +38,33 @@ module Mirage
       end
     end
 
-    delete '/mirage/templates/:id' do
+    delete '/templates/:id' do
       MockResponse.delete(response_id)
       REQUESTS.delete(response_id)
       200
     end
 
-    delete '/mirage/requests' do
+    delete '/requests' do
       REQUESTS.clear
       200
     end
 
-    delete '/mirage/requests/:id' do
+    delete '/requests/:id' do
       REQUESTS.delete(response_id)
       200
     end
 
-    delete '/mirage/templates' do
+    delete '/templates' do
       REQUESTS.clear
       MockResponse.delete_all
       200
     end
 
-    get '/mirage/templates/:id' do
+    get '/templates/:id' do
       MockResponse.find_by_id(response_id).raw
     end
 
-    get '/mirage/requests/:id' do
+    get '/requests/:id' do
       content_type :json
       tracked_request = REQUESTS[response_id]
       if tracked_request
@@ -84,12 +84,12 @@ module Mirage
       end
     end
 
-    get '/mirage' do
+    get '' do
       haml :index
     end
 
 
-    put '/mirage/defaults' do
+    put '/defaults' do
       MockResponse.delete_all
       if File.directory?(settings.defaults.to_s)
         Dir["#{settings.defaults}/**/*.rb"].each do |default|
@@ -103,18 +103,18 @@ module Mirage
       200
     end
 #
-    put '/mirage/backup' do
+    put '/backup' do
       MockResponse.backup
       200
     end
 
 
-    put '/mirage' do
+    put '' do
       MockResponse.revert
       200
     end
 
-    get '/mirage/pid' do
+    get '/pid' do
       "#{$$}"
     end
 
@@ -133,7 +133,7 @@ module Mirage
       end
 
       def prime &block
-        block.call Mirage::Client.new "http://localhost:#{settings.port}/mirage"
+        block.call Mirage::Client.new "http://localhost:#{settings.port}"
       end
 
       def send_response(mock_response, body='', request={}, query_string='')

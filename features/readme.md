@@ -1,6 +1,6 @@
 Mirage in an open source project that can be used to mock HTTP services. It facilitates application development in environments where external systems aren't easily accessed or can't be made to behave in a repeatable way.
 
-At its core, Mirage is a web application with a restful interface that can be used to place responses on. The descriptors for these response are called [Templates](/lashd/mirage/docs/templates).
+At its core, Mirage is a web application with a restful interface that can be configured with responses. The descriptors for these response are called [Templates](/lashd/mirage/docs/templates).
 
 If you're using Ruby then Mirage has a [client](/lashd/mirage/docs/client) to get you going straight away.
 

@@ -100,8 +100,9 @@ When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with requ
               end
 end
 
-When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '(http:\/\/localhost:\d{4}\/mirage([^']*))'$/ do |method, url, endpoint|
+When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, endpoint|
   start_time = Time.now
+  url = "http://localhost:7001#{endpoint}"
   @response = case method
                 when 'GET' then
                   http_get(url)
@@ -227,8 +228,13 @@ end
 When /^'(.*)' is base64 encoded$/ do |template_component|
   @response_template.send(:eval, "#{template_component}=Base64.encode64(#{template_component})")
 end
-When /^the template is sent using PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))'$/ do |url, endpoint|
-  @response = http_put(url, @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
+When /^the template is sent using PUT to '(.*?)'$/ do |endpoint|
+
+  if @response_template.response.body
+    @response_template.response.body = Base64.encode64(@response_template.response.body)
+  end
+
+  @response = http_put("http://localhost:7001#{endpoint}", @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
 end
 Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint, value|
   $mirage.templates.put(endpoint, value)
@@ -240,4 +246,7 @@ Then /^request data should have been retrieved$/ do
   request_data.include?('headers').should == true
   request_data.include?('body').should == true
   request_data.include?('request_url').should == true
+end
+Given(/^the following Template JSON:$/) do |text|
+  @response_template = Hashie::Mash.new(JSON.parse(text))
 end

@@ -19,15 +19,15 @@ describe "Mirage Server" do
       spec = {"somekeys" => 'some_values'}
 
       Mirage::MockResponse.should_receive(:new).with(endpoint, spec).and_return(@mock_response)
-      put('/mirage/templates/greeting', spec.to_json)
+      put('/templates/greeting', spec.to_json)
     end
 
     it 'should set the requests url against the template that is created' do
       method = 'post'
       response_id = 1
       Mirage::MockResponse.should_receive(:new).and_return(@mock_response)
-      put('/mirage/templates/greeting', {:request => {:http_method => method}}.to_json)
-      @mock_response.requests_url.should == "http://example.org/mirage/requests/#{response_id}"
+      put('/templates/greeting', {:request => {:http_method => method}}.to_json)
+      @mock_response.requests_url.should == "http://example.org/requests/#{response_id}"
     end
 
   end
@@ -43,14 +43,14 @@ describe "Mirage Server" do
       parameters = {"key" => 'value'}
 
       Mirage::MockResponse.should_receive(:find).with(@options.merge(:params => parameters)).and_return(Mirage::MockResponse.new(@endpoint, {:response => {:body => "hello"}}))
-      get("/mirage/responses/#{@endpoint}", parameters)
+      get("/responses/#{@endpoint}", parameters)
     end
 
     it 'should use the request body' do
       body = 'body'
 
       Mirage::MockResponse.should_receive(:find).with(@options.merge(:body => body)).and_return(Mirage::MockResponse.new(@endpoint, {:response => {:body => "hello"}}))
-      post("/mirage/responses/#{@endpoint}", body)
+      post("/responses/#{@endpoint}", body)
     end
 
     it 'should use headers' do
@@ -61,7 +61,7 @@ describe "Mirage Server" do
       end
 
       Mirage::MockResponse.should_receive(:find).with(@options.merge(:headers => headers)).and_return(Mirage::MockResponse.new(@endpoint, {:response => {:body => "hello"}}))
-      get("/mirage/responses/#{@endpoint}")
+      get("/responses/#{@endpoint}")
     end
 
     it 'should return the default response if a specific match is not found' do
@@ -76,8 +76,8 @@ describe "Mirage Server" do
               :body => "hello leon"
           }
       }
-      put("/mirage/templates/#{@endpoint}", response_template.to_json)
-      post("/mirage/responses/#{@endpoint}")
+      put("/templates/#{@endpoint}", response_template.to_json)
+      post("/responses/#{@endpoint}")
     end
   end
 
@@ -86,26 +86,26 @@ describe "Mirage Server" do
   describe "operations" do
     describe 'resolving responses' do
       it 'should return the default response' do
-        put('/mirage/templates/level1', {:response => {:body => Base64.encode64("level1")}}.to_json)
-        put('/mirage/templates/level1/level2', {:response => {:body => Base64.encode64("level2"), :default => true}}.to_json)
-        get('/mirage/responses/level1/level2/level3').body.should == "level2"
+        put('/templates/level1', {:response => {:body => Base64.encode64("level1")}}.to_json)
+        put('/templates/level1/level2', {:response => {:body => Base64.encode64("level2"), :default => true}}.to_json)
+        get('/responses/level1/level2/level3').body.should == "level2"
       end
 
       it 'should set any headers specified' do
         headers = {header: 'value'}
-        put('/mirage/templates/greeting', {:response => {headers: headers, :body => ''}}.to_json)
-        get('/mirage/responses/greeting').headers['header'].should == 'value'
+        put('/templates/greeting', {:response => {headers: headers, :body => ''}}.to_json)
+        get('/responses/greeting').headers['header'].should == 'value'
       end
     end
 
     describe 'checking templates' do
       it 'should return the descriptor for a template' do
         response_body = "hello"
-        response_id = JSON.parse(put('/mirage/templates/greeting', {:response => {:body => Base64.encode64(response_body)}}.to_json).body)['id']
-        template = JSON.parse(get("/mirage/templates/#{response_id}").body)
+        response_id = JSON.parse(put('/templates/greeting', {:response => {:body => Base64.encode64(response_body)}}.to_json).body)['id']
+        template = JSON.parse(get("/templates/#{response_id}").body)
         template.should == JSON.parse({:endpoint => "greeting",
                                        :id => response_id,
-                                       :requests_url => "http://example.org/mirage/requests/#{response_id}",
+                                       :requests_url => "http://example.org/requests/#{response_id}",
                                        :request => {:parameters => {}, :http_method => "get", :body_content => [], :headers => {}},
                                        :response => {:default => false,
                                                      :body => Base64.encode64(response_body),
@@ -117,25 +117,25 @@ describe "Mirage Server" do
     end
 
     it 'should return tracked request data' do
-      response_id = JSON.parse(put('/mirage/templates/greeting', {:request => {:http_method => :post}, :response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
+      response_id = JSON.parse(put('/templates/greeting', {:request => {:http_method => :post}, :response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
 
 
       header "MYHEADER", "my_header_value"
-      post("/mirage/responses/greeting?param=value", 'body')
-      request_data = JSON.parse(get("/mirage/requests/#{response_id}").body)
+      post("/responses/greeting?param=value", 'body')
+      request_data = JSON.parse(get("/requests/#{response_id}").body)
 
       request_data['parameters'].should == {'param' => 'value'}
       request_data['headers']["MYHEADER"].should == "my_header_value"
       request_data['body'].should == "body"
-      request_data['request_url'].should == "http://example.org/mirage/requests/#{response_id}"
+      request_data['request_url'].should == "http://example.org/requests/#{response_id}"
 
     end
 
 
     it 'should delete a template' do
-      response_id = JSON.parse(put('/mirage/templates/greeting', {:response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
-      delete("/mirage/templates/#{response_id}")
-      expect { get("/mirage/templates/#{response_id}") }.to raise_error(Mirage::ServerResponseNotFound)
+      response_id = JSON.parse(put('/templates/greeting', {:response => {:body => Base64.encode64("hello")}}.to_json).body)['id']
+      delete("/templates/#{response_id}")
+      expect { get("/templates/#{response_id}") }.to raise_error(Mirage::ServerResponseNotFound)
     end
   end
 end
