@@ -19,29 +19,10 @@ Feature: Creating a Template
   * A delay before the response is returned to the client. This is in seconds and floats are accepted
   * Content-Type
 
-  Request Defaults
-  ----------------
-  <table>
-    <tr><th>Attribute</th><th>Value</th></tr>
-    <tr><td>Required request parameters</td><td>none</td</tr>
-    <tr><td>Required body content</td><td>none</td</tr>
-    <tr><td>Require HTTP headers</td><td>none</td</tr>
-    <tr><td>Required HTTP method</td><td>GET</td</tr>
-  </table>
-
-  Response Defaults
-  -----------------
-  <table>
-    <tr><th>Attribute</th><th>Value</th></tr>
-    <tr><td>HTTP status code</td><td>200</td</tr>
-    <tr><td>Treat as default</td><td>false</td</tr>
-    <tr><td>Delay</td><td>0</td</tr>
-    <tr><td>Content-Type</td><td>text/plain</td</tr>
-  </table>
-
   Things to note:
   ---------------
   The body attribute of the response should be Base64 encoded. This is so that you may specify binary data if that is what you would like to send back to clients.
+
 
   Scenario: Setting a Template on Mirage
     Given the following Template JSON:
@@ -55,7 +36,7 @@ Feature: Creating a Template
          },
          "response":{
             "default":false,
-            "body":"Hello",
+            "body":"SGVsbG8=",
             "delay":0,
             "content_type":"text/plain",
             "status":200
@@ -68,6 +49,27 @@ Feature: Creating a Template
     When GET is sent to '/responses/greeting'
     Then 'Hello' should be returned
     And a 200 should be returned
+
+
+  Scenario: Template defaults
+    Given the following Template JSON:
+    """
+    {}
+    """
+    When the template is sent using PUT to '/templates/greeting'
+    Then the template request specification should have the following set:
+      | Setting      | Default |
+      | parameters   | none    |
+      | body content | none    |
+      | headers      | none    |
+      | HTTP method  | GET     |
+    And the template response specification should have the following set:
+      | Setting      | Default    |
+      | default      | false      |
+      | body         | none       |
+      | content_type | text/plain |
+      | delay        | 0          |
+      | status       | 200        |
 
   Scenario: Making a request that is unmatched
     When GET is sent to '/responses/unmatched'

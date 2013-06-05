@@ -230,10 +230,6 @@ When /^'(.*)' is base64 encoded$/ do |template_component|
 end
 When /^the template is sent using PUT to '(.*?)'$/ do |endpoint|
 
-  if @response_template.response.body
-    @response_template.response.body = Base64.encode64(@response_template.response.body)
-  end
-
   @response = http_put("http://localhost:7001#{endpoint}", @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
 end
 Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint, value|
@@ -249,4 +245,26 @@ Then /^request data should have been retrieved$/ do
 end
 Given(/^the following Template JSON:$/) do |text|
   @response_template = Hashie::Mash.new(JSON.parse(text))
+end
+Then(/^the template (request|response) specification should have the following set:$/) do |spec, table|
+  template_json = JSON.parse(http_get("http://localhost:7001/templates/#{JSON.parse(@response.body)['id']}").body)
+  request_specification = template_json[spec]
+  request_specification.size.should==table.hashes.size
+  table.hashes.each do |hash|
+    default = request_specification[hash['Setting'].downcase.gsub(' ', '_')]
+    case required_default = hash['Default']
+      when 'none'
+        case default
+          when Array
+            default.should == []
+          when Hash
+            default.should == {}
+          else
+            default.should == ""
+
+        end
+      else
+        default.to_s.downcase.should == required_default.downcase
+    end
+  end
 end
