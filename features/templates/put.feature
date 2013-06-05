@@ -9,12 +9,12 @@ Feature: Creating a Template
 
   Requirements can be specified as required when configuring a Template:
   * request parameters
-  * body content - defaults to text/plain
+  * body content
   * HTTP Headers
-  * HTTP Method - defaults to HTTP GET
+  * HTTP Method
 
   The following attributes of a response can be configured
-  * HTTP status code - defaults to 200
+  * HTTP status code
   * Whether this template is to be treated as the default response if a match is not found for a sub URI
   * A delay before the response is returned to the client. This is in seconds and floats are accepted
   * Content-Type
