@@ -49,16 +49,15 @@ module Mirage
                   :status => status,
                   :default => default,
                   :content_type => content_type,
-                  :headers => headers
-
+                  :headers => headers,
+                  :delay => delay
               },
               :request => {
                   :parameters => encode_regexs(required_parameters),
                   :headers => encode_regexs(required_headers),
                   :body_content => encode_regexs(required_body_content),
                   :http_method => http_method,
-              },
-              :delay => delay
+              }
           }.to_json
         end
 

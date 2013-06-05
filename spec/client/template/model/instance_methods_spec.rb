@@ -101,13 +101,13 @@ describe Template::Model::InstanceMethods do
 
     describe 'delay' do
       it 'should default to 0' do
-        JSON.parse(instance.to_json)["delay"].should == 0
+        JSON.parse(instance.to_json)["response"]["delay"].should == 0
       end
 
       it 'should set the delay' do
         delay = 5
         instance.delay delay
-        JSON.parse(instance.to_json)["delay"].should == delay
+        JSON.parse(instance.to_json)["response"]["delay"].should == delay
       end
     end
 
