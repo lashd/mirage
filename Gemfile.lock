@@ -1,5 +1,5 @@
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     backports (2.3.0)
     bouncy-castle-java (1.5.0146.1)
