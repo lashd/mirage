@@ -93,6 +93,8 @@ describe 'templates' do
         Class.new do
           extend Template::Model
           endpoint endpoint
+          def create
+          end
         end
       end
       before :each do
@@ -101,7 +103,14 @@ describe 'templates' do
       end
       it 'should take a model as a parameter' do
         template = model_class.new
-        template.should_receive(:create)
+        @templates.put template
+        template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+      end
+
+      it 'should prepend base url to the endpoint unless it is set already' do
+        template = model_class.new
+        @templates.put template
+        template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
         @templates.put template
         template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
       end
@@ -156,8 +165,6 @@ describe 'templates' do
       it 'should create a template' do
         @templates.put(endpoint, value)
       end
-
-
     end
 
     describe 'block parameter that can be used for template customisation' do

@@ -23,7 +23,7 @@ module Mirage
     def put *args, &block
       if args.first.class.is_a?(Template::Model)
         template = args.first
-        template.endpoint "#{@url}/#{template.endpoint}"
+        template.endpoint "#{@url}/#{template.endpoint}" unless template.endpoint.to_s.start_with?(@url)
       else
         endpoint, response = args
         template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
