@@ -135,7 +135,6 @@ describe 'templates' do
             Template.should_receive(:new).and_return template
             template.stub(:create).and_return(template)
             @templates.put('endpoint', 'value') do |response|
-              puts response
               outer_method_call
             end
           end

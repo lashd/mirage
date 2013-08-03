@@ -133,7 +133,7 @@ describe Mirage::Template do
     end
 
     it 'should throw a standard method missing error if a caller binding is not set' do
-      expect{Template.new('endpoint').some_method}.should raise_error(NameError)
+      expect{Template.new('endpoint').some_method}.to raise_error(NameError)
     end
   end
 end
