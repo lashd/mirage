@@ -18,19 +18,19 @@ Feature: Checking tracked requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
 
   Scenario: Getting request data when the data was in the body.
-    Given I send POST to 'http://localhost:7001/mirage/responses/greeting' with request entity
+    Given I send POST to '/responses/greeting' with request entity
     """
     Hello Mirage
     """
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then request data should have been retrieved
 
 
   Scenario: Getting request data for a template that has not yet served a response.
-    Given GET is sent to 'http://localhost:7001/mirage/requests/1'
+    Given GET is sent to '/requests/1'
     Then a 404 should be returned
 

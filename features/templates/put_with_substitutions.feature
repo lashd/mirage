@@ -16,7 +16,7 @@ Feature: Substituting values from requests in to a template
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    And the template is sent using PUT to '/templates/greeting'
+    When I send GET to '/responses/greeting' with parameters:
       |name|Joe  |
     Then 'Hello Joe' should be returned

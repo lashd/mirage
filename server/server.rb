@@ -84,7 +84,7 @@ module Mirage
       end
     end
 
-    get '' do
+    get '/' do
       haml :index
     end
 
@@ -109,7 +109,7 @@ module Mirage
     end
 
 
-    put '' do
+    put '/' do
       MockResponse.revert
       200
     end

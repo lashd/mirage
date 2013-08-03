@@ -24,8 +24,8 @@ Feature: Retrieving
          }
       }
     """
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
-    When GET is sent to 'http://localhost:7001/mirage/templates/1'
+    And the template is sent using PUT to '/templates/greeting'
+    When GET is sent to '/templates/1'
     Then the following should be returned:
     """
       {

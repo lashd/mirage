@@ -8,11 +8,11 @@ Feature: Starting Mirage
   Scenario: Starting mirage
     Given Mirage is not running
     When I run 'mirage start'
-    Then mirage should be running on 'http://localhost:7001/mirage'
+    Then mirage should be running on 'http://localhost:7001'
     And 'mirage.log' should exist
 
 
   Scenario: Starting Mirage on a custom port
     Given Mirage is not running
     When I run 'mirage start -p 9001'
-    Then mirage should be running on 'http://localhost:9001/mirage'
+    Then mirage should be running on 'http://localhost:9001'

@@ -21,7 +21,7 @@ Feature: The client can be configured with default settings to keep your mocking
 
     client.put('greeting','hello')
     """
-    When POST is sent to 'http://localhost:7001/mirage/responses/greeting/for/someone'
+    When POST is sent to '/responses/greeting/for/someone'
     Then 'hello' should be returned
     And a 202 should be returned
     Then it should take at least '2' seconds
@@ -41,7 +41,7 @@ Feature: The client can be configured with default settings to keep your mocking
 
     client.put('greeting','hello')
     """
-    When POST is sent to 'http://localhost:7001/mirage/responses/greeting/for/someone'
+    When POST is sent to '/responses/greeting/for/someone'
     Then 'hello' should be returned
     And a 202 should be returned
     Then it should take at least '2' seconds

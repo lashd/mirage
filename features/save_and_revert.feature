@@ -13,11 +13,11 @@ Feature: Having set up the Mirage with a number of defaults, your tests may cont
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
     
   Scenario: Saving Mirage and reverting it
-    Given PUT is sent to 'http://localhost:7001/mirage/backup'
+    Given PUT is sent to '/backup'
     And the following template template:
     """
       {
@@ -27,9 +27,9 @@ Feature: Having set up the Mirage with a number of defaults, your tests may cont
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
     
-    When PUT is sent to 'http://localhost:7001/mirage'
-    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    When PUT is sent to '/'
+    And GET is sent to '/responses/greeting'
 
     Then 'The default greeting' should be returned

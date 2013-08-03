@@ -11,7 +11,7 @@ Feature: Deleting tracked requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
     Given the following template template:
     """
@@ -22,27 +22,27 @@ Feature: Deleting tracked requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/leaving'
+    And the template is sent using PUT to '/templates/leaving'
 
 
-    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
-    And GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+    And GET is sent to '/responses/greeting'
+    And GET is sent to '/responses/leaving'
 
     
   Scenario: Deleting all requests
-    And DELETE is sent to 'http://localhost:7001/mirage/requests'
+    And DELETE is sent to '/requests'
 
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    When GET is sent to '/requests/2'
     Then a 404 should be returned
 
 
 
   Scenario: Deleting a stored request for a particular response
-    And DELETE is sent to 'http://localhost:7001/mirage/requests/1'
+    And DELETE is sent to '/requests/1'
 
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    When GET is sent to '/requests/2'
     Then a 200 should be returned

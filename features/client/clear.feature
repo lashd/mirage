@@ -11,11 +11,11 @@ Feature: The client can be used for clearing down Mirage.
 
     And a template for 'greeting' has been set with a value of 'Hello'
 
-    And I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    And I send GET to '/responses/greeting' with parameters:
       | message | hello there |
     And a template for 'leaving' has been set with a value of 'Goodbye'
 
-    And I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    And I send GET to '/responses/greeting' with parameters:
       | message | I'm going |
 
 
@@ -24,14 +24,14 @@ Feature: The client can be used for clearing down Mirage.
     """
     Mirage::Client.new.templates(1).delete
     """
-    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    When GET is sent to '/responses/greeting'
     Then a 404 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
 
-    When GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+    When GET is sent to '/responses/leaving'
     Then a 200 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    When GET is sent to '/requests/2'
     Then a 200 should be returned
 
 
@@ -40,9 +40,9 @@ Feature: The client can be used for clearing down Mirage.
     """
     Mirage::Client.new.requests(1).delete
     """
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
-    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    When GET is sent to '/responses/greeting'
     Then a 200 should be returned
 
 
@@ -51,16 +51,16 @@ Feature: The client can be used for clearing down Mirage.
     """
     Mirage::Client.new.templates.delete_all
     """
-    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    And GET is sent to '/responses/greeting'
     Then a 404 should be returned
 
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
 
-    And GET is sent to 'http://localhost:7001/mirage/responses/leaving'
+    And GET is sent to '/responses/leaving'
     Then a 404 should be returned
 
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    When GET is sent to '/requests/2'
     Then a 404 should be returned
 
 
@@ -69,16 +69,8 @@ Feature: The client can be used for clearing down Mirage.
     """
     Mirage::Client.new.requests.delete_all
     """
-    When GET is sent to 'http://localhost:7001/mirage/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
 
-    When GET is sent to 'http://localhost:7001/mirage/requests/2'
+    When GET is sent to '/requests/2'
     Then a 404 should be returned
-
-
-
-
-
-
-
-

@@ -18,7 +18,7 @@ Feature: The client API can be used to start Mirage.
     """
     Mirage.start
     """
-    Then mirage should be running on 'http://localhost:7001/mirage'
+    Then mirage should be running on ''
 
 
   Scenario: Starting Mirage on a custom port
@@ -40,5 +40,5 @@ Feature: The client API can be used to start Mirage.
     """
     Mirage.start :defaults => './custom_responses_location'
     """
-    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    And GET is sent to '/responses/greeting'
     Then 'hello' should be returned

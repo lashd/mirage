@@ -88,8 +88,8 @@ Given /^the following gems are required to run the Mirage client test code:$/ do
   @code_snippet = text.gsub("\"", "\\\\\"")
 end
 
-When /^I send (POST|PUT) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with request entity$/ do |method, url, endpoint, entity|
-
+When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, entity|
+  url = "http://localhost:7001#{endpoint}"
   @response = case method
                 when 'POST'
                 then
@@ -121,7 +121,7 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
 end
 
 
-When /^I send (PUT|POST) to '(.*)' with body:$/ do |method, endpoint, body|
+When /^I send (PUT|POST) to '(.*)' with body '(.*)'$/ do |method, endpoint, body|
   url = "http://localhost:7001#{endpoint}"
   start_time = Time.now
   @response = case method
@@ -134,7 +134,8 @@ When /^I send (PUT|POST) to '(.*)' with body:$/ do |method, endpoint, body|
   @response_time = Time.now - start_time
 end
 
-When /^I send PUT to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body '([^']*)' and headers:$/ do |url, endpoint, body, table|
+When /^I send PUT to '(.*)' with body '([^']*)' and headers:$/ do |endpoint, body, table|
+  url = "http://localhost:7001#{endpoint}"
   headers = {}
   table.raw.each do |row|
     parameter, value = row[0], row[1]
@@ -203,7 +204,8 @@ Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^'
   end
 end
 
-Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with body '([^']*)' and parameters:$/ do |url, endpoint, body, table|
+Given /^I send PUT to '(.*?)' with body '([^']*)' and parameters:$/ do |endpoint, body, table|
+  url = "http://localhost:7001#{endpoint}"
   headers = {}
   table.raw.each do |row|
     parameter, value = row[0], row[1]

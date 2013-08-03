@@ -18,7 +18,7 @@ Feature: Preloading templates
     end
     """
     And I run 'mirage start'
-    When GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    When GET is sent to '/responses/greeting'
     Then 'hello' should be returned
 
 
@@ -31,5 +31,5 @@ Feature: Preloading templates
     end
     """
     And I run 'mirage start --defaults /tmp/responses'
-    And GET is sent to 'http://localhost:7001/mirage/responses/greeting'
+    And GET is sent to '/responses/greeting'
     Then 'hello' should be returned

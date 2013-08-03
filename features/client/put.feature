@@ -17,7 +17,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Mirage::Client.new.put('greeting','hello')
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When I send GET to '/responses/greeting'
     Then 'hello' should be returned
 
   Scenario: Setting the method that a response should be returned on
@@ -27,9 +27,9 @@ Feature: the Mirage client provides methods for setting responses and loading de
       response.method = 'POST'
     end
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When I send GET to '/responses/greeting'
     Then a 404 should be returned
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting'
+    When I send POST to '/responses/greeting'
     Then 'Hello Leon' should be returned
 
 
@@ -41,9 +41,9 @@ Feature: the Mirage client provides methods for setting responses and loading de
       response.add_body_content_requirement /leon/
     end
     """
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting'
+    When I send POST to '/responses/greeting'
     Then a 404 should be returned
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with request entity
+    When I send POST to '/responses/greeting' with request entity
     """
      <greetingRequest>
       <name>leon</name>
@@ -59,9 +59,9 @@ Feature: the Mirage client provides methods for setting responses and loading de
       response.add_request_parameter_requirement :name, /leon/
     end
     """
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting'
+    When I send POST to '/responses/greeting'
     Then a 404 should be returned
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    When I send POST to '/responses/greeting' with parameters:
       | name | leon |
 
     Then 'Hello Leon' should be returned
@@ -73,7 +73,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
       response.default = true
     end
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting/for/joel'
+    When I send GET to '/responses/greeting/for/joel'
     Then 'default greeting' should be returned
 
 
@@ -84,7 +84,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
       response.content_type = 'text/xml'
     end
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When I send GET to '/responses/greeting'
     And the response 'content-type' should be 'text/xml'
 
   Scenario: Priming Mirage
@@ -102,10 +102,10 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Mirage::Client.new.prime
     """
-    And I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    And I send GET to '/responses/greeting'
     Then 'hello' should be returned
 
-    When I send GET to 'http://localhost:7001/mirage/responses/leaving'
+    When I send GET to '/responses/leaving'
     Then 'goodbye' should be returned
 
   Scenario: Priming Mirage when one of the response file has something bad in it
@@ -132,7 +132,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Mirage::Client.new.put('download', File.open('test_file.txt'))
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/download'
+    When I send GET to '/responses/download'
     Then the response should be the same as the content of 'test_file.txt'
 
   Scenario: Setting a response status code
@@ -140,7 +140,7 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Mirage::Client.new.put('greeting', 'hello'){|response| response.status = 203}
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When I send GET to '/responses/greeting'
     Then a 203 should be returned
 
 
@@ -149,5 +149,5 @@ Feature: the Mirage client provides methods for setting responses and loading de
     """
     Mirage::Client.new.put('greeting', 'hello'){|response| response.delay = 2}
     """
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting'
+    When I send GET to '/responses/greeting'
     Then it should take at least '2' seconds

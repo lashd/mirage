@@ -10,7 +10,7 @@ Feature: Requests made to the Mirage Server can be retrieved using the Mirage cl
   Scenario: Retrieving request data
     Given a template for 'greeting' has been set with a value of 'Hello'
 
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    When I send GET to '/responses/greeting' with parameters:
       | name | leon  |
     Then I run
     """
