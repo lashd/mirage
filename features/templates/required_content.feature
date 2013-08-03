@@ -1,5 +1,5 @@
 Feature: Placing requirements on requests
-  Templates set requirements on the following in order for them to be used to generate responses:
+  If you want Mirage to be choosy when using a Template to generate a response the following can have requirements placed on them when looking for a suitable to Template to generate responses:
 
   * request parameters
   * body content
@@ -28,7 +28,7 @@ Feature: Placing requirements on requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
   Scenario: Configuring a template with requirements on HTTP headers
     Given the following template template:
@@ -49,7 +49,7 @@ Feature: Placing requirements on requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
 
   Scenario: Configuring a template with requirements on request parameters
@@ -74,9 +74,9 @@ Feature: Placing requirements on requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
-    When I send GET to 'http://localhost:7001/mirage/responses/greeting' with parameters:
+    When I send GET to '/responses/greeting' with parameters:
     |firstname|Joe  |
     |surname  |Blogs|
     Then 'Hello Joe' should be returned
@@ -100,9 +100,9 @@ Feature: Placing requirements on requests
       }
     """
     And 'response.body' is base64 encoded
-    And the template is sent using PUT to 'http://localhost:7001/mirage/templates/greeting'
+    And the template is sent using PUT to '/templates/greeting'
 
-    When I send POST to 'http://localhost:7001/mirage/responses/greeting' with body:
+    When I send POST to '/responses/greeting' with body:
       """
         {
           "credentials" : {

@@ -121,7 +121,8 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
 end
 
 
-When /^I send (PUT|POST) to '(http:\/\/localhost:7001\/mirage\/([^']*))' with body:$/ do |method, url, endpoint, body|
+When /^I send (PUT|POST) to '(.*)' with body:$/ do |method, endpoint, body|
+  url = "http://localhost:7001#{endpoint}"
   start_time = Time.now
   @response = case method
                 when 'PUT'
@@ -167,8 +168,10 @@ When /^I click '(.*)'$/ do |thing|
   @page = @page.links.find { |link| link.attributes['id'] == thing }.click
 end
 
-When /^I send (GET|POST) to '(http:\/\/localhost:7001\/mirage\/(.*?))' with parameters:$/ do |http_method, url, endpoint, table|
+When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint, table|
 
+
+  url = "http://localhost:7001#{endpoint}"
   parameters = {}
   table.raw.each do |row|
     parameter, value = row[0].to_sym, row[1]
