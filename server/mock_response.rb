@@ -13,12 +13,12 @@ module Mirage
     class << self
 
       def find_by_id(id)
-        all.find{|response| response.response_id == id} || raise(ServerResponseNotFound)
+        all.find { |response| response.response_id == id } || raise(ServerResponseNotFound)
       end
 
       def delete(id)
         responses.values.each do |set|
-          set.values.each{|responses| responses.delete_if{|response|response.response_id == id}}
+          set.values.each { |responses| responses.delete_if { |response| response.response_id == id } }
         end
       end
 
@@ -37,20 +37,21 @@ module Mirage
       end
 
       def all
-        responses.values.collect do|response_set|
+        responses.values.collect do |response_set|
           response_set.values
         end.flatten
       end
 
       def find_default(options)
-       http_method = options[:http_method].upcase!
+        options[:http_method].upcase!
+        http_method = options[:http_method]
         default_responses = subdomains(options[:endpoint]).collect do |domain|
-          if(responses_for_domain = responses[domain])
-            responses_for_domain[http_method].find_all{|response| response.default?} if responses_for_domain[http_method]
+          if (responses_for_domain = responses[domain])
+            responses_for_domain[http_method].find_all { |response| response.default? } if responses_for_domain[http_method]
           end
         end.flatten.compact
 
-        default_responses.find{|response| match?(options,response)} || raise(ServerResponseNotFound)
+        default_responses.find { |response| match?(options, response) } || raise(ServerResponseNotFound)
       end
 
       def subdomains(name)
@@ -69,7 +70,7 @@ module Mirage
       def add(new_response)
         response_set = responses_for_endpoint(new_response)
         method_specific_responses = response_set[new_response.request_spec['http_method'].upcase]||=[]
-        duplicate_response_location = method_specific_responses.index{|response| response.request_spec == new_response.request_spec}
+        duplicate_response_location = method_specific_responses.index { |response| response.request_spec == new_response.request_spec }
         old_response = method_specific_responses.delete_at(duplicate_response_location) if duplicate_response_location
         if old_response
           new_response.response_id = old_response.response_id
@@ -90,13 +91,13 @@ module Mirage
           match?(options, stored_response)
         end
 
-        responses.sort{|a, b| b.score <=> a.score}.first
+        responses.sort { |a, b| b.score <=> a.score }.first
 
       end
 
-      def match?(options,stored_response)
+      def match?(options, stored_response)
         parameters = options[:params]
-        headers = Hash[options[:headers].collect{|key, value| [key.downcase, value]}]
+        headers = Hash[options[:headers].collect { |key, value| [key.downcase, value] }]
 
         request_spec = stored_response.request_spec
 
@@ -156,7 +157,7 @@ module Mirage
       request_defaults = JSON.parse({:parameters => {},
                                      :body_content => [],
                                      :http_method => 'get',
-                                    :headers => {}}.to_json)
+                                     :headers => {}}.to_json)
       response_defaults = JSON.parse({:default => false,
                                       :body => Base64.encode64(''),
                                       :delay => 0,
@@ -169,9 +170,9 @@ module Mirage
       @request_spec = Hashie::Mash.new request_defaults.merge(spec['request']||{})
       @response_spec = Hashie::Mash.new response_defaults.merge(spec['response']||{})
 
-      @request_spec['headers'] = Hash[@request_spec['headers'].collect{|key, value| [key.downcase, value.to_s]}]
-      @request_spec['parameters'] = Hash[@request_spec['parameters'].collect{|key, value| [key, value.to_s]}]
-      @request_spec['body_content'] = @request_spec['body_content'].collect{|value|value.to_s}
+      @request_spec['headers'] = Hash[@request_spec['headers'].collect { |key, value| [key.downcase, value.to_s] }]
+      @request_spec['parameters'] = Hash[@request_spec['parameters'].collect { |key, value| [key, value.to_s] }]
+      @request_spec['body_content'] = @request_spec['body_content'].collect { |value| value.to_s }
       @binary = BinaryDataChecker.contains_binary_data? @response_spec['body']
 
       MockResponse.add self
@@ -187,7 +188,7 @@ module Mirage
 
     def score
       [@request_spec['headers'].values, @request_spec['parameters'].values, @request_spec['body_content']].inject(0) do |score, matchers|
-        matchers.inject(score){|matcher_score, value| interpret_value(value).is_a?(Regexp) ? matcher_score+=1 : matcher_score+=2}
+        matchers.inject(score) { |matcher_score, value| interpret_value(value).is_a?(Regexp) ? matcher_score+=1 : matcher_score+=2 }
       end
     end
 
@@ -217,7 +218,7 @@ module Mirage
     end
 
     def raw
-      {:id =>response_id, :endpoint => @name, :requests_url => requests_url, :response => @response_spec, :request => @request_spec}.to_json
+      {:id => response_id, :endpoint => @name, :requests_url => requests_url, :response => @response_spec, :request => @request_spec}.to_json
     end
 
     def binary?

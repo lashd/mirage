@@ -10,4 +10,4 @@ client = Mirage::Client.new do
 end
 client.clear
 
-puts client.templates(3).body
+Mirage::Client.new.prime
