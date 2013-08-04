@@ -7,7 +7,7 @@ describe 'CommonMethods' do
   end
 
   let!(:instance) do
-    model.new '', ''
+    model.new
   end
   it 'should provide methods for customising the model' do
     instance.methods.should include(:content_type,
