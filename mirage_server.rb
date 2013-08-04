@@ -5,8 +5,8 @@ $LOAD_PATH.unshift("#{ROOT_DIR}/server")
 
 require 'sinatra/base'
 require 'extensions/object'
-require 'extensions/hash'
 require 'app'
+require 'extensions/hash'
 require 'mirage/client'
 
 module Mirage
