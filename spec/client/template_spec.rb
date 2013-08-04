@@ -41,6 +41,7 @@ describe Mirage::Template do
               http_method: http_method
           }
       }
+      template_json.should_receive(:code).and_return 200
 
       template_url = "url"
       Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return(template_json)
