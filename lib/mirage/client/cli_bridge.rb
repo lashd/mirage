@@ -3,7 +3,7 @@ module CLIBridge
   def mirage_process_ids ports
     mirage_instances = {}
     ["Mirage Server", "mirage_server", "mirage server"].each do |process_name|
-      processes_with_name(process_name).lines.collect { |line| line.chomp }.each do |process_line|
+      processes_with_name(process_name).each_line.collect { |line| line.chomp }.each do |process_line|
         pid = process_line.split(' ')[1]
         port = process_line[/port (\d+)/, 1]
         mirage_instances[port] = pid
