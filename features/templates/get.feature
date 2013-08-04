@@ -26,9 +26,12 @@ Feature: Retrieving
     """
     And the template is sent using PUT to '/templates/greeting'
     When GET is sent to '/templates/1'
-    Then the following should be returned:
+    Then the following json should be returned:
     """
       {
+         "id": 1,
+         "endpoint": "greeting",
+         "requests_url": "http://localhost:7001/requests/1",
          "response":{
             "default":false,
             "body":"Hello",
@@ -40,8 +43,8 @@ Feature: Retrieving
             "parameters":{
 
             },
+            "headers":{},
             "body_content":[
-
             ],
             "http_method":"get"
          }

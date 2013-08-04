@@ -273,3 +273,6 @@ Then(/^the template (request|response) specification should have the following s
     end
   end
 end
+Then(/^the following json should be returned:$/) do |text|
+  JSON.parse(text).should == JSON.parse(@response.body)
+end

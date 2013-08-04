@@ -1,13 +1,3 @@
 require '/home/team/Projects/mirage/lib/mirage/client'
 
-Mirage.start
-client = Mirage::Client.new do
-  http_method :post
-  status 202
-  default true
-  delay 2
-  content_type "text/xml"
-end
-client.clear
-
-Mirage::Client.new.prime
+puts "{\"id\":1,\"endpoint\":\"greeting\",\"requests_url\":\"http://localhost:7001/requests/1\",\"response\":{\"default\":false,\"body\":\"Hello\",\"delay\":0,\"content_type\":\"text/plain\",\"status\":200},\"request\":{\"parameters\":{},\"body_content\":[],\"http_method\":\"get\",\"headers\":{}}}"
