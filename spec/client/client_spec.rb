@@ -144,6 +144,15 @@ describe Mirage::Client do
     end
   end
 
+  describe 'running?' do
+    it 'should check if mirage is runing' do
+      url = 'http://some_url'
+
+      Mirage.should_receive(:running?).with url
+      Client.new(url).running?
+    end
+  end
+
 
   describe 'interface to mirage' do
 

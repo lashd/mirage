@@ -36,7 +36,7 @@ Feature: Use the mirage client api to check if Mirage is running either on the l
     Given I run 'mirage start -p 9001'
     Then I run
     """
-      Mirage.running? "http://localhost:9001/mirage"
+      Mirage.running? "http://localhost:9001"
     """
 
 
@@ -44,6 +44,6 @@ Feature: Use the mirage client api to check if Mirage is running either on the l
     Given I run 'mirage start -p 9001'
     Then I run
     """
-      client = Mirage::Client.new "http://localhost:9001/mirage"
+      client = Mirage::Client.new "http://localhost:9001"
       client.running?.should == true
     """

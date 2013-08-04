@@ -8,10 +8,7 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     require 'rspec'
     require 'mirage/client'
     """
-    And I send PUT to '/templates/greeting' with request entity
-    """
-    The default greeting
-    """
+    And a template for 'greeting' has been set with a value of 'The default greeting'
 
 
   Scenario: saving and reverting
@@ -33,8 +30,8 @@ Feature: The Mirage client can be used to snaphsot and rollback the Mirage serve
     """
     Mirage::Client.new.revert
     """
-    And I send GET to '/responses/leaving'
+    And GET is sent to '/responses/leaving'
     Then a 404 should be returned
 
-    When I send GET to '/responses/greeting'
+    When GET is sent to '/responses/greeting'
     Then 'The default greeting' should be returned

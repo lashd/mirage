@@ -66,5 +66,9 @@ module Mirage
     def == client
       client.instance_of?(Client) && self.url == client.url
     end
+
+    def running?
+      Mirage.running? @url
+    end
   end
 end
