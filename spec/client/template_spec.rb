@@ -10,7 +10,7 @@ describe Mirage::Template do
       id = 1
       requests_url = 'request_url'
       body = "Hello"
-      default = false
+      default = true
       delay = 1.2
       content_type = "application/json"
       status = 201
@@ -28,7 +28,7 @@ describe Mirage::Template do
           requests_url: requests_url,
           response:{
               default: default,
-              body: body,
+              body: Base64.encode64(body),
               delay: delay,
               content_type: content_type,
               status: status,
@@ -51,7 +51,6 @@ describe Mirage::Template do
       template.id.should == id
 
       template.default.should == default
-      template.default.should == default
       template.delay.should == delay
       template.content_type.should == content_type
       template.status.should == status
@@ -63,6 +62,13 @@ describe Mirage::Template do
       template.http_method.should == http_method
       template.url.should  == template_url
       template.requests_url.should == requests_url
+    end
+
+    it 'should raise an error if the template is not found' do
+      template_url = 'url'
+      response = mock(code: 404)
+      Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return response
+      expect{Template.get(template_url)}.to raise_error Mirage::ResponseNotFound
     end
   end
 

@@ -11,12 +11,12 @@ Feature: The client can be configured with default settings to keep your mocking
   Scenario: configuring the client on instance
     Given I run
     """
-    client = Mirage::Client.new do |defaults|
-      defaults.method = :post
-      defaults.status = 202
-      defaults.default = true
-      defaults.delay = 2
-      defaults.content_type = "text/xml"
+    client = Mirage::Client.new do
+      http_method :post
+      status 202
+      default true
+      delay 2
+      content_type "text/xml"
     end
 
     client.put('greeting','hello')
@@ -31,17 +31,17 @@ Feature: The client can be configured with default settings to keep your mocking
     Given I run
     """
     client = Mirage::Client.new
-    client.configure do |defaults|
-      defaults.method = :post
-      defaults.status = 202
-      defaults.default = true
-      defaults.delay = 2
-      defaults.content_type = "text/xml"
+    client.configure do
+      http_method :post
+      status 202
+      default false
+      delay 2
+      content_type "text/xml"
     end
 
     client.put('greeting','hello')
     """
-    When POST is sent to '/responses/greeting/for/someone'
+    When POST is sent to '/responses/greeting'
     Then 'hello' should be returned
     And a 202 should be returned
     Then it should take at least '2' seconds
@@ -51,24 +51,20 @@ Feature: The client can be configured with default settings to keep your mocking
     Given I run
     """
     client = Mirage::Client.new
-    client.configure do |defaults|
-      defaults.method = :post
-      defaults.status = 202
-      defaults.default = true
-      defaults.delay = 2
-      defaults.content_type = "text/xml"
+    client.configure do
+      http_method :post
+      status 202
+      default true
+      delay 2
+      content_type "text/xml"
     end
 
     client.reset
-
-    client.configure do |defaults|
-      defaults.method.should == nil
-      defaults.status.should == nil
-      defaults.default.should == nil
-      defaults.delay.should == nil
-      defaults.content_type.should == nil
-    end
+    client.put('greeting','hello')
     """
+    When GET is sent to '/responses/greeting'
+    Then 'hello' should be returned
+
 
 
 

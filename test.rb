@@ -1,20 +1,13 @@
-require './lib/mirage/client'
+require '/home/team/Projects/mirage/lib/mirage/client'
 
-
-Mirage.stop
-mirage = Mirage.start
-
-
-mirage.put('FindCis.do', 'value1') do
+Mirage.start
+client = Mirage::Client.new do
   http_method :post
+  status 202
+  default true
+  delay 2
   content_type "text/xml"
-  required_body_content ['value']
-  status 200
 end
+client.clear
 
-mirage.put('FindCis.do', 'value2') do
-  http_method :post
-  content_type "text/xml"
-  required_body_content ['value']
-  status 200
-end
+puts client.templates(3).body

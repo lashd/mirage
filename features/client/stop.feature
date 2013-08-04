@@ -14,7 +14,7 @@ Feature:The client API can be used to stop instances of Mirage running on localh
     """
     Mirage.stop
     """
-    Then Connection should be refused to 'http://localhost:7001/mirage'
+    Then Connection should be refused to 'http://localhost:7001'
 
 
   Scenario: Stopping Mirage on custom port
@@ -23,7 +23,7 @@ Feature:The client API can be used to stop instances of Mirage running on localh
     """
     Mirage.stop :port => 9001
     """
-    Then mirage should not be running on 'http://localhost:9001/mirage'
+    Then mirage should not be running on 'http://localhost:9001'
 
   Scenario: Stopping multiple instances of Mirage
     Given I run 'mirage start -p 7001'
@@ -33,9 +33,9 @@ Feature:The client API can be used to stop instances of Mirage running on localh
     """
     Mirage.stop :port => [9001,10001]
     """
-    Then mirage should be running on 'http://localhost:7001/mirage'
-    Then mirage should not be running on 'http://localhost:9001/mirage'
-    Then mirage should not be running on 'http://localhost:10001/mirage'
+    Then mirage should be running on 'http://localhost:7001'
+    Then mirage should not be running on 'http://localhost:9001'
+    Then mirage should not be running on 'http://localhost:10001'
 
 
   Scenario: Stopping all instances of Mirage
@@ -46,6 +46,6 @@ Feature:The client API can be used to stop instances of Mirage running on localh
     """
     Mirage.stop :all
     """
-    Then mirage should not be running on 'http://localhost:7001/mirage'
-    Then mirage should not be running on 'http://localhost:9001/mirage'
-    Then mirage should not be running on 'http://localhost:10001/mirage'
+    Then mirage should not be running on 'http://localhost:7001'
+    Then mirage should not be running on 'http://localhost:9001'
+    Then mirage should not be running on 'http://localhost:10001'

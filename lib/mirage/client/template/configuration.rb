@@ -29,6 +29,16 @@ module Mirage
         @caller_binding.send method, *args, &block if @caller_binding
       end
 
+      def == config
+        config.is_a?(Configuration) &&
+            http_method == config.http_method &&
+            status == config.status &&
+            delay == config.delay &&
+            content_type == config.content_type &&
+            default == config.default
+
+      end
+
     end
   end
 end

@@ -31,16 +31,35 @@ describe Mirage::Client do
     end
 
 
-    it 'can be configured with template defaults' do
-      templates, config = Templates.new("url"), proc{}
-      Templates.should_receive(:new).and_return(templates)
-      templates.should_receive(:default_config) do |&block|
-        block.should == config
+    describe 'defaults' do
+      it 'can be configured with template defaults on initialize' do
+        templates, config = Templates.new("url"), proc {}
+        Templates.should_receive(:new).and_return(templates)
+        templates.should_receive(:default_config) do |&block|
+          block.should == config
+        end
+        Client.new &config
       end
-      Client.new &config
+
+      it 'can be configured with template defaults on after initalize' do
+        templates, config = Templates.new("url"), proc {}
+        Templates.should_receive(:new).and_return(templates)
+        templates.should_receive(:default_config) do |&block|
+          block.should == config
+        end
+        Client.new.configure &config
+      end
+
+      it 'can be reset' do
+        client = Client.new do
+          http_method :post
+        end
+
+        client.reset
+        client.templates.default_config.should == Template::Configuration.new
+      end
+
     end
-
-
   end
 
   it 'should clear mirage' do
@@ -66,6 +85,11 @@ describe Mirage::Client do
       mirage.templates.instance_of?(Templates).should == true
     end
 
+    it 'The templates instance should be the one created on construction otherwise the defaults passed in will get lost' do
+      mirage = Client.new
+      mirage.templates.should == mirage.templates
+    end
+
     it 'should find a template' do
       id = 1
       mirage = Client.new
@@ -73,6 +97,7 @@ describe Mirage::Client do
       Template.should_receive(:get).with("#{mirage.url}/templates/#{id}").and_return(mock_template)
       mirage.templates(1).should == mock_template
     end
+
 
     describe 'put' do
       it "should put a response on mirage by passing args on to template's put method "  do

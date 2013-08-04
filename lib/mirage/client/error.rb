@@ -11,7 +11,7 @@ module Mirage
   class InternalServerException < MirageError;
   end
 
-  class ResponseNotFound < MirageError;
+  class ResponseNotFound < ::Exception
   end
 
   class ClientError < ::Exception

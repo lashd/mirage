@@ -18,12 +18,14 @@ module Mirage
       alias_method :backedup_get, :get
 
       def get url
-        response_hashie = Hashie::Mash.new backedup_get(url, :format => :json)
+        response = backedup_get(url, :format => :json)
+        raise ResponseNotFound if response.code == 404
+        response_hashie = Hashie::Mash.new response
 
         response_config = response_hashie.response
         request_config = response_hashie.request
 
-        template = new(response_hashie.endpoint, response_config.body)
+        template = new(response_hashie.endpoint, Base64.decode64(response_config.body))
 
         template.id response_hashie.id
         template.default response_config['default']

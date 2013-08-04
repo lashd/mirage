@@ -21,12 +21,21 @@ module Mirage
         raise "specify a valid URL or port"
       end
 
+      @templates = Templates.new(@url)
+      @templates.default_config &block if block
+    end
+
+    def configure &block
       templates.default_config &block if block
+    end
+
+    def reset
+      templates.default_config.reset
     end
 
     def templates id=nil
       return Template.get("#{@url}/templates/#{id}") if id
-      Templates.new(@url)
+      @templates
     end
 
     def requests id=nil

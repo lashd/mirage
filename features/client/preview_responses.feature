@@ -9,21 +9,21 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     """
 
   Scenario: peeking a response
-    Given I send PUT to '/templates/greeting' with body 'Hello'
+    Given a template for 'greeting' has been set with a value of 'Hello'
 
     When I run
     """
-      Mirage::Client.new.response(1).should == 'Hello'
+      Mirage::Client.new.templates(1).body.should == 'Hello'
     """
 
-    When I send GET to '/requests/1'
+    When GET is sent to '/requests/1'
     Then a 404 should be returned
 
   Scenario: getting a response that does not exist
     Given I run
     """
     begin
-      Mirage::Client.new.response(2).should == 'this should not have happened'
+      Mirage::Client.new.templates(2).should == 'this should not have happened'
       fail("Error should have been thrown")
     rescue Exception => e
     puts e
