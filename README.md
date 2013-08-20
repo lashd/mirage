@@ -38,6 +38,10 @@ Templates are now scored to find the most appropriate template when finding a ma
 if there was a more appropriate template.
 
 Litteral matchers are worth more in the scoring process than regex based ones for example.
+##### 6. The url has changed
+Mirage is now accessible via: http://localhost:7001. I.e. 'mirage' has been removed from all resources 
+
+e.g. responses are now under http://localhost:7001/responses
 #### What's new in the Client:
 ##### 1. Template Models
 Perhaps the biggest addition to the client. Simply mixin Mirage::Template::Model in to a class, give it a method called body and there you have it... a class that can be used to put objects straight on to Mirage.
