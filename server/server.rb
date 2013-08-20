@@ -38,6 +38,10 @@ module Mirage
       end
     end
 
+    get '/templates/:id/body' do
+      MockResponse.find_by_id(response_id).value '', {}, ''
+    end
+
     delete '/templates/:id' do
       MockResponse.delete(response_id)
       REQUESTS.delete(response_id)

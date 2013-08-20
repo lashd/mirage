@@ -3,7 +3,7 @@
 %div
   %label{:style => 'font-weight: bold'}
     endpoint:
-  #{response.name}
+  %a{href: "/templates/#{response.response_id}/value"} #{response.name}
   %br
   %label{:style => 'font-weight: bold'}
     status:
