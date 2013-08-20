@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0.alpha.11"
+  s.version = "3.0.0.alpha.12"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2013-05-07"
+  s.date = "2013-08-20"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "README.md",
     "VERSION",
     "bin/mirage",
+    "features/.nav",
     "features/client/clear.feature",
     "features/client/configure.feature",
     "features/client/preview_responses.feature",
@@ -33,26 +34,29 @@ Gem::Specification.new do |s|
     "features/client/save_and_revert.feature",
     "features/client/start.feature",
     "features/client/stop.feature",
-    "features/server/commandline_interface/help.feature",
-    "features/server/commandline_interface/start.feature",
-    "features/server/commandline_interface/stop.feature",
-    "features/server/logging.feature",
-    "features/server/prime.feature",
-    "features/server/requests/delete.feature",
-    "features/server/requests/get.feature",
-    "features/server/save_and_revert.feature",
-    "features/server/templates/delete.feature",
-    "features/server/templates/get.feature",
-    "features/server/templates/put/put.feature",
-    "features/server/templates/put/put_with_substitutions.feature",
-    "features/server/templates/put/required_content.feature",
-    "features/server/web_user_interface.feature",
+    "features/commandline_interface/help.feature",
+    "features/commandline_interface/readme.md",
+    "features/commandline_interface/start.feature",
+    "features/commandline_interface/stop.feature",
+    "features/logging.feature",
+    "features/prime.feature",
+    "features/readme.md",
+    "features/requests/delete.feature",
+    "features/requests/get.feature",
+    "features/save_and_revert.feature",
     "features/step_definitions/my_steps.rb",
     "features/support/command_line.rb",
     "features/support/env.rb",
     "features/support/hooks.rb",
     "features/support/mirage.rb",
     "features/support/web.rb",
+    "features/templates/delete.feature",
+    "features/templates/get.feature",
+    "features/templates/put.feature",
+    "features/templates/put_with_substitutions.feature",
+    "features/templates/readme.md",
+    "features/templates/required_content.feature",
+    "features/web_user_interface.feature",
     "full_build.sh",
     "lib/mirage/client.rb",
     "lib/mirage/client/cli_bridge.rb",
@@ -108,7 +112,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.post_install_message = "\n===============================================================================\nThanks you for installing mirage.   \n\nRun Mirage with:\n\nmirage start                                   \n\nFor more information go to: https://github.com/lashd/mirage/wiki\n===============================================================================\n"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.25"
+  s.rubygems_version = "1.8.24"
   s.summary = "Mirage is a easy mock server for testing your applications"
 
   if s.respond_to? :specification_version then
