@@ -39,7 +39,9 @@ module Mirage
     end
 
     get '/templates/:id/body' do
-      MockResponse.find_by_id(response_id).value '', {}, ''
+      response = MockResponse.find_by_id(response_id)
+      content_type(response.response_spec['content_type'])
+      response.value '', {}, ''
     end
 
     delete '/templates/:id' do
