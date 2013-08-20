@@ -4,6 +4,12 @@
   %label{:style => 'font-weight: bold'}
     endpoint:
   %a{href: "/templates/#{response.response_id}/body"} #{response.name}
+  %span -:-
+  %a{href: "/requests/#{response.response_id}"} Track
+  %br
+  %label{:style => 'font-weight: bold'}
+    ID:
+  #{response.response_id}
   %br
   %label{:style => 'font-weight: bold'}
     status:
@@ -12,15 +18,6 @@
   %label{:style => 'font-weight: bold'}
     Content-Type:
   #{response.response_spec[:content_type]}
-
-  %br
-  %label{:style => 'font-weight: bold'}
-    delay:
-  #{response.response_spec.delay}
-  %br
-  %label{:style => 'font-weight: bold'}
-    default:
-  #{response.default? ? 'true' : 'false'}
   %br
   %label{:style => 'font-weight: bold'}
     required http method:
@@ -37,5 +34,13 @@
   %label{:style => 'font-weight: bold'}
     required body content:
   #{response.request_spec.body_content}
+  %br
+  %label{:style => 'font-weight: bold'}
+    delay:
+  #{response.response_spec.delay}
+  %br
+  %label{:style => 'font-weight: bold'}
+    default:
+  #{response.default? ? 'true' : 'false'}
   %br
   %br
