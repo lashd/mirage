@@ -14,5 +14,5 @@ Feature: Retrieving
       }
     """
     And the template is sent using PUT to '/templates/greeting'
-    When GET is sent to '/templates/1/body'
+    When GET is sent to '/templates/1/preview'
     Then 'Hello' should be returned

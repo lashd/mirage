@@ -33,12 +33,12 @@ describe "Mirage Server" do
   end
 
   context '/templates' do
-    describe ':id/body' do
+    describe '/preview' do
       it 'should give the value' do
         response_body = 'hello'
         content_type = 'application/javascript'
         response_id = JSON.parse(put('/templates/greeting', {:response => {:body => Base64.encode64(response_body), :content_type => content_type}}.to_json).body)['id']
-        response = get("/templates/#{response_id}/body")
+        response = get("/templates/#{response_id}/preview")
         response.body.should == response_body
         response.content_type.should include(content_type)
       end
