@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'extensions/object'
+require 'extensions/hash'
 require 'mock_response'
 
 describe Mirage::MockResponse do
@@ -225,6 +226,21 @@ describe Mirage::MockResponse do
         MockResponse.find(options).should == response
         MockResponse.find(options.merge(:params => {"firstname" => "leonard"})).should == response
         expect { MockResponse.find(options.merge(:params => {"firstname" => "leo"})) }.to raise_error(ServerResponseNotFound)
+      end
+    end
+
+    describe 'matching request uri' do
+      it 'should match using wild cards' do
+        response_spec = convert_keys_to_strings(
+            {
+                :response => {
+                    :body => 'response'
+                }
+
+            }
+        )
+        response = MockResponse.new('greeting/*/ashley/*', response_spec)
+        MockResponse.find(:params => {}, :headers => {}, :http_method => "get", endpoint: 'greeting/leon/ashley/davis').should == response
       end
     end
 

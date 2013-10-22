@@ -1,4 +1,5 @@
 require 'binary_data_checker'
+
 require 'hashie/mash'
 module Mirage
   class ServerResponseNotFound < Exception
@@ -132,7 +133,9 @@ module Mirage
       end
 
       def responses_for_endpoint(response)
-        responses[response.name]||={}
+        name = response.name
+        name = %r{#{name.gsub('*', '.*')}} if name =~ /\*/
+        responses[name]||={}
       end
 
       def responses
