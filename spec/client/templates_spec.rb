@@ -111,11 +111,11 @@ describe 'templates' do
       end
 
       it 'should prepend base url to the endpoint unless it is set already' do
-        template = model_class.new
-        template = @templates.put template
-        template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
-        template = @templates.put template
-        template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+        original_template = model_class.new
+        stored_template = @templates.put original_template
+        stored_template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+        stored_template = @templates.put original_template
+        stored_template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
       end
 
       it 'should fall over to methods on the caller if the method does not exist on the template object' do

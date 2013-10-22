@@ -25,7 +25,7 @@ module Mirage
       if args.first.class.is_a?(Template::Model)
         template = args.first
         template = template.clone
-        template.endpoint "#{@url}/#{template.endpoint}" unless template.endpoint.to_s.start_with?(@url)
+        template.endpoint "#{@url}/#{template.endpoint}"
       else
 
         endpoint, template = args
