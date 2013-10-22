@@ -85,33 +85,36 @@ describe 'templates' do
     value = "hello"
     let(:base_url) { "base_url" }
     let!(:templates) { Templates.new(base_url) }
+    let!(:model_class) do
+      Class.new do
+        extend Template::Model
+        endpoint endpoint
+
+        def create
+          self
+        end
+      end
+    end
 
 
     context 'model as parameter' do
       let!(:endpoint) { 'endpoint' }
-      let!(:model_class) do
-        Class.new do
-          extend Template::Model
-          endpoint endpoint
-          def create
-          end
-        end
-      end
+
       before :each do
         @base_url = "base_url"
         @templates = Templates.new(@base_url)
       end
       it 'should take a model as a parameter' do
         template = model_class.new
-        @templates.put template
+        template = @templates.put template
         template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
       end
 
       it 'should prepend base url to the endpoint unless it is set already' do
         template = model_class.new
-        @templates.put template
+        template = @templates.put template
         template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
-        @templates.put template
+        template = @templates.put template
         template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
       end
 
@@ -163,6 +166,17 @@ describe 'templates' do
 
       it 'should create a template' do
         @templates.put(endpoint, value)
+      end
+    end
+
+    context 'endpoint and model as parameters' do
+      it 'should put the given template on the given endpoint' do
+        @base_url = "base_url"
+        @templates = Templates.new(@base_url)
+
+        template = model_class.new
+        template  = @templates.put 'greeting', template
+        template.endpoint.should == "#{@base_url}/templates/greeting"
       end
     end
 

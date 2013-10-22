@@ -1,6 +1,7 @@
 module Mirage
   class Templates
     include HTTParty
+
     def initialize base_url
       @url = "#{base_url}/templates"
       @requests = Requests.new(base_url)
@@ -23,19 +24,26 @@ module Mirage
     def put *args, &block
       if args.first.class.is_a?(Template::Model)
         template = args.first
+        template = template.clone
         template.endpoint "#{@url}/#{template.endpoint}" unless template.endpoint.to_s.start_with?(@url)
       else
-        endpoint, response = args
-        template = Mirage::Template.new  "#{@url}/#{endpoint}", response, @default_config
+
+        endpoint, template = args
+        if template.class.is_a?(Template::Model)
+          template = template.clone
+          template.endpoint "#{@url}/#{endpoint}"
+        else
+          template = Mirage::Template.new("#{@url}/#{endpoint}", template, @default_config)
+        end
+
       end
 
       if block
         calling_instance = eval "self", block.binding
         template.caller_binding = calling_instance
-        template.instance_exec(template,&block)
+        template.instance_exec(template, &block)
         template.caller_binding = nil
       end
-
       template.create
     end
   end
