@@ -24,21 +24,24 @@ What's New?
 #### What's new in the Server:
 ##### 1: Mirage uses JSON as its communucations medium
 Mirage is now configured using JSON. JSON is also used as the output format for Mirage's other operations.
-##### 2: Full Request Data now tracked
+##### 2: Wildcards are now supported in the URI.
+You can now specify wild cards in the URI matcher. This means that a url such as '/*/world' would match '/hello/world' :)
+##### 3: Full Request Data now tracked
 You can now retrieve all data associated with a request that triggers a response. Previously only the the request body/query string was tracked.
 Now the full request, including HTTP headers are returned when querying '/requests/template_id'
-##### 3. Parameters and body content matchers are now specified seperately
+
+##### 4. Parameters and body content matchers are now specified seperately
 Now you can specify as many parameter and body matchers as you want. These can be both litteral strings or Regex's
   
 Previously, it was only possible to specify a single matcher and this would be applied against both the querystring and the request body.
-##### 4. HTTP Header matchers
+##### 5. HTTP Header matchers
 You can now also specify matchers against HTTP headers.
-##### 5. More advanced template resolution.
+##### 6. More advanced template resolution.
 Templates are now scored to find the most appropriate template when finding a match for a particular request. Previously the first potential match was returned even
 if there was a more appropriate template.
 
 Litteral matchers are worth more in the scoring process than regex based ones for example.
-##### 6. The url has changed
+##### 7. The url has changed
 Mirage is now accessible via: http://localhost:7001. I.e. 'mirage' has been removed from all resources 
 
 e.g. responses are now under http://localhost:7001/responses
