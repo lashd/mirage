@@ -2,9 +2,9 @@ Feature: Template Models
 
   Use Models to for an object oriented approach to defining Templates.
 
-  The Mirage client provides the Mirage::Template::Model module that can be used to make defining your own model classes easier.
+  The Mirage client provides the Mirage::Template::Model module that can be used to define your own model classes.
 
-  If you don't want to use this then objects that you pass to the client must simply have a body method in order to be compatible. This method should ultimately return the data you require the client to place on to mirage.
+  Having extended this module you must provide a 'body' method to customise the body of the response
 
   The Model module provides class level methods for:
 
