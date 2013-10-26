@@ -1,6 +1,6 @@
 Feature: Creating snapshots
 
-  The Mirage client can be used to snapshot and rollback the Mirage server
+  The client can be used to snapshot and rollback the Mirage server
 
 
   Background:
@@ -13,7 +13,7 @@ Feature: Creating snapshots
     And a template for 'greeting' has been set with a value of 'The default greeting'
 
 
-  Scenario: saving and reverting
+  Scenario: Creating a snapshot and rolling back
     Given I run
     """
     Mirage::Client.new.save

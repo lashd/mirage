@@ -15,7 +15,7 @@ Feature: Adding Templates
     """
 
 
-  Scenario: Setting a basic response
+  Scenario: Setting a Template on Mirage
     Given I run
     """
     Mirage::Client.new.put('greeting','hello')
@@ -23,7 +23,7 @@ Feature: Adding Templates
     When GET is sent to '/responses/greeting'
     Then 'hello' should be returned
 
-  Scenario: Setting the method that a response should be returned on
+  Scenario: Setting the required HTTP method
     Given I run
     """
     Mirage::Client.new.put('greeting', 'Hello Leon') do
@@ -36,7 +36,7 @@ Feature: Adding Templates
     Then 'Hello Leon' should be returned
 
 
-  Scenario: Setting a response with required body content
+  Scenario: Setting a requirement on body content
     Given I run
     """
     Mirage::Client.new.put('greeting', 'Hello Leon') do
@@ -54,7 +54,7 @@ Feature: Adding Templates
     """
     Then 'Hello Leon' should be returned
 
-  Scenario: Setting a response with a request parameter requirement
+  Scenario: Setting a requirement on requests parameters
     Given I run
     """
     Mirage::Client.new.put('greeting', 'Hello Leon') do
@@ -92,40 +92,8 @@ Feature: Adding Templates
     When GET is sent to '/responses/greeting'
     And the response 'content-type' should be 'text/xml'
 
-#  Scenario: Priming Mirage
-#    Given Mirage is not running
-#    And I run 'mirage start'
-#
-#    When the file 'responses/default_greetings.rb' contains:
-#    """
-#    prime do |mirage|
-#      mirage.put('greeting', 'hello')
-#      mirage.put('leaving', 'goodbye')
-#    end
-#    """
-#    And I run
-#    """
-#    Mirage::Client.new.prime
-#    """
-#    And GET is sent to '/responses/greeting'
-#    Then 'hello' should be returned
-#
-#    When GET is sent to '/responses/leaving'
-#    Then 'goodbye' should be returned
 
-  Scenario: Setting a file as a response
-    Given the file 'test_file.txt' contains:
-    """
-    test content
-    """
-    And I run
-    """
-    Mirage::Client.new.put('download', File.read('test_file.txt'))
-    """
-    When GET is sent to '/responses/download'
-    Then the response should be the same as the content of 'test_file.txt'
-
-  Scenario: Setting a response status code
+  Scenario: Setting the HTTP status code
     Given I run
     """
     Mirage::Client.new.put('greeting', 'hello'){status 203}
@@ -134,7 +102,7 @@ Feature: Adding Templates
     Then a 203 should be returned
 
 
-  Scenario: Setting a response with a delay
+  Scenario: Setting a delay
     Given I run
     """
     Mirage::Client.new.put('greeting', 'hello'){delay 2}

@@ -69,7 +69,7 @@ describe Mirage::Template do
       template_url = 'url'
       response = mock(code: 404)
       Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return response
-      expect{Template.get(template_url)}.to raise_error Mirage::ResponseNotFound
+      expect{Template.get(template_url)}.to raise_error Mirage::TemplateNotFound
     end
   end
 

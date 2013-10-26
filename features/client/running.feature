@@ -1,5 +1,5 @@
 @command_line
-Feature: Check if Mirage is running
+Feature: How to check if Mirage is running
 
   Use the Mirage client api to check if Mirage is running either on the local machine or on a remote host.
 

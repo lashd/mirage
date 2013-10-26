@@ -8,10 +8,10 @@ module Mirage
     end
   end
 
-  class InternalServerException < MirageError;
+  class InternalServerException < MirageError
   end
 
-  class ResponseNotFound < ::Exception
+  class TemplateNotFound < ::Exception
   end
 
   class ClientError < ::Exception

@@ -19,7 +19,7 @@ module Mirage
 
       def get url
         response = backedup_get(url, :format => :json)
-        raise ResponseNotFound if response.code == 404
+        raise TemplateNotFound if response.code == 404
         response_hashie = Hashie::Mash.new response
 
         response_config = response_hashie.response
