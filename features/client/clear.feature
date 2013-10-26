@@ -1,6 +1,8 @@
-Feature: The client can be used for clearing down Mirage.
+Feature: Clearing Templates
 
-  As with the restful interface, clearing a template also clears any associated request data
+  The client can be used to clear responses and tracked request data from Mirage.
+
+  Like when calling Mirage's own interface directly, clearing a template also clears any associated request data
 
   Background:
     Given the following require statements are needed:
@@ -35,7 +37,7 @@ Feature: The client can be used for clearing down Mirage.
     Then a 200 should be returned
 
 
-  Scenario: Clearning a request
+  Scenario: Clearing a request
     Given I run
     """
     Mirage::Client.new.requests(1).delete

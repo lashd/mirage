@@ -1,5 +1,7 @@
 @command_line
-Feature:The client API can be used to stop instances of Mirage running on localhost.
+Feature: Stopping Mirage
+
+  The client API can be used to stop instances of Mirage running on localhost.
 
   Background:
     Given the following require statements are needed:

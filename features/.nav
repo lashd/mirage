@@ -17,3 +17,12 @@
 - logging.feature (Logs)
 - web_user_interface.feature
 - client (Ruby client):
+  - start.feature
+  - stop.feature
+  - running.feature
+  - put.feature
+  - configure.feature
+  - clear.feature
+  - preview_responses.feature
+  - requests.feature
+  - save_and_revert.feature

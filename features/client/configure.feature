@@ -1,4 +1,4 @@
-Feature: The client can be configured with default settings to keep your mocking 'DRY'
+Feature: Configuring Templates
 
   Background:
     Given the following gems are required to run the Mirage client test code:

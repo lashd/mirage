@@ -1,5 +1,5 @@
-Feature: Retrieving
-  A Templates body can be previewed
+Feature: Previewing
+  A Template's body can be previewed
 
 
   Scenario: Preview template body

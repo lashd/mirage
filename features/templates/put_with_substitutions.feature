@@ -1,5 +1,5 @@
 Feature: Substituting values from requests in to a template
-  Parts of a response can be substitued for values found in the request body or query string.
+  Parts of a response can be substituted for values found in the request body or query string.
   This allows dynamic content to be sent back to a client.
 
   To do this, substitution, matchers must be put in the the response value.

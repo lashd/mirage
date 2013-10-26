@@ -1,5 +1,7 @@
 @command_line
-Feature: The client API can be used to start Mirage.
+Feature: Starting Mirage
+
+  The client API can be used to start Mirage.
 
   Both the port and default templates directory can be specified
 

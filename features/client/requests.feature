@@ -1,4 +1,6 @@
-Feature: Requests made to the Mirage Server can be retrieved using the Mirage client
+Feature: Retrieving tracked requests
+
+  Requests made to the Mirage Server can be retrieved using the Mirage client
 
   Background:
     Given the following require statements are needed:

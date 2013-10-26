@@ -1,7 +1,10 @@
-Feature: the Mirage client provides methods for setting responses and loading default responses.
-  There is no need to escape any parameters before using the client api as this is done for you.
+Feature: Adding Templates
 
-  Patterns can be either a string or regex object.
+  The Mirage client provides methods for setting Templates.
+
+  The client will escape all data for you so your free to just get on with using Mirage :)
+
+  Body, Header, and Parameter requirements can be specified as either a String or Regexp
 
   Background:
     Given the following gems are required to run the Mirage client test code:

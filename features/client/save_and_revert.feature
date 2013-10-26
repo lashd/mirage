@@ -1,4 +1,6 @@
-Feature: The Mirage client can be used to snaphsot and rollback the Mirage server
+Feature: Creating snapshots
+
+  The Mirage client can be used to snapshot and rollback the Mirage server
 
 
   Background:

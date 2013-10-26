@@ -1,4 +1,4 @@
-Feature: the client can be used for peeking at responses hosted on Mirage.
+Feature: Inspecting Templates
 
   Background:
     Given the following gems are required to run the Mirage client test code:
@@ -8,7 +8,7 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     require 'mirage/client'
     """
 
-  Scenario: peeking a response
+  Scenario: peeking a template
     Given a template for 'greeting' has been set with a value of 'Hello'
 
     When I run
@@ -19,7 +19,7 @@ Feature: the client can be used for peeking at responses hosted on Mirage.
     When GET is sent to '/requests/1'
     Then a 404 should be returned
 
-  Scenario: getting a response that does not exist
+  Scenario: getting a template that does not exist
     Given I run
     """
     begin
