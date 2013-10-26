@@ -14,7 +14,7 @@ Feature: Priming Mirage
     Given Mirage is not running
     And I run 'mirage start'
 
-    When the file 'responses/default_greetings.rb' contains:
+    When the file 'mirage/default_greetings.rb' contains:
     """
     prime do |mirage|
       mirage.put('greeting', 'hello')

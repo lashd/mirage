@@ -56,7 +56,7 @@ module Mirage
 
     desc "start", "Starts mirage"
     method_option :port, :aliases => "-p", :type => :numeric, :default => 7001, :desc => "port that mirage should be started on"
-    method_option :defaults, :aliases => "-d", :type => :string, :default => 'responses', :desc => "location to load default responses from"
+    method_option :defaults, :aliases => "-d", :type => :string, :default => 'mirage', :desc => "location to load default responses from"
     method_option :debug, :type => :boolean, :default => false, :desc => "run in debug mode"
 
     def start
