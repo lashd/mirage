@@ -1,4 +1,4 @@
-Feature: Models - an object oriented aproach to Templates.
+Feature: Template Models
 
   Use Models to for an object oriented approach to defining Templates.
 
