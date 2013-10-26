@@ -79,11 +79,11 @@ Feature: Template Models
         status '200'
 
         def body
-          "#{firstname} #{surname}"
+          "Joe Blogs"
         end
       end
 
-      Mirage::Client.new.put '/profiles', UserProfile.new.firstname('Joe').surname('Blogs') do
+      Mirage::Client.new.put '/profiles', UserProfile.new do
         status 202
       end
     """
