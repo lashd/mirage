@@ -276,3 +276,6 @@ end
 Then(/^the following json should be returned:$/) do |text|
   JSON.parse(text).should == JSON.parse(@response.body)
 end
+When(/^the content-type should be '(.*)'$/) do |content_type|
+  @response.content_type.should == content_type
+end

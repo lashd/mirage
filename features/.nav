@@ -24,5 +24,6 @@
   - configure.feature
   - clear.feature
   - preview_responses.feature
+  - model.feature
   - requests.feature
   - save_and_revert.feature
