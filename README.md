@@ -19,7 +19,7 @@ Installation
     
 What's New?
 -----------
-### 3.0.0 (Currently in alpha)
+### 3.0.0
 ------------------------------
 3.0.0 is not out yet but I am going to spend the next few days filling in the what's new section in preparation for its release.
 #### What's new in the Server:
