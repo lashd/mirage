@@ -137,7 +137,7 @@ describe Template::Model::InstanceMethods do
 
     describe 'response as default' do
       it 'should be false by default' do
-        JSON.parse(instance.to_json)["response"]["default"].should == false
+        JSON.parse(instance.to_json, symbolize_names: true)[:response][:default].should == false
       end
 
       it 'should set the default value' do
