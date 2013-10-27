@@ -24,7 +24,7 @@ shared_context :windows do
   end
 
   before :each do
-    ChildProcess.should_receive(:windows?).any_number_of_times.and_return(true)
+    ChildProcess.stub(:windows?).and_return(true)
   end
 end
 
@@ -34,7 +34,7 @@ shared_context :linux do
   end
 
   before :each do
-    ChildProcess.should_receive(:windows?).any_number_of_times.and_return(false)
+    ChildProcess.stub(:windows?).and_return(false)
   end
 end
 shared_context :resources do

@@ -14,11 +14,11 @@ describe CLIBridge do
     Hashie::Mash.new({
                          :windows => {
                              :kill_string => "taskkill /F /T /PID %d",
-                             :set_ps_cmd_expectation => proc{bridge.should_receive(:`).with(/tasklist.*/).any_number_of_times.and_return(tasklist_output)}
+                             :set_ps_cmd_expectation => proc{bridge.stub(:`).with(/tasklist.*/).and_return(tasklist_output)}
                          },
                          :linux => {
                              :kill_string => "kill -9 %d",
-                             :set_ps_cmd_expectation => proc{IO.should_receive(:popen).with(/ps aux.*/).any_number_of_times.and_return(tasklist_output)}
+                             :set_ps_cmd_expectation => proc{IO.stub(:popen).with(/ps aux.*/).and_return(tasklist_output)}
                          }
                      })
   end

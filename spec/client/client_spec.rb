@@ -5,7 +5,7 @@ describe Mirage::Client do
 
 
   before :each do
-    @response = mock('response').as_null_object
+    @response = double('response').as_null_object
   end
 
   describe 'configuration' do
@@ -63,7 +63,7 @@ describe Mirage::Client do
   end
 
   it 'should clear mirage' do
-    templates_mock = mock('templates')
+    templates_mock = double('templates')
     Templates.should_receive(:new).and_return(templates_mock)
     templates_mock.should_receive(:delete_all)
     Client.new.clear
@@ -93,7 +93,7 @@ describe Mirage::Client do
     it 'should find a template' do
       id = 1
       mirage = Client.new
-      mock_template = mock('template')
+      mock_template = double('template')
       Template.should_receive(:get).with("#{mirage.url}/templates/#{id}").and_return(mock_template)
       mirage.templates(1).should == mock_template
     end
@@ -103,7 +103,7 @@ describe Mirage::Client do
       it "should put a response on mirage by passing args on to template's put method "  do
         endpoint, value, block = 'greeting', 'hello', Proc.new{}
 
-        templates_mock = mock('templates')
+        templates_mock = double('templates')
         Templates.should_receive(:new).and_return(templates_mock)
 
       templates_mock.should_receive(:put).with(endpoint, value, &block)

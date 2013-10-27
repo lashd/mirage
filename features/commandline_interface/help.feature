@@ -6,7 +6,7 @@ Feature: Help
   Background: Mirage usage
     Given usage information:
     """
-      mirage help [TASK]  # Describe available tasks or one specific task
+      mirage help [COMMAND]  # Describe available commands or one specific command
       mirage start        # Starts mirage
       mirage stop         # Stops mirage
     """

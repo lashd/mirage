@@ -70,7 +70,7 @@ describe "Mirage Server" do
     it 'should use headers' do
       headers = {"HEADER" => 'VALUE'}
       application_expectations do |app|
-        app.should_receive(:env).any_number_of_times.and_return(headers)
+        app.stub(:env).and_return(headers)
         app.should_receive(:extract_http_headers).with(headers).and_return(headers)
       end
 

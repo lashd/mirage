@@ -7,7 +7,7 @@ describe 'templates' do
   describe 'deleting' do
     it 'should delete all templates and associated request data' do
       base_url = "base_url"
-      requests = mock('requests')
+      requests = double('requests')
       Requests.should_receive(:new).with(base_url).and_return(requests)
 
       Templates.should_receive(:delete).with("#{base_url}/templates")
@@ -159,7 +159,7 @@ describe 'templates' do
         @base_url = "base_url"
         @templates = Templates.new(@base_url)
 
-        @template_mock = mock('template')
+        @template_mock = double('template')
         Template.should_receive(:new).with("#{@base_url}/templates/#{endpoint}", value, @templates.default_config).and_return(@template_mock)
         @template_mock.should_receive(:create)
       end

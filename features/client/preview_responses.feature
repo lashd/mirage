@@ -6,7 +6,7 @@ Feature: Inspecting Templates
     Given the following gems are required to run the Mirage client test code:
     """
     require 'rubygems'
-    require 'rspec'
+    require 'rspec/expectations'
     require 'mirage/client'
     """
 

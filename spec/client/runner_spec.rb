@@ -6,7 +6,7 @@ describe Mirage do
 
   describe 'starting' do
     before(:each) do
-      @runner = mock
+      @runner = double
       Runner.should_receive(:new).and_return(@runner)
     end
 
@@ -25,7 +25,7 @@ describe Mirage do
 
   describe 'stopping' do
     before(:each) do
-      @runner = mock
+      @runner = double
       Runner.stub(:new).and_return(@runner)
     end
 
@@ -51,11 +51,12 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.should_receive(:mirage_process_ids).with([]).any_number_of_times.and_return({"7001" => "18901"})
+      runner.stub(:mirage_process_ids).with([]).and_return({"7001" => "18901"})
+
 
       runner.should_receive(:kill).with("18901") do
-        runner.rspec_reset
-        runner.should_receive(:mirage_process_ids).with([]).any_number_of_times.and_return({})
+        RSpec.reset
+        runner.stub(:mirage_process_ids).with([]).and_return({})
       end
 
       Mirage::Runner.should_receive(:new).and_return(runner)
@@ -67,11 +68,11 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.should_receive(:mirage_process_ids).with([]).any_number_of_times.and_return({"7001" => "18901", "7002" => "18902", "7003" => "18903"})
+      runner.stub(:mirage_process_ids).with([]).and_return({"7001" => "18901", "7002" => "18902", "7003" => "18903"})
       runner.should_not_receive(:kill)
       Mirage::Runner.should_receive(:new).and_return(runner)
 
-      expect { runner.invoke(:stop, [], options) }.to raise_error(Mirage::ClientError)
+      expect{ runner.invoke(:stop, [], options) }.to raise_error(Mirage::ClientError)
     end
 
 
@@ -82,7 +83,7 @@ describe Mirage do
 
       runner.should_receive(:mirage_process_ids).with([7001]).and_return({"7001" => "18901"})
       runner.should_receive(:kill).with("18901") do
-        runner.rspec_reset
+        RSpec.reset
         runner.stub(:mirage_process_ids).with([7001]).and_return({})
       end
 
@@ -98,7 +99,7 @@ describe Mirage do
       runner.should_receive(:mirage_process_ids).with([7001, 7002]).and_return({"7001" => "18901", "7002" => "18902"})
       runner.should_receive(:kill).with("18901")
       runner.should_receive(:kill).with("18902") do
-        runner.rspec_reset
+        RSpec.reset
         runner.stub(:mirage_process_ids).with([7001, 7002]).and_return({})
       end
 
@@ -114,7 +115,7 @@ describe Mirage do
       runner.should_receive(:mirage_process_ids).with([:all]).and_return({"7001" => "18901", "7002" => "18902"})
       runner.should_receive(:kill).with("18901")
       runner.should_receive(:kill).with("18902") do
-        runner.rspec_reset
+        RSpec.reset
         runner.stub(:mirage_process_ids).with([:all]).and_return({})
       end
 
@@ -127,10 +128,10 @@ describe Mirage do
       options = {:port => [7001]}
       runner = Mirage::Runner.new
       runner.options = options
-      runner.should_receive(:mirage_process_ids).with([7001]).any_number_of_times.and_return({})
+      runner.stub(:mirage_process_ids).with([7001]).and_return({})
 
       Mirage::Runner.should_receive(:new).and_return(runner)
-      expect { runner.invoke(:stop, [], options) }.to_not raise_error(Mirage::ClientError)
+      expect { runner.invoke(:stop, [], options) }.not_to raise_error(Mirage::ClientError)
     end
 
   end
