@@ -11,7 +11,6 @@ module Mirage
 
     def initialize options={:url => "http://localhost:7001"}, &block
       if options.is_a?(String) && options =~ URI.regexp
-        warn("Client.new(url): Deprecated usage, please use :url => url | :port => port")
         @url = options
       elsif options.kind_of?(Hash) && options[:port]
         @url = "http://localhost:#{options[:port]}"
