@@ -23,7 +23,7 @@ What's New?
 ------------------------------
 3.0.0 is now out the following is a description of what's new.
 
-A full description of the functionality is also available in the projects feature files hosted on Relish. A lot of effort has gone in to trying to make these tests readable so if something is missing or unclear drop me a line.
+A full description of the functionality is also available in the projects [feature files](https://github.com/lashd/mirage/wiki) hosted on Relish. A lot of effort has gone in to trying to make these tests readable so if something is missing or unclear drop me a line.
 
 
 #### What's new in the Server:
