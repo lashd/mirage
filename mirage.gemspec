@@ -5,30 +5,36 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0.alpha.17"
+  s.version = "3.0.0"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2013-10-22"
+  s.date = "2013-10-27"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
     "README.md"
   ]
   s.files = [
-    ".rvmrc",
+    ".ruby-gemset",
+    ".ruby-version",
     ".simplecov",
+    ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
     "HISTORY",
     "README.md",
+    "Rakefile",
     "VERSION",
     "bin/mirage",
     "features/.nav",
     "features/client/clear.feature",
     "features/client/configure.feature",
+    "features/client/model.feature",
     "features/client/preview_responses.feature",
+    "features/client/prime.feature",
     "features/client/put.feature",
+    "features/client/readme.md",
     "features/client/requests.feature",
     "features/client/running.feature",
     "features/client/save_and_revert.feature",
@@ -76,9 +82,6 @@ Gem::Specification.new do |s|
     "lib/mirage/client/templates.rb",
     "mirage.gemspec",
     "mirage_server.rb",
-    "profiles.rb",
-    "Rakefile",
-    "responses/default_responses.rb",
     "server/app.rb",
     "server/binary_data_checker.rb",
     "server/extensions/hash.rb",
@@ -104,8 +107,6 @@ Gem::Specification.new do |s|
     "spec/server/mock_response_spec.rb",
     "spec/server/server_spec.rb",
     "spec/spec_helper.rb",
-    "test.html",
-    "test.rb",
     "todo.list",
     "views/index.haml",
     "views/response.haml"
