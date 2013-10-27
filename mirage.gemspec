@@ -106,7 +106,7 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "test.html",
     "test.rb",
-    "todo.lst",
+    "todo.list",
     "views/index.haml",
     "views/response.haml"
   ]
