@@ -1,7 +1,6 @@
 ROOT_DIR = "#{File.dirname(__FILE__)}/.."
 $LOAD_PATH.unshift "#{ROOT_DIR}/lib"
 $LOAD_PATH.unshift "#{ROOT_DIR}/server"
-puts "ruby platform is: #{RUBY_PLATFORM}"
 require 'simplecov' if ENV['coverage'] && RUBY_PLATFORM != 'java'
 require 'mirage/client'
 require 'rspec'
