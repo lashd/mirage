@@ -21,7 +21,11 @@ What's New?
 -----------
 ### 3.0.0
 ------------------------------
-3.0.0 is not out yet but I am going to spend the next few days filling in the what's new section in preparation for its release.
+3.0.0 is now out the following is a description of what's new.
+
+A full description of the functionality is also available in the projects feature files hosted on Relish. A lot of effort has gone in to trying to make these tests readable so if something is missing or unclear drop me a line.
+
+
 #### What's new in the Server:
 ##### 1: Mirage uses JSON as its communucations medium
 Mirage is now configured using JSON. JSON is also used as the output format for Mirage's other operations.
@@ -46,6 +50,11 @@ Litteral matchers are worth more in the scoring process than regex based ones fo
 Mirage is now accessible via: http://localhost:7001. I.e. 'mirage' has been removed from all resources 
 
 e.g. responses are now under http://localhost:7001/responses
+##### 8. Default responses directory renamed to mirage
+Default templates used to be stored in a directory named 'responses'. The term 'response' was the incorrect word to describe what is now called a 'template'. Rather than rename this directory to templates, which is a directory name that may already be in use in your project, the default name for this directory has been changed to 'mirage'.  
+  
+The old directory name can still be used if you use the client or command line interface to overide where the responses are loaded from
+
 #### What's new in the Client:
 ##### 1. Template Models
 Perhaps the biggest addition to the client. Simply mixin Mirage::Template::Model in to a class, give it a method called body and there you have it... a class that can be used to put objects straight on to Mirage.
