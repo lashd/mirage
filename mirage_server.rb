@@ -21,6 +21,7 @@ module Mirage
       set :dump_errors, true
       set :server, 'webrick'
       set :views, "#{ROOT_DIR}/views"
+      set :bind, '0.0.0.0'
 
       log_file = File.open('mirage.log', 'a')
       log_file.sync=true
