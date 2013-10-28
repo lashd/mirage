@@ -44,13 +44,11 @@ Jeweler::Tasks.new do |gem|
   gem.executables = ['mirage']
   gem.post_install_message = %{
 ===============================================================================
-Thanks you for installing mirage.   
+Mirage v3:
 
-Run Mirage with:
-
-mirage start                                   
-
-For more information go to: https://github.com/lashd/mirage/wiki
+Mirage has just gone up a major version from 2 to 3. If you're project uses
+a previous version take a look at https://github.com/lashd/mirage to see
+what's changed
 ===============================================================================
 }
 end
