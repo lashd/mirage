@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mirage"
-  s.version = "3.0.0"
+  s.version = "3.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leon Davis"]
-  s.date = "2013-10-27"
+  s.date = "2013-10-28"
   s.description = "Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface."
   s.executables = ["mirage"]
   s.extra_rdoc_files = [
@@ -107,13 +107,12 @@ Gem::Specification.new do |s|
     "spec/server/mock_response_spec.rb",
     "spec/server/server_spec.rb",
     "spec/spec_helper.rb",
-    "todo.list",
     "views/index.haml",
     "views/response.haml"
   ]
   s.homepage = "https://github.com/lashd/mirage"
   s.licenses = ["MIT"]
-  s.post_install_message = "\n===============================================================================\nThanks you for installing mirage.   \n\nRun Mirage with:\n\nmirage start                                   \n\nFor more information go to: https://github.com/lashd/mirage/wiki\n===============================================================================\n"
+  s.post_install_message = "\n===============================================================================\nMirage v3:\n\nMirage has just gone up a major version from 2 to 3. If you're project uses\na previous version take a look at https://github.com/lashd/mirage to see\nwhat's changed\n===============================================================================\n"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.25"
   s.summary = "Mirage is a easy mock server for testing your applications"
