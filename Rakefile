@@ -46,7 +46,7 @@ Jeweler::Tasks.new do |gem|
 ===============================================================================
 Mirage v3:
 
-Mirage has just gone up a major version from 2 to 3. If you're project uses
+Mirage has just gone up a major version from 2 to 3. If your project uses
 a previous version take a look at https://github.com/lashd/mirage to see
 what's changed
 ===============================================================================
