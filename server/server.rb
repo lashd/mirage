@@ -7,12 +7,14 @@ module Mirage
 
     REQUESTS = {}
 
-
     helpers Mirage::Server::Helpers
 
     put '/templates/*' do |name|
       content_type :json
-      mock_response = MockResponse.new(name, JSON.parse(request.body.read))
+      mock_response = synchronize do
+        MockResponse.new(name, JSON.parse(request.body.read))
+      end
+
       mock_response.requests_url = request.url.gsub("/templates/#{name}", "/requests/#{mock_response.response_id}")
       {:id => mock_response.response_id}.to_json
     end
@@ -32,7 +34,10 @@ module Mirage
           record = MockResponse.find_default(options)
         end
 
-        REQUESTS[record.response_id] = request.dup
+        synchronize do
+          REQUESTS[record.response_id] = request.dup
+        end
+
 
         send_response(record, body, request, query_string)
       end
@@ -43,24 +48,36 @@ module Mirage
     end
 
     delete '/templates/:id' do
-      MockResponse.delete(response_id)
-      REQUESTS.delete(response_id)
+      synchronize do
+        MockResponse.delete(response_id)
+        REQUESTS.delete(response_id)
+      end
+
       200
     end
 
     delete '/requests' do
-      REQUESTS.clear
+      synchronize do
+        REQUESTS.clear
+      end
+
       200
     end
 
     delete '/requests/:id' do
-      REQUESTS.delete(response_id)
+      synchronize do
+        REQUESTS.delete(response_id)
+      end
+
       200
     end
 
     delete '/templates' do
-      REQUESTS.clear
-      MockResponse.delete_all
+      synchronize do
+        REQUESTS.clear
+        MockResponse.delete_all
+      end
+
       200
     end
 
@@ -76,12 +93,12 @@ module Mirage
         tracked_request.body.rewind
         body = tracked_request.body.read
 
-        parameters = tracked_request.params.dup.select{|key, value| key != body}
+        parameters = tracked_request.params.dup.select { |key, value| key != body }
 
-        { request_url: request.url,
-          headers: extract_http_headers(tracked_request.env),
-          parameters: parameters,
-          body: body}.to_json
+        {request_url: request.url,
+         headers: extract_http_headers(tracked_request.env),
+         parameters: parameters,
+         body: body}.to_json
 
       else
         404
@@ -94,13 +111,15 @@ module Mirage
 
 
     put '/defaults' do
-      MockResponse.delete_all
-      if File.directory?(settings.defaults.to_s)
-        Dir["#{settings.defaults}/**/*.rb"].each do |default|
-          begin
-            eval File.read(default)
-          rescue Exception => e
-            raise "Unable to load default responses from: #{default}"
+      synchronize do
+        MockResponse.delete_all
+        if File.directory?(settings.defaults.to_s)
+          Dir["#{settings.defaults}/**/*.rb"].each do |default|
+            begin
+              eval File.read(default)
+            rescue Exception => e
+              raise "Unable to load default responses from: #{default}"
+            end
           end
         end
       end
@@ -108,13 +127,19 @@ module Mirage
     end
 #
     put '/backup' do
-      MockResponse.backup
+      synchronize do
+        MockResponse.backup
+      end
+
       200
     end
 
 
     put '/' do
-      MockResponse.revert
+      synchronize do
+        MockResponse.revert
+      end
+
       200
     end
 
@@ -131,6 +156,10 @@ module Mirage
     end
 
     helpers do
+
+      def synchronize &block
+        Mutex.new.synchronize &block
+      end
 
       def response_id
         params[:id].to_i
