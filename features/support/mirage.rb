@@ -5,4 +5,4 @@ module Mirage
     end
   end
 end
-include Mirage
+World Mirage
