@@ -239,7 +239,7 @@ When /^the template is sent using PUT to '(.*?)'$/ do |endpoint|
   @response = http_put("http://localhost:7001#{endpoint}", @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
 end
 Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint, value|
-  $mirage.templates.put(endpoint, value)
+  mirage.templates.put(endpoint, value)
 end
 Then /^request data should have been retrieved$/ do
   puts @response.body
