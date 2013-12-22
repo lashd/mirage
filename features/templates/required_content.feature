@@ -102,7 +102,10 @@ Feature: Placing requirements on requests
     And 'response.body' is base64 encoded
     And the template is sent using PUT to '/templates/greeting'
 
-    When I send POST to '/responses/greeting' with body '{"username":"Joe Blogs"}'
+    When I send POST to '/responses/greeting' with request entity
+    """
+    {"username":"Joe Blogs"}
+    """
     Then 'Hello Joe' should be returned
 
 

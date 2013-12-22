@@ -110,20 +110,6 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
   @response_time = Time.now - start_time
 end
 
-
-When /^I send (PUT|POST) to '(.*)' with body '(.*)'$/ do |method, endpoint, body|
-  url = "http://localhost:7001#{endpoint}"
-  start_time = Time.now
-  @response = case method
-                when 'PUT'
-                  http_put(url, body)
-                when 'POST'
-                  http_post(url, body)
-              end
-
-  @response_time = Time.now - start_time
-end
-
 When /^I send PUT to '(.*)' with body '([^']*)' and headers:$/ do |endpoint, body, table|
   url = "http://localhost:7001#{endpoint}"
   headers = {}
