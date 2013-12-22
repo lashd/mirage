@@ -159,11 +159,6 @@ When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
   @response.response[header].should include(value)
 end
 
-Then /^the response should be the same as the content of '([^']*)'$/ do |path|
-  Dir.chdir SCRATCH do
-    @response.body.should == File.read(path)
-  end
-end
 Given /^the following template template:$/ do |text|
   @response_template = Hashie::Mash.new(JSON.parse(text))
 end
