@@ -30,11 +30,6 @@ module Mirage
       if options[:headers]
         options[:headers].each { |field, value| request.add_field(field, value) }
       end
-
-      #if options[:parameters]
-      #  request.set_form_data options[:parameters]
-      #end
-
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 

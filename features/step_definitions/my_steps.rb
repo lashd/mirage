@@ -1,5 +1,3 @@
-
-
 Then /^'([^']*)' should be returned$/ do |expected_response|
   response_text = @response.body
   if response_text != expected_response
@@ -18,10 +16,10 @@ end
 
 
 Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
-  running = false
-  begin
-    running = http_get(url).code.to_i.should == 200
+  running = begin
+    http_get(url).code.to_i.should == 200
   rescue
+    false
   end
 
   should == "should" ? running.should == true : running.should == false
@@ -74,10 +72,8 @@ When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, e
   url = "http://localhost:7001#{endpoint}"
   @response = case method
                 when 'POST'
-                then
                   http_post(url, entity)
                 when 'PUT'
-                then
                   http_put(url, entity)
               end
 end
