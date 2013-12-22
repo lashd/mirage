@@ -16,7 +16,7 @@ Feature: Stopping Mirage
     """
     Mirage.stop
     """
-    Then Connection should be refused to 'http://localhost:7001'
+    Then mirage should not be running on 'http://localhost:7001'
 
 
   Scenario: Stopping Mirage on custom port

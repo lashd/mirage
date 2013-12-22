@@ -46,13 +46,6 @@ Given /^Mirage (is|is not) running$/ do |running|
   end
 end
 
-Then /^Connection should be refused to '(.*)'$/ do |url|
-  begin
-    http_get(url)
-    fail "Mirage is still running"
-  rescue Errno::ECONNREFUSED
-  end
-end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|
   write_to_file file_path, content
