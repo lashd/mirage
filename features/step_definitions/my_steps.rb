@@ -185,17 +185,6 @@ Then /^the following should be returned:$/ do |text|
   text.gsub("\n","").gsub(" ", "").should == @response.body
 end
 
-Given /^I send PUT to '(http:\/\/localhost:7001\/mirage\/(.*?))' with file: ([^']*) and headers:$/ do |url, endpoint, path, table|
-  headers = {}
-  table.raw.each do |row|
-    parameter, value = row[0], row[1]
-    headers[parameter]=value
-  end
-
-  Dir.chdir SCRATCH do
-    http_put(url, File.new(path), :headers => headers)
-  end
-end
 
 Given /^I send PUT to '(.*?)' with body '([^']*)' and parameters:$/ do |endpoint, body, table|
   url = "http://localhost:7001#{endpoint}"
