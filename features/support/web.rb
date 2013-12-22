@@ -1,7 +1,21 @@
 require 'net/http'
 require 'uri'
+require 'httparty'
 module Mirage
   module Web
+    def get *args
+      HTTParty.get(*args)
+    end
+    def put *args
+      HTTParty.put(*args)
+    end
+    def post *args
+      HTTParty.post(*args)
+    end
+    def delete *args
+      HTTParty.delete(*args)
+    end
+
     class FileResponse
       attr_reader :response
       def initialize response
@@ -33,14 +47,6 @@ module Mirage
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def http_get url, params={}, headers={}
-      uri = URI.parse(url)
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request.set_form_data params
-      headers.each { |field, value| request.add_field(field, value) }
-      Net::HTTP.new(uri.host, uri.port).request(request)
-    end
-
     def http_post url, params={}, headers={}
       uri = URI.parse(url)
       request = Net::HTTP::Post.new(uri.request_uri)
@@ -61,4 +67,6 @@ module Mirage
 
   end
 end
+#World(HTTParty)
+
 World(Mirage::Web)

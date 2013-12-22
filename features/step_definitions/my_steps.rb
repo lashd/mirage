@@ -17,7 +17,7 @@ end
 
 Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
   running = begin
-    http_get(url).code.to_i.should == 200
+    get(url).code.to_i.should == 200
   rescue
     false
   end
@@ -83,7 +83,7 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
   url = "http://localhost:7001#{endpoint}"
   @response = case method
                 when 'GET' then
-                  http_get(url)
+                  get(url)
                 when 'PUT' then
                   http_put(url, '')
                 when 'POST' then
@@ -138,7 +138,7 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
                 when 'POST' then
                   http_post(url, parameters)
                 when 'GET' then
-                  http_get(url, parameters)
+                  get(url, query: parameters)
               end
 end
 
@@ -172,7 +172,7 @@ Given(/^the following Template JSON:$/) do |text|
   @response_template = Hashie::Mash.new(JSON.parse(text))
 end
 Then(/^the template (request|response) specification should have the following set:$/) do |spec, table|
-  template_json = JSON.parse(http_get("http://localhost:7001/templates/#{JSON.parse(@response.body)['id']}").body)
+  template_json = JSON.parse(get("http://localhost:7001/templates/#{JSON.parse(@response.body)['id']}").body)
   request_specification = template_json[spec]
   request_specification.size.should==table.hashes.size
   table.hashes.each do |hash|
