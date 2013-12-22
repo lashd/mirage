@@ -1,5 +1,4 @@
-require 'base64'
-require 'hashie'
+
 
 Then /^'([^']*)' should be returned$/ do |expected_response|
   response_text = @response.body

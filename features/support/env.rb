@@ -2,8 +2,8 @@ ROOT_DIR = File.expand_path("#{File.dirname(__FILE__)}/../..")
 SOURCE_PATH = "#{ROOT_DIR}/lib"
 Bundler.require
 
-
 $LOAD_PATH.unshift(SOURCE_PATH)
+require 'base64'
 require 'mirage/client'
 
 SCRATCH = "#{ROOT_DIR}/scratch"
