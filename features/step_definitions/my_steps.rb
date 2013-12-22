@@ -55,15 +55,7 @@ Then /^Connection should be refused to '(.*)'$/ do |url|
 end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|
-  file_path = "#{SCRATCH}/#{file_path}" unless file_path =~ /^\//
-
-  FileUtils.rm_rf(file_path) if File.exists?(file_path)
-  FileUtils.mkdir_p(File.dirname(file_path))
-
-  File.open("#{file_path}", 'w') do |file|
-    file.write(content)
-  end
-
+  write_to_file file_path, content
 end
 
 Then /^the usage information should be displayed$/ do
