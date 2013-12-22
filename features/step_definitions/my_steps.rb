@@ -110,16 +110,6 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
   @response_time = Time.now - start_time
 end
 
-When /^I send PUT to '(.*)' with body '([^']*)' and headers:$/ do |endpoint, body, table|
-  url = "http://localhost:7001#{endpoint}"
-  headers = {}
-  table.raw.each do |row|
-    parameter, value = row[0], row[1]
-    headers[parameter]=value
-  end
-  @response = http_put(url, body, :headers => headers)
-end
-
 Then /^I should see '(.*?)' on the command line$/ do |content|
   @commandline_output.should include(content)
 end
