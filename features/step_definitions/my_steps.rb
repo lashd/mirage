@@ -154,10 +154,6 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
               end
 end
 
-Then /^the following should be returned:$/ do |text|
-  text.gsub("\n","").gsub(" ", "").should == @response.body
-end
-
 
 When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
   @response.response[header].should include(value)
