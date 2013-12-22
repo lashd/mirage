@@ -3,7 +3,7 @@ Feature: Configuring Templates
   If you find yourself setting the same basic http settings for templates, the client can be configured to preset these.
 
   Background:
-    Given the following gems are required to run the Mirage client test code:
+    Given the following require statements are needed:
     """
     require 'rubygems'
     require 'rspec/expectations'

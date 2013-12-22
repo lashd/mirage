@@ -77,9 +77,6 @@ Given /^the following require statements are needed:$/ do |text|
   @code_snippet = text.gsub("\"", "\\\\\"")
 end
 
-Given /^the following gems are required to run the Mirage client test code:$/ do |text|
-  @code_snippet = text.gsub("\"", "\\\\\"")
-end
 
 When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, entity|
   url = "http://localhost:7001#{endpoint}"

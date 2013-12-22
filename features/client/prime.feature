@@ -3,7 +3,7 @@ Feature: Priming Mirage
   The client can be used to prime Mirage with Templates found in the templates directory that was configured when Mirage was started.
 
   Background:
-    Given the following gems are required to run the Mirage client test code:
+    Given the following require statements are needed:
     """
     require 'rubygems'
     require 'rspec/expectations'

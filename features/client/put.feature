@@ -7,7 +7,7 @@ Feature: Adding Templates
   Body, Header, and Parameter requirements can be specified as either a String or Regexp
 
   Background:
-    Given the following gems are required to run the Mirage client test code:
+    Given the following require statements are needed:
     """
     require 'rubygems'
     require 'rspec/expectations'
