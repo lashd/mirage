@@ -137,7 +137,7 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
 
   @response = case http_method
                 when 'POST' then
-                  http_post(url, parameters)
+                  post(url, query: parameters, headers: {'Content-length' => '0'})
                 when 'GET' then
                   get(url, query: parameters)
               end

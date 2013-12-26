@@ -48,16 +48,6 @@ module Mirage
       Net::HTTP.new(uri.host, uri.port).request(request)
     end
 
-    def http_post url, params={}, headers={}
-      uri = URI.parse(url)
-      request = Net::HTTP::Post.new(uri.request_uri)
-
-      params.is_a?(Hash) ? request.set_form_data(params) : request.body = params
-
-      headers.each { |field, value| request.add_field(field, value) }
-      Net::HTTP.new(uri.host, uri.port).request(request)
-    end
-
     def http_delete url, params={}, headers={}
       uri = URI.parse(url)
       request = Net::HTTP::Delete.new(uri.request_uri)
