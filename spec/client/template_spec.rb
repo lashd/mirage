@@ -67,7 +67,7 @@ describe Mirage::Template do
 
     it 'should raise an error if the template is not found' do
       template_url = 'url'
-      response = mock(code: 404)
+      response = double(code: 404)
       Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return response
       expect{Template.get(template_url)}.to raise_error Mirage::TemplateNotFound
     end

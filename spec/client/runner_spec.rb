@@ -131,7 +131,7 @@ describe Mirage do
       runner.stub(:mirage_process_ids).with([7001]).and_return({})
 
       Mirage::Runner.should_receive(:new).and_return(runner)
-      expect { runner.invoke(:stop, [], options) }.not_to raise_error(Mirage::ClientError)
+      expect { runner.invoke(:stop, [], options) }.not_to raise_error
     end
 
   end

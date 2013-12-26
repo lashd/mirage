@@ -4,9 +4,7 @@ require 'extensions/hash'
 require 'mock_response'
 
 describe Mirage::MockResponse do
-  MockResponse = Mirage::MockResponse
-  ServerResponseNotFound = Mirage::ServerResponseNotFound
-  BinaryDataChecker = Mirage::BinaryDataChecker
+
   before :each do
     MockResponse.delete_all
   end
