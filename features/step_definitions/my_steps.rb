@@ -1,30 +1,3 @@
-Then /^'([^']*)' should be returned$/ do |expected_response|
-  response_text = @response.body
-  if response_text != expected_response
-    expected_response.split('&').each { |param_value_pair| response_text.should =~ /#{param_value_pair}/ }
-    expected_response.length.should == response_text.length
-  end
-end
-
-Then /^a (\d+) should be returned$/ do |error_code|
-  @response.code.to_i.should == error_code.to_i
-end
-
-Then /^it should take at least '(.*)' seconds$/ do |time|
-  (@response_time).should >= time.to_f
-end
-
-
-Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
-  running = begin
-    get(url).code.to_i.should == 200
-  rescue
-    false
-  end
-
-  should == "should" ? running.should == true : running.should == false
-end
-
 Given /^I run '(.*)'$/ do |command|
   if ENV['mode'] == 'regression' && ChildProcess.windows?
     command.gsub!(/^mirage/, MIRAGE_CMD)
@@ -35,21 +8,8 @@ Given /^I run '(.*)'$/ do |command|
   @commandline_output = normalise(run("#{path}#{command}"))
 end
 
-Given /^Mirage (is|is not) running$/ do |running|
-  if running == 'is'
-    start_mirage_in_scratch_dir unless Mirage.running?
-  else
-    Mirage.stop :all
-  end
-end
-
-
 Given /^the file '(.*)' contains:$/ do |file_path, content|
   write_to_file file_path, content
-end
-
-Then /^the usage information should be displayed$/ do
-  @usage.each_line { |line| @commandline_output.should include(line) }
 end
 
 Given /^usage information:$/ do |usage|
@@ -66,7 +26,6 @@ end
 Given /^the following require statements are needed:$/ do |text|
   @code_snippet = text.gsub("\"", "\\\\\"")
 end
-
 
 When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, entity|
   url = "http://localhost:7001#{endpoint}"
@@ -94,27 +53,6 @@ When /^(GET|PUT|POST|DELETE) is sent to '([^']*)'$/ do |method, endpoint|
   @response_time = Time.now - start_time
 end
 
-Then /^I should see '(.*?)' on the command line$/ do |content|
-  @commandline_output.should include(content)
-end
-
-Then /^'(.*)' should exist$/ do |path|
-  File.exists?("#{SCRATCH}/#{path}").should == true
-end
-
-Then /^mirage.log should contain '(.*)'$/ do |content|
-  log_file_content = @mirage_log_file.readlines.to_s
-  fail("#{content} not found in mirage.log: #{log_file_content}") unless log_file_content.index(content)
-end
-
-Given /^I goto '(.*)'$/ do |url|
-  @page = Mechanize.new.get url
-end
-
-Then /^I should see '(.*)'$/ do |text|
-  @page.body.index(text).should_not == nil
-end
-
 When /^I click '(.*)'$/ do |thing|
   @page = @page.links.find { |link| link.attributes['id'] == thing }.click
 end
@@ -139,60 +77,22 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
               end
 end
 
-
-When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
-  @response.response[header].should include(value)
-end
-
 Given /^the following template template:$/ do |text|
   @response_template = Hashie::Mash.new(JSON.parse(text))
 end
+
 When /^'(.*)' is base64 encoded$/ do |template_component|
   @response_template.send(:eval, "#{template_component}=Base64.encode64(#{template_component})")
 end
-When /^the template is sent using PUT to '(.*?)'$/ do |endpoint|
 
+When /^the template is sent using PUT to '(.*?)'$/ do |endpoint|
   @response = put("http://localhost:7001#{endpoint}", body: @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
 end
+
 Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint, value|
   mirage.templates.put(endpoint, value)
 end
-Then /^request data should have been retrieved$/ do
-  puts @response.body
-  request_data = JSON.parse(@response.body)
-  request_data.include?('parameters').should == true
-  request_data.include?('headers').should == true
-  request_data.include?('body').should == true
-  request_data.include?('request_url').should == true
-end
+
 Given(/^the following Template JSON:$/) do |text|
   @response_template = Hashie::Mash.new(JSON.parse(text))
-end
-Then(/^the template (request|response) specification should have the following set:$/) do |spec, table|
-  template_json = JSON.parse(get("http://localhost:7001/templates/#{JSON.parse(@response.body)['id']}").body)
-  request_specification = template_json[spec]
-  request_specification.size.should==table.hashes.size
-  table.hashes.each do |hash|
-    default = request_specification[hash['Setting'].downcase.gsub(' ', '_')]
-    case required_default = hash['Default']
-      when 'none'
-        case default
-          when Array
-            default.should == []
-          when Hash
-            default.should == {}
-          else
-            default.should == ""
-
-        end
-      else
-        default.to_s.downcase.should == required_default.downcase
-    end
-  end
-end
-Then(/^the following json should be returned:$/) do |text|
-  JSON.parse(text).should == JSON.parse(@response.body)
-end
-When(/^the content-type should be '(.*)'$/) do |content_type|
-  @response.content_type.should == content_type
 end
