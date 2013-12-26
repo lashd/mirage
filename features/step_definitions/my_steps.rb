@@ -78,7 +78,7 @@ When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, e
               end
 end
 
-When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, endpoint|
+When /^(GET|PUT|POST|DELETE) is sent to '([^']*)'$/ do |method, endpoint|
   start_time = Time.now
   url = "http://localhost:7001#{endpoint}"
   @response = case method
@@ -88,10 +88,6 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
                   put(url, body: '')
                 when 'POST' then
                   post(url, body: '')
-                when 'HEAD' then
-                  http_head(url)
-                when 'OPTIONS' then
-                  http_options(url)
                 when 'DELETE' then
                   delete(url)
               end
