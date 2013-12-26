@@ -72,7 +72,7 @@ When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, e
   url = "http://localhost:7001#{endpoint}"
   @response = case method
                 when 'POST'
-                  http_post(url, entity)
+                  post(url, body: entity)
                 when 'PUT'
                   http_put(url, entity)
               end
@@ -87,7 +87,7 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
                 when 'PUT' then
                   http_put(url, '')
                 when 'POST' then
-                  http_post(url, '')
+                  post(url, body: '')
                 when 'HEAD' then
                   http_head(url)
                 when 'OPTIONS' then
@@ -133,6 +133,7 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
     value = File.exists?(value) ? File.open(value, 'rb') : value
     parameters[parameter]=value
   end
+  puts parameters
 
   @response = case http_method
                 when 'POST' then
