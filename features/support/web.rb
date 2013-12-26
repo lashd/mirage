@@ -16,19 +16,6 @@ module Mirage
     def delete *args
       HTTParty.delete(*args)
     end
-
-    class FileResponse
-      attr_reader :response
-      def initialize response
-        @response = response
-      end
-
-      def save_as path
-        @response.save_as(path)
-      end
-    end
-
-
   end
 end
 
