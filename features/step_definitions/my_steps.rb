@@ -74,7 +74,7 @@ When /^I send (POST|PUT) to '(.*)' with request entity$/ do |method, endpoint, e
                 when 'POST'
                   post(url, body: entity)
                 when 'PUT'
-                  http_put(url, entity)
+                  put(url, body: entity)
               end
 end
 
@@ -85,7 +85,7 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
                 when 'GET' then
                   get(url)
                 when 'PUT' then
-                  http_put(url, '')
+                  put(url, body: '')
                 when 'POST' then
                   post(url, body: '')
                 when 'HEAD' then
@@ -93,7 +93,7 @@ When /^(GET|PUT|POST|OPTIONS|HEAD|DELETE) is sent to '([^']*)'$/ do |method, end
                 when 'OPTIONS' then
                   http_options(url)
                 when 'DELETE' then
-                  http_delete(url)
+                  delete(url)
               end
   @response_time = Time.now - start_time
 end
@@ -156,7 +156,7 @@ When /^'(.*)' is base64 encoded$/ do |template_component|
 end
 When /^the template is sent using PUT to '(.*?)'$/ do |endpoint|
 
-  @response = http_put("http://localhost:7001#{endpoint}", @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
+  @response = put("http://localhost:7001#{endpoint}", body: @response_template.to_hash.to_json, :headers => {"Content-Type" => "application/json"})
 end
 Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint, value|
   mirage.templates.put(endpoint, value)
