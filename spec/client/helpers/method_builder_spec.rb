@@ -1,32 +1,40 @@
 require 'spec_helper'
 
 describe Helpers::MethodBuilder do
-  it 'should give a builder_method builder method' do
-    model_class = Class.new do
-      extend Helpers::MethodBuilder
 
-      builder_method :name
-      builder_method :age
+  describe 'a builder method' do
+    let :model do
+      model_class = Class.new do
+        extend Helpers::MethodBuilder
+
+        builder_method :name
+      end
+      model_class.new
     end
-    name, age = 'Joe', 25
 
-    person = model_class.new
-    person.name(name).age(age)
-    person.name.should == name
-    person.age.should == age
+    it 'should set a value' do
+      model.name(:joe)
+      model.name.should == :joe
+    end
+
+    it 'should chain' do
+      model.name(:joe).should == model
+    end
+
+    it 'should work with booleans' do
+      model.name(false)
+      model.name.should == false
+    end
   end
+
 
   it 'should let you define more than one builder method at a time' do
     model_class = Class.new do
       extend Helpers::MethodBuilder
-
-      builder_methods :name, :age
+      builder_methods :foo, :bar
     end
-    name, age = 'Joe', 25
-
-    person = model_class.new
-    person.name(name).age(age)
-    person.name.should == name
-    person.age.should == age
+    model = model_class.new
+    model.respond_to?(:foo).should be_true
+    model.respond_to?(:bar).should be_true
   end
 end
