@@ -20,8 +20,6 @@ group :development do
   gem 'rake'
   gem "jeweler"
   gem 'sinatra-contrib'
-  gem 'mechanize'
-  gem "nokogiri"
 
   platform :jruby do
     gem "jruby-openssl"
