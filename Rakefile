@@ -1,4 +1,3 @@
-$LOAD_PATH.unshift('lib')
 require 'bundler/setup'
 
 Bundler.setup(:default, :development)

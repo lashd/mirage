@@ -13,7 +13,7 @@ group :test do
   gem 'cucumber'
   gem 'rspec', require: 'rspec/core/rake_task'
   gem 'rack-test'
-  gem 'simplecov'
+  gem 'simplecov', require: false
 end
 
 group :development do
