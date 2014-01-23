@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Request do
-  let(:request_url) { "url" }
+  let(:id) { "url_for_request_entity" }
+  let(:request_url) { "requested_url" }
   let(:trigger_url) { "trigger url" }
 
   let(:body) { "body" }
@@ -12,14 +13,15 @@ describe Request do
     {body: body,
      headers: headers,
      parameters: parameters,
-     request_url: trigger_url}
+     request_url: trigger_url,
+     id: id}
   end
 
   it 'delete a request' do
-    request_url = "url"
-    Request.should_receive(:delete).with(request_url)
+    id = "url"
+    Request.should_receive(:delete).with(id)
     request = Request.new
-    request.request_url = request_url
+    request.id = id
     request.delete
   end
 
@@ -31,6 +33,7 @@ describe Request do
     request.body.should == body
     request.request_url.should == trigger_url
     request.parameters.should == parameters
+    request.id.should == id
   end
 
 end

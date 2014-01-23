@@ -68,6 +68,7 @@ Then /^request data should have been retrieved$/ do
   request_data.include?('headers').should == true
   request_data.include?('body').should == true
   request_data.include?('request_url').should == true
+  request_data.include?('id').should == true
 end
 
 Then(/^the template (request|response) specification should have the following set:$/) do |spec, table|

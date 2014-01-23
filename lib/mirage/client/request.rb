@@ -12,14 +12,15 @@ module Mirage
         request.headers = result.headers
         request.request_url = result.request_url
         request.body = result.body
+        request.id = result.id
         request
       end
     end
 
-    attr_accessor :parameters, :headers, :body, :request_url
+    attr_accessor :parameters, :headers, :body, :request_url, :id
 
     def delete
-      self.class.delete(request_url)
+      self.class.delete(id)
     end
   end
 end

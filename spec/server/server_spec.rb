@@ -141,7 +141,8 @@ describe "Mirage Server" do
       request_data['parameters'].should == {'param' => 'value'}
       request_data['headers']["MYHEADER"].should == "my_header_value"
       request_data['body'].should == "body"
-      request_data['request_url'].should == "http://example.org/requests/#{response_id}"
+      request_data['request_url'].should == "http://example.org/responses/greeting?param=value"
+      request_data['id'].should == "http://example.org/requests/#{response_id}"
 
     end
 

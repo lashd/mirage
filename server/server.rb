@@ -95,7 +95,8 @@ module Mirage
 
         parameters = tracked_request.params.dup.select { |key, value| key != body }
 
-        {request_url: request.url,
+        {id: request.url,
+         request_url: tracked_request.url,
          headers: extract_http_headers(tracked_request.env),
          parameters: parameters,
          body: body}.to_json
