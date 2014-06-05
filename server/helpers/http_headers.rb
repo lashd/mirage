@@ -4,9 +4,10 @@ module Mirage
   class Server < Sinatra::Base
     module Helpers
       module HttpHeaders
+        HTTP_HEADER_FILTER_EXCEPTIONS = %w(CONTENT_TYPE CONTENT_LENGTH)
         def extract_http_headers(env)
           headers = env.reject do |k, v|
-            k.to_s.upcase != 'CONTENT_TYPE' && (!(/^HTTP_[A-Z_]+$/ === k) || v.nil?)
+            !HTTP_HEADER_FILTER_EXCEPTIONS.include?(k.to_s.upcase) && (!(/^HTTP_[A-Z_]+$/ === k) || v.nil?)
           end.map do |k, v|
             [reconstruct_header_name(k), v]
           end.inject(Rack::Utils::HeaderHash.new) do |hash, k_v|

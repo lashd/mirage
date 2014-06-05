@@ -9,5 +9,12 @@ describe Mirage::Server::Helpers::HttpHeaders do
       expect(helpers.extract_http_headers(expected)['Content-Type']).to eq('application/json')
     end
 
+    it 'returns content-length' do
+      helpers = Object.new
+      helpers.extend(described_class)
+      expected = {'CONTENT_LENGTH' => '10'}
+      expect(helpers.extract_http_headers(expected)['Content-Length']).to eq('10')
+    end
+
   end
 end
