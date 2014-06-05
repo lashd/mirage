@@ -1,3 +1,4 @@
+V3.0.6 - bug fix for issue 13: https://github.com/lashd/mirage/issues/13
 V3.0.6 - bug fix
 V3.0.5 - fixed bug in builder methods
 V3.0.1 - updating gem post install message to point people towards the readme due checkout the differences between version 2 and 3 of Mirage
