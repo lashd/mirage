@@ -7,7 +7,7 @@ module Mirage
 
     REQUESTS = {}
 
-    helpers Mirage::Server::Helpers
+    helpers Helpers::TemplateRequirements, Helpers::HttpHeaders
 
     put '/templates/*' do |name|
       content_type :json
@@ -23,7 +23,7 @@ module Mirage
       send(http_method, '/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
-        options = {:body => body,
+          options = {:body => body,
                    :http_method => http_method,
                    :endpoint => name,
                    :params => request.params,
@@ -178,25 +178,7 @@ module Mirage
         mock_response.value(body, request, query_string)
       end
 
-      def extract_http_headers(env)
-        headers = env.reject do |k, v|
-          !(/^HTTP_[A-Z_]+$/ === k) || v.nil?
-        end.map do |k, v|
-          [reconstruct_header_name(k), v]
-        end.inject(Rack::Utils::HeaderHash.new) do |hash, k_v|
-          k, v = k_v
-          hash[k] = v
-          hash
-        end
 
-        x_forwarded_for = (headers["X-Forwarded-For"].to_s.split(/, +/) << env["REMOTE_ADDR"]).join(", ")
-
-        headers.merge!("X-Forwarded-For" => x_forwarded_for)
-      end
-
-      def reconstruct_header_name(name)
-        name.sub(/^HTTP_/, "").gsub("_", "-")
-      end
     end
   end
 end

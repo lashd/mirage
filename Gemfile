@@ -8,7 +8,7 @@ gem "ptools"
 gem "httparty"
 gem "haml"
 gem 'hashie'
-
+gem 'thin'
 group :test do
   gem 'cucumber'
   gem 'rspec', require: 'rspec/core/rake_task'

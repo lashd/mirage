@@ -5,3 +5,4 @@ pkg
 *.iml
 .bundle
 coverage
+test.rb
