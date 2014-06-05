@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'sinatra'
-require 'helpers'
+require 'helpers/template_requirements'
 
 
 describe "helpers" do
@@ -8,7 +8,7 @@ describe "helpers" do
 
   before :each do
     @helper = Object.new
-    @helper.extend(Mirage::Server::Helpers)
+    @helper.extend(Mirage::Server::Helpers::TemplateRequirements)
   end
 
   describe 'converting raw parameter requirements' do
