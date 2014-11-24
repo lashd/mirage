@@ -62,7 +62,6 @@ When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
 end
 
 Then /^request data should have been retrieved$/ do
-  puts @response.body
   request_data = JSON.parse(@response.body)
   request_data.include?('parameters').should == true
   request_data.include?('headers').should == true
