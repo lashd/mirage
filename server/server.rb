@@ -19,7 +19,7 @@ module Mirage
       {:id => mock_response.response_id}.to_json
     end
 
-    %w(get post delete put).each do |http_method|
+    %w(get post delete put options).each do |http_method|
       send(http_method, '/responses/*') do |name|
         body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
 
