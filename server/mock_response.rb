@@ -1,6 +1,9 @@
 require 'binary_data_checker'
 
 require 'hashie/mash'
+require 'mock_response_set'
+
+
 module Mirage
   class ServerResponseNotFound < Exception
 
@@ -47,7 +50,7 @@ module Mirage
         options[:http_method].upcase!
         http_method = options[:http_method]
         default_responses = subdomains(options[:endpoint]).collect do |domain|
-          if (responses_for_domain = responses[domain])
+          if (responses_for_domain = responses.fuzzy_find(domain))
             responses_for_domain[http_method].find_all { |response| response.default? } if responses_for_domain[http_method]
           end
         end.flatten.compact
@@ -64,7 +67,7 @@ module Mirage
       end
 
       def find(options)
-        options[:response_set] = responses[options[:endpoint]]
+        options[:response_set] = responses.fuzzy_find(options[:endpoint])
         find_in_response_set(options) || raise(ServerResponseNotFound)
       end
 
@@ -139,7 +142,7 @@ module Mirage
       end
 
       def responses
-        @responses ||={}
+        @responses ||= MockResponseSet.new
       end
 
       def snapshot
