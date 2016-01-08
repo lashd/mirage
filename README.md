@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/lashd/mirage.png)](https://travis-ci.org/lashd/mirage)
 Mirage
 ======
 Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. It's accessible via HTTP and has a RESTful interface.    
