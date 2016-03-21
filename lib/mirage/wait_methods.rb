@@ -6,11 +6,12 @@ module Mirage
     #   wait_until do
     #     (rand % 2) == 0
     #   end
-    def wait_until(timeout_after: 5, retry_every: 1, &_block)
+    def wait_until(opts = {})
+      opts = {timeout_after: 5, retry_every: 0.1}.merge(opts)
       start_time = Time.now
-      until Time.now > start_time + timeout_after
+      until Time.now > start_time + opts[:timeout_after]
         return true if yield == true
-        sleep retry_every
+        sleep opts[:retry_every]
       end
       fail TimeoutException, 'Action took to long'
     end
