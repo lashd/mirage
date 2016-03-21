@@ -133,7 +133,6 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<childprocess>, [">= 0"])
-      s.add_runtime_dependency(%q<waitforit>, [">= 0"])
       s.add_runtime_dependency(%q<thor>, [">= 0"])
       s.add_runtime_dependency(%q<ptools>, [">= 0"])
       s.add_runtime_dependency(%q<httparty>, [">= 0"])
@@ -146,7 +145,6 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<childprocess>, [">= 0"])
-      s.add_dependency(%q<waitforit>, [">= 0"])
       s.add_dependency(%q<thor>, [">= 0"])
       s.add_dependency(%q<ptools>, [">= 0"])
       s.add_dependency(%q<httparty>, [">= 0"])
@@ -160,7 +158,6 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<childprocess>, [">= 0"])
-    s.add_dependency(%q<waitforit>, [">= 0"])
     s.add_dependency(%q<thor>, [">= 0"])
     s.add_dependency(%q<ptools>, [">= 0"])
     s.add_dependency(%q<httparty>, [">= 0"])

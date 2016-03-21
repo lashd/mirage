@@ -1,8 +1,8 @@
 require 'thor'
-require 'waitforit'
 require 'childprocess'
 require 'uri'
 require 'httparty'
+
 module Mirage
   class << self
 
@@ -30,7 +30,7 @@ module Mirage
       end
 
       Runner.new.invoke(:stop, [], options)
-    rescue ClientError => e
+    rescue ClientError
       raise ClientError.new("Mirage is running multiple ports, please specify the port(s) see api/tests for details")
     end
 
@@ -79,7 +79,7 @@ module Mirage
       command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
       ChildProcess.build(*command).start
 
-      wait_until(:timeout_after => 30.seconds) { Mirage.running?(options) }
+      wait_until(:timeout_after => 30) { Mirage.running?(options) }
 
       begin
         Mirage::Client.new(options).prime
@@ -99,5 +99,15 @@ module Mirage
       wait_until { mirage_process_ids(options[:port]).empty? }
     end
 
+    private
+
+    def wait_until(timeout_after: 5, retry_every: 1, &_block)
+      start_time = Time.now
+      until Time.now > start_time + timeout_after
+        return true if yield == true
+        sleep retry_every
+      end
+      fail TimeoutException, 'Action took to long'
+    end
   end
 end
