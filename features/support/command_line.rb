@@ -1,5 +1,9 @@
 require 'tempfile'
+require 'wait_methods'
+
 module CommandLine
+  include Mirage::WaitMethods
+
   def run command
     output = Tempfile.new("child")
     Dir.chdir SCRATCH do

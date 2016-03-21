@@ -52,6 +52,8 @@ module Mirage
 
   class Runner < Thor
     include CLIBridge
+    include Mirage::WaitMethods
+
     RUBY_CMD = ChildProcess.jruby? ? 'jruby' : 'ruby'
 
     desc "start", "Starts mirage"
@@ -99,15 +101,5 @@ module Mirage
       wait_until { mirage_process_ids(options[:port]).empty? }
     end
 
-    private
-
-    def wait_until(timeout_after: 5, retry_every: 1, &_block)
-      start_time = Time.now
-      until Time.now > start_time + timeout_after
-        return true if yield == true
-        sleep retry_every
-      end
-      fail TimeoutException, 'Action took to long'
-    end
   end
 end

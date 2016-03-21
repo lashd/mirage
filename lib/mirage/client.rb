@@ -1,4 +1,5 @@
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}"
+require 'wait_methods'
 require 'client/template'
 require 'client/error'
 require 'client/cli_bridge'
