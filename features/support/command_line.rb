@@ -1,5 +1,9 @@
 require 'tempfile'
+require 'wait_methods'
+
 module CommandLine
+  include Mirage::WaitMethods
+
   def run command
     output = Tempfile.new("child")
     Dir.chdir SCRATCH do
@@ -8,7 +12,7 @@ module CommandLine
       process.io.stdout = output
       process.io.stderr = output
       process.start
-      wait_until(:timeout_after => 30.seconds) { process.exited? }
+      wait_until(:timeout_after => 30) { process.exited? }
     end
     File.read(output.path)
   end

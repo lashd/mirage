@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'childprocess'
-gem "waitforit"
 gem "thor"
 gem "ptools"
 gem "httparty"

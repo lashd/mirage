@@ -1,8 +1,8 @@
 require 'thor'
-require 'waitforit'
 require 'childprocess'
 require 'uri'
 require 'httparty'
+
 module Mirage
   class << self
 
@@ -30,7 +30,7 @@ module Mirage
       end
 
       Runner.new.invoke(:stop, [], options)
-    rescue ClientError => e
+    rescue ClientError
       raise ClientError.new("Mirage is running multiple ports, please specify the port(s) see api/tests for details")
     end
 
@@ -52,6 +52,8 @@ module Mirage
 
   class Runner < Thor
     include CLIBridge
+    include Mirage::WaitMethods
+
     RUBY_CMD = ChildProcess.jruby? ? 'jruby' : 'ruby'
 
     desc "start", "Starts mirage"
@@ -79,7 +81,7 @@ module Mirage
       command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
       ChildProcess.build(*command).start
 
-      wait_until(:timeout_after => 30.seconds) { Mirage.running?(options) }
+      wait_until(:timeout_after => 30) { Mirage.running?(options) }
 
       begin
         Mirage::Client.new(options).prime
