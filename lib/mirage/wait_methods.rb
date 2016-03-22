@@ -1,4 +1,9 @@
 module Mirage
+
+  class TimeoutException < Exception
+  end
+
+
   # module WaitMethods - contains methods for waiting
   module WaitMethods
     # Wait until a the supplied block returns true
