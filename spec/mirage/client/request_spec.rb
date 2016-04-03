@@ -39,6 +39,6 @@ describe Request do
   it 'raises error when request is not found' do
     Request.should_receive(:backedup_get).and_raise(StandardError)
     
-    expect { Request.get(request_url) }.to raise_error(Request::NotFound)
+    expect { Request.get(request_url) }.to raise_error(Request::NotReceivedException)
   end
 end

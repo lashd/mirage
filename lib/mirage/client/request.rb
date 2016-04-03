@@ -15,7 +15,7 @@ module Mirage
         request.id = result.id
         request
       rescue
-        raise NotFound.new('Mirage has not received a request for this id')
+        raise NotReceivedException.new('Mirage has not received a request for this id')
       end
     end
 
@@ -25,6 +25,6 @@ module Mirage
       self.class.delete(id)
     end
 
-    class NotFound < StandardError ; end
+    class NotReceivedException < StandardError ; end
   end
 end
