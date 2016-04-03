@@ -1,3 +1,5 @@
+v3.0.12 - Merge of [pull request from @asehra](https://github.com/lashd/mirage/pull/17). Raises exception when trying to retrieve request information and request has not been received.
+V3.0.11 - Implement waiting function within project and remove dependency on waitforit
 V3.0.8 - bug fix for issue 13: https://github.com/lashd/mirage/issues/13 - match Content-Length header
 V3.0.7 - bug fix for issue 13: https://github.com/lashd/mirage/issues/13 - match Content-Type header
 V3.0.6 - bug fix
