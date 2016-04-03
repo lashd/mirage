@@ -67,7 +67,6 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
     value = File.exists?(value) ? File.open(value, 'rb') : value
     parameters[parameter]=value
   end
-  puts parameters
 
   @response = case http_method
                 when 'POST' then

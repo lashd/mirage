@@ -6,3 +6,4 @@ pkg
 .bundle
 coverage
 test.rb
+vendor

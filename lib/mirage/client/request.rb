@@ -14,6 +14,8 @@ module Mirage
         request.body = result.body
         request.id = result.id
         request
+      rescue
+        raise NotReceivedException.new('Mirage has not received a request for this id')
       end
     end
 
@@ -22,5 +24,7 @@ module Mirage
     def delete
       self.class.delete(id)
     end
+
+    class NotReceivedException < StandardError ; end
   end
 end

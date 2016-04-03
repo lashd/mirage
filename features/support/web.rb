@@ -8,7 +8,6 @@ module Mirage
       HTTParty.put(*args)
     end
     def post *args
-      puts "running this one"
       HTTParty.post(*args)
     end
     def delete *args
