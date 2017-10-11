@@ -14,6 +14,7 @@ Jeweler::Tasks.new do |gem|
   gem.summary = "Mirage is a easy mock server for testing your applications"
   gem.description = 'Mirage aids testing of your applications by hosting mock responses so that your applications do not have to talk to real endpoints. Its accessible via HTTP and has a RESTful interface.'
   gem.authors = ["Leon Davis"]
+  gem.files = Dir.glob(%w(mirage_server.rb lib/**/*.rb bin/* server/**/*.rb views/**/*.*))
   gem.executables = ['mirage']
   gem.post_install_message = %{
 ===============================================================================
