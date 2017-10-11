@@ -12,6 +12,14 @@ describe Helpers::MethodBuilder do
       model_class.new
     end
 
+    context 'parameter is nil' do
+      it 'should set the value to nil' do
+        model.name(:joe)
+        model.name(nil)
+        expect(model.name).to be_nil
+      end
+    end
+
     it 'should set a value' do
       model.name(:joe)
       model.name.should == :joe
