@@ -17,7 +17,7 @@ module Mirage
       elsif options.kind_of?(Hash) && options[:url]
         @url = options[:url]
       else
-        raise "specify a valid URL or port"
+        raise ArgumentError, "specify a valid URL or port"
       end
 
       @templates = Templates.new(@url)

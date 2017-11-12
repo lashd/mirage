@@ -1,27 +1,31 @@
 Then /^'([^']*)' should be returned$/ do |expected_response|
   response_text = @response.body
   if response_text != expected_response
-    expected_response.split('&').each { |param_value_pair| response_text.should =~ /#{param_value_pair}/ }
-    expected_response.length.should == response_text.length
+    expected_response.split('&').each {|param_value_pair| expect(response_text).to include(/#{param_value_pair}/)}
+    expect(expected_response.length).to eq(response_text.length)
   end
 end
 
 Then /^a (\d+) should be returned$/ do |error_code|
-  @response.code.to_i.should == error_code.to_i
+  expect(@response.code.to_i).to eq(error_code.to_i)
 end
 
 Then /^it should take at least '(.*)' seconds$/ do |time|
-  (@response_time).should >= time.to_f
+  expect(@response_time).to be >= time.to_f
 end
 
 Then /^mirage (should|should not) be running on '(.*)'$/ do |should, url|
   running = begin
-    get(url).code.to_i.should == 200
+    expect(get(url).code.to_i).to eq(200)
   rescue
     false
   end
 
-  should == "should" ? running.should == true : running.should == false
+  if should == "should"
+    expect(running).to eq(true)
+  else
+    expect(running).to eq(false)
+  end
 end
 
 Given /^Mirage (is|is not) running$/ do |running|
@@ -33,15 +37,15 @@ Given /^Mirage (is|is not) running$/ do |running|
 end
 
 Then /^the usage information should be displayed$/ do
-  @usage.each_line { |line| @commandline_output.should include(line) }
+  @usage.each_line {|line| expect(@commandline_output).to include(line)}
 end
 
 Then /^I should see '(.*?)' on the command line$/ do |content|
-  @commandline_output.should include(content)
+  expect(@commandline_output).to include(content)
 end
 
 Then /^'(.*)' should exist$/ do |path|
-  File.exists?("#{SCRATCH}/#{path}").should == true
+  expect(File.exists?("#{SCRATCH}/#{path}")).to eq(true)
 end
 
 Then /^mirage.log should contain '(.*)'$/ do |content|
@@ -54,11 +58,11 @@ Given /^I goto '(.*)'$/ do |url|
 end
 
 Then /^I should see '(.*)'$/ do |text|
-  @page.body.index(text).should_not == nil
+  expect(@page.body.index(text)).to_not be_nil
 end
 
 When /^the response '([^']*)' should be '([^']*)'$/ do |header, value|
-  @response.response[header].should include(value)
+  expect(@response.response[header]).to include(value)
 end
 
 Then /^request data should have been retrieved$/ do
@@ -66,42 +70,42 @@ Then /^request data should have been retrieved$/ do
   expect(request_data).to be_a(Array)
   expect(request_data.size).to eq(1)
   request_data = request_data.first
-  request_data.include?('parameters').should == true
-  request_data.include?('headers').should == true
-  request_data.include?('body').should == true
-  request_data.include?('request_url').should == true
-  request_data.include?('id').should == true
+  expect(request_data.include?('parameters')).to eq(true)
+  expect(request_data.include?('headers')).to eq(true)
+  expect(request_data.include?('body')).to eq(true)
+  expect(request_data.include?('request_url')).to eq(true)
+  expect(request_data.include?('id')).to eq(true)
 end
 
 Then(/^the template (request|response) specification should have the following set:$/) do |spec, table|
   template_json = JSON.parse(get("http://localhost:7001/templates/#{JSON.parse(@response.body)['id']}").body)
   request_specification = template_json[spec]
-  request_specification.size.should==table.hashes.size
+  expect(request_specification.size).to eq(table.hashes.size)
   table.hashes.each do |hash|
     default = request_specification[hash['Setting'].downcase.gsub(' ', '_')]
     case required_default = hash['Default']
       when 'none'
         case default
           when Array
-            default.should == []
+            expect(default).to eq([])
           when Hash
-            default.should == {}
+            expect(default).to eq({})
           else
-            default.should == ""
+            expect(default).to eq("")
 
         end
       else
-        default.to_s.downcase.should == required_default.downcase
+        expect(default.to_s.downcase).to eq(required_default.downcase)
     end
   end
 end
 
 Then(/^the following json should be returned:$/) do |text|
-  JSON.parse(text).should == JSON.parse(@response.body)
+  expect(JSON.parse(text)).to eq(JSON.parse(@response.body))
 end
 
 When(/^the content-type should be '(.*)'$/) do |content_type|
-  @response.content_type.should == content_type
+  expect(@response.content_type).to eq(content_type)
 end
 
 Then(/^there should be '(\d+)' request tracked$/) do |count|

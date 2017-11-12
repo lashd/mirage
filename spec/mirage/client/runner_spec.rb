@@ -7,18 +7,18 @@ describe Mirage do
   describe 'starting' do
     before(:each) do
       @runner = double
-      Runner.should_receive(:new).and_return(@runner)
+      expect(Runner).to receive(:new).and_return(@runner)
     end
 
     it 'should start Mirage on port 7001 by default' do
-      @runner.should_receive(:invoke).with(:start, [], {:port => 7001})
+      expect(@runner).to receive(:invoke).with(:start, [], {:port => 7001})
       client = Mirage.start
-      client.should == Mirage::Client.new
+      expect(client).to eq(Mirage::Client.new)
     end
 
     it 'should start mirage on the given port' do
       options = {:port => 9001}
-      @runner.should_receive(:invoke).with(:start, [], options)
+      expect(@runner).to receive(:invoke).with(:start, [], options)
       Mirage.start options
     end
   end
@@ -26,20 +26,20 @@ describe Mirage do
   describe 'stopping' do
     before(:each) do
       @runner = double
-      Runner.stub(:new).and_return(@runner)
+      allow(Runner).to receive(:new).and_return(@runner)
     end
 
     it 'should supply single port argument in an array to the runner' do
       port = 7001
-      @runner.should_receive(:invoke).with(:stop, [], :port => [port])
-      @runner.should_receive(:invoke).with(:stop, [], :port => [:all])
+      expect(@runner).to receive(:invoke).with(:stop, [], :port => [port])
+      expect(@runner).to receive(:invoke).with(:stop, [], :port => [:all])
       Mirage.stop(:port => port)
       Mirage.stop(:all)
     end
 
     it 'should stop multiple instances of Mirage' do
       ports = 7001, 7002
-      @runner.should_receive(:invoke).with(:stop, [], :port => ports)
+      expect(@runner).to receive(:invoke).with(:stop, [], :port => ports)
       Mirage.stop(:port => ports)
     end
 
@@ -51,15 +51,15 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.stub(:mirage_process_ids).with([]).and_return({"7001" => "18901"})
+      allow(runner).to receive(:mirage_process_ids).with([]).and_return({"7001" => "18901"})
 
 
-      runner.should_receive(:kill).with("18901") do
+      expect(runner).to receive(:kill).with("18901") do
         RSpec.reset
-        runner.stub(:mirage_process_ids).with([]).and_return({})
+        allow(runner).to receive(:mirage_process_ids).with([]).and_return({})
       end
 
-      Mirage::Runner.should_receive(:new).and_return(runner)
+      expect(Mirage::Runner).to receive(:new).and_return(runner)
       runner.invoke(:stop, [], options)
     end
 
@@ -68,9 +68,9 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.stub(:mirage_process_ids).with([]).and_return({"7001" => "18901", "7002" => "18902", "7003" => "18903"})
-      runner.should_not_receive(:kill)
-      Mirage::Runner.should_receive(:new).and_return(runner)
+      allow(runner).to receive(:mirage_process_ids).with([]).and_return({"7001" => "18901", "7002" => "18902", "7003" => "18903"})
+      expect(runner).not_to receive(:kill)
+      expect(Mirage::Runner).to receive(:new).and_return(runner)
 
       expect{ runner.invoke(:stop, [], options) }.to raise_error(Mirage::ClientError)
     end
@@ -81,13 +81,13 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.should_receive(:mirage_process_ids).with([7001]).and_return({"7001" => "18901"})
-      runner.should_receive(:kill).with("18901") do
+      expect(runner).to receive(:mirage_process_ids).with([7001]).and_return({"7001" => "18901"})
+      expect(runner).to receive(:kill).with("18901") do
         RSpec.reset
-        runner.stub(:mirage_process_ids).with([7001]).and_return({})
+        allow(runner).to receive(:mirage_process_ids).with([7001]).and_return({})
       end
 
-      Mirage::Runner.should_receive(:new).and_return(runner)
+      expect(Mirage::Runner).to receive(:new).and_return(runner)
       runner.invoke(:stop, [], options)
     end
 
@@ -96,14 +96,14 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.should_receive(:mirage_process_ids).with([7001, 7002]).and_return({"7001" => "18901", "7002" => "18902"})
-      runner.should_receive(:kill).with("18901")
-      runner.should_receive(:kill).with("18902") do
+      expect(runner).to receive(:mirage_process_ids).with([7001, 7002]).and_return({"7001" => "18901", "7002" => "18902"})
+      expect(runner).to receive(:kill).with("18901")
+      expect(runner).to receive(:kill).with("18902") do
         RSpec.reset
-        runner.stub(:mirage_process_ids).with([7001, 7002]).and_return({})
+        allow(runner).to receive(:mirage_process_ids).with([7001, 7002]).and_return({})
       end
 
-      Mirage::Runner.should_receive(:new).and_return(runner)
+      expect(Mirage::Runner).to receive(:new).and_return(runner)
       runner.invoke(:stop, [], options)
     end
 
@@ -112,14 +112,14 @@ describe Mirage do
       runner = Mirage::Runner.new
       runner.options = options
 
-      runner.should_receive(:mirage_process_ids).with([:all]).and_return({"7001" => "18901", "7002" => "18902"})
-      runner.should_receive(:kill).with("18901")
-      runner.should_receive(:kill).with("18902") do
+      expect(runner).to receive(:mirage_process_ids).with([:all]).and_return({"7001" => "18901", "7002" => "18902"})
+      expect(runner).to receive(:kill).with("18901")
+      expect(runner).to receive(:kill).with("18902") do
         RSpec.reset
-        runner.stub(:mirage_process_ids).with([:all]).and_return({})
+        allow(runner).to receive(:mirage_process_ids).with([:all]).and_return({})
       end
 
-      Mirage::Runner.should_receive(:new).and_return(runner)
+      expect(Mirage::Runner).to receive(:new).and_return(runner)
       runner.invoke(:stop, [], options)
 
     end
@@ -128,9 +128,9 @@ describe Mirage do
       options = {:port => [7001]}
       runner = Mirage::Runner.new
       runner.options = options
-      runner.stub(:mirage_process_ids).with([7001]).and_return({})
+      allow(runner).to receive(:mirage_process_ids).with([7001]).and_return({})
 
-      Mirage::Runner.should_receive(:new).and_return(runner)
+      expect(Mirage::Runner).to receive(:new).and_return(runner)
       expect { runner.invoke(:stop, [], options) }.not_to raise_error
     end
 

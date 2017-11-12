@@ -8,10 +8,10 @@ describe 'templates' do
     it 'should delete all templates and associated request data' do
       base_url = "base_url"
       requests = double('requests')
-      Requests.should_receive(:new).with(base_url).and_return(requests)
+      expect(Requests).to receive(:new).with(base_url).and_return(requests)
 
-      Templates.should_receive(:delete).with("#{base_url}/templates")
-      requests.should_receive(:delete_all)
+      expect(Templates).to receive(:delete).with("#{base_url}/templates")
+      expect(requests).to receive(:delete_all)
 
       Templates.new(base_url).delete_all
     end
@@ -20,7 +20,7 @@ describe 'templates' do
   describe 'setting default config' do
 
     it 'should preset configuration for templates' do
-      Template.stub(:put).and_return(convert_keys_to_strings({:id => 1}))
+      allow(Template).to receive(:put).and_return(convert_keys_to_strings({:id => 1}))
       templates = Templates.new "base_url"
 
       http_method = :post
@@ -39,11 +39,11 @@ describe 'templates' do
 
       template = templates.put('greeting', 'hello')
 
-      template.http_method.should == http_method
-      template.status.should == status
-      template.default.should == default
-      template.delay.should == delay
-      template.content_type.should == content_type
+      expect(template.http_method).to eq(http_method)
+      expect(template.status).to eq(status)
+      expect(template.default).to eq(default)
+      expect(template.delay).to eq(delay)
+      expect(template.content_type).to eq(content_type)
     end
 
     it 'should fall over to methods on the caller if the method does not exist on the configuration object' do
@@ -73,7 +73,7 @@ describe 'templates' do
       wrapper = templates_wrapper.new
 
       wrapper.test
-      wrapper.outer_method_called?.should == true
+      expect(wrapper.outer_method_called?).to eq(true)
 
     end
   end
@@ -107,15 +107,15 @@ describe 'templates' do
       it 'should take a model as a parameter' do
         template = model_class.new
         template = @templates.put template
-        template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+        expect(template.endpoint).to eq("#{@base_url}/templates/#{endpoint}")
       end
 
       it 'should prepend base url to the endpoint unless it is set already' do
         original_template = model_class.new
         stored_template = @templates.put original_template
-        stored_template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+        expect(stored_template.endpoint).to eq("#{@base_url}/templates/#{endpoint}")
         stored_template = @templates.put original_template
-        stored_template.endpoint.should == "#{@base_url}/templates/#{endpoint}"
+        expect(stored_template.endpoint).to eq("#{@base_url}/templates/#{endpoint}")
       end
 
       it 'should fall over to methods on the caller if the method does not exist on the template object' do
@@ -146,8 +146,8 @@ describe 'templates' do
         wrapper = template_wrapper.new
 
         template = wrapper.test
-        wrapper.outer_method_called?.should == true
-        template.caller_binding.should == nil
+        expect(wrapper.outer_method_called?).to eq(true)
+        expect(template.caller_binding).to eq(nil)
 
       end
 
@@ -160,8 +160,8 @@ describe 'templates' do
         @templates = Templates.new(@base_url)
 
         @template_mock = double('template')
-        Template.should_receive(:new).with("#{@base_url}/templates/#{endpoint}", value, @templates.default_config).and_return(@template_mock)
-        @template_mock.should_receive(:create)
+        expect(Template).to receive(:new).with("#{@base_url}/templates/#{endpoint}", value, @templates.default_config).and_return(@template_mock)
+        expect(@template_mock).to receive(:create)
       end
 
       it 'should create a template' do
@@ -176,19 +176,19 @@ describe 'templates' do
 
         template = model_class.new
         template  = @templates.put 'greeting', template
-        template.endpoint.should == "#{@base_url}/templates/greeting"
+        expect(template.endpoint).to eq("#{@base_url}/templates/greeting")
       end
     end
 
     describe 'block parameter that can be used for template customisation' do
       it 'it is called in the context of the template' do
         template = Template.new('', '')
-        template.stub(:create)
-        Template.should_receive(:new).and_return(template)
+        allow(template).to receive(:create)
+        expect(Template).to receive(:new).and_return(template)
         templates.put(endpoint, value) do
           status 404
         end
-        template.status.should == 404
+        expect(template.status).to eq(404)
       end
 
     end

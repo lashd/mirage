@@ -7,6 +7,8 @@ Feature: Retrieving tracked requests
     """
     require 'rubygems'
     require 'mirage/client'
+    require 'rspec/expectations'
+    include RSpec::Matchers
     """
 
   Scenario: Retrieving request data
@@ -16,5 +18,5 @@ Feature: Retrieving tracked requests
       | name | leon  |
     Then I run
     """
-       Mirage::Client.new.requests(1).first.parameters.should == {'name' => 'leon'}
+       expect(Mirage::Client.new.requests(1).first.parameters).to eq({'name' => 'leon'})
     """

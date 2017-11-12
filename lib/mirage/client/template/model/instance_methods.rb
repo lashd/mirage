@@ -38,7 +38,7 @@ module Mirage
 
         def delete
           self.class.delete(url)
-          Request.delete requests_url
+          Requests.delete requests_url
         end
 
 

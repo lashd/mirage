@@ -14,11 +14,11 @@ describe CLIBridge do
     Hashie::Mash.new({
                          :windows => {
                              :kill_string => "taskkill /F /T /PID %d",
-                             :set_ps_cmd_expectation => proc{bridge.stub(:`).with(/tasklist.*/).and_return(tasklist_output)}
+                             :set_ps_cmd_expectation => proc{allow(bridge).to receive(:`).with(/tasklist.*/).and_return(tasklist_output)}
                          },
                          :linux => {
                              :kill_string => "kill -9 %d",
-                             :set_ps_cmd_expectation => proc{IO.stub(:popen).with(/ps aux.*/).and_return(tasklist_output)}
+                             :set_ps_cmd_expectation => proc{allow(IO).to receive(:popen).with(/ps aux.*/).and_return(tasklist_output)}
                          }
                      })
   end
@@ -44,16 +44,16 @@ describe CLIBridge do
 
         it 'should find the pids of mirage instances for given ports' do
           os.set_ps_cmd_expectation.call
-          bridge.mirage_process_ids([7001, 7002]).should == mapping(7001).merge(mapping(7002))
+          expect(bridge.mirage_process_ids([7001, 7002])).to eq(mapping(7001).merge(mapping(7002)))
         end
 
         it 'should find the pids of mirage instances for all ports' do
           os.set_ps_cmd_expectation.call
-          bridge.mirage_process_ids([:all]).should == port_pid_mappings
+          expect(bridge.mirage_process_ids([:all])).to eq(port_pid_mappings)
         end
 
         it 'should kill the given process id' do
-          bridge.should_receive(:`).with(os.kill_string % 18903)
+          expect(bridge).to receive(:`).with(os.kill_string % 18903)
           bridge.kill(18903)
         end
       end

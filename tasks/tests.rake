@@ -1,6 +1,6 @@
 task :specs
 
-%w(client server).each do |type|
+%w(mirage/client server).each do |type|
   public_task_name = "#{type}_specs"
   private_task_name = "_#{public_task_name}"
 

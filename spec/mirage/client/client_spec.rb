@@ -10,42 +10,42 @@ describe Mirage::Client do
 
   describe 'configuration' do
     it 'is configured to connect to local host port 7001 by default' do
-      Client.new.url.should == "http://localhost:7001"
+      expect(Client.new.url).to eq("http://localhost:7001")
     end
 
     it 'can be configured with a url pointing to Mirage' do
       mirage_url = "http://url.for.mirage"
-      Client.new(mirage_url).url.should == mirage_url
+      expect(Client.new(mirage_url).url).to eq(mirage_url)
 
-      Client.new(:url => mirage_url).url.should == mirage_url
+      expect(Client.new(:url => mirage_url).url).to eq(mirage_url)
     end
 
     it 'can be configured with a port refering to which port Mirage is running on on localhost' do
       port = 9001
-      Client.new(:port => port).url.should == "http://localhost:#{port}"
+      expect(Client.new(:port => port).url).to eq("http://localhost:#{port}")
     end
 
     it 'raises an error if neither a port or url specified in the argument' do
-      expect { Client.new({}) }.to raise_error()
-      expect { Client.new("rubbish") }.to raise_error()
+      expect { Client.new({}) }.to raise_error(ArgumentError)
+      expect { Client.new("rubbish") }.to raise_error(ArgumentError)
     end
 
 
     describe 'defaults' do
       it 'can be configured with template defaults on initialize' do
         templates, config = Templates.new("url"), proc {}
-        Templates.should_receive(:new).and_return(templates)
-        templates.should_receive(:default_config) do |&block|
-          block.should == config
+        expect(Templates).to receive(:new).and_return(templates)
+        expect(templates).to receive(:default_config) do |&block|
+          expect(block).to eq(config)
         end
         Client.new &config
       end
 
       it 'can be configured with template defaults on after initalize' do
         templates, config = Templates.new("url"), proc {}
-        Templates.should_receive(:new).and_return(templates)
-        templates.should_receive(:default_config) do |&block|
-          block.should == config
+        expect(Templates).to receive(:new).and_return(templates)
+        expect(templates).to receive(:default_config) do |&block|
+          expect(block).to eq(config)
         end
         Client.new.configure &config
       end
@@ -56,7 +56,7 @@ describe Mirage::Client do
         end
 
         client.reset
-        client.templates.default_config.should == Template::Configuration.new
+        expect(client.templates.default_config).to eq(Template::Configuration.new)
       end
 
     end
@@ -64,8 +64,8 @@ describe Mirage::Client do
 
   it 'should clear mirage' do
     templates_mock = double('templates')
-    Templates.should_receive(:new).and_return(templates_mock)
-    templates_mock.should_receive(:delete_all)
+    expect(Templates).to receive(:new).and_return(templates_mock)
+    expect(templates_mock).to receive(:delete_all)
     Client.new.clear
   end
 
@@ -73,8 +73,8 @@ describe Mirage::Client do
 
 
   it 'should prime mirage' do
-    Client.should_receive(:put) do |url|
-      url.should == "http://localhost:7001/defaults"
+    expect(Client).to receive(:put) do |url|
+      expect(url).to eq("http://localhost:7001/defaults")
     end
     Client.new.prime
   end
@@ -82,20 +82,20 @@ describe Mirage::Client do
   describe 'templates' do
     it 'should give access to templates' do
       mirage = Client.new
-      mirage.templates.instance_of?(Templates).should == true
+      expect(mirage.templates.instance_of?(Templates)).to eq(true)
     end
 
     it 'The templates instance should be the one created on construction otherwise the defaults passed in will get lost' do
       mirage = Client.new
-      mirage.templates.should == mirage.templates
+      expect(mirage.templates).to eq(mirage.templates)
     end
 
     it 'should find a template' do
       id = 1
       mirage = Client.new
       mock_template = double('template')
-      Template.should_receive(:get).with("#{mirage.url}/templates/#{id}").and_return(mock_template)
-      mirage.templates(1).should == mock_template
+      expect(Template).to receive(:get).with("#{mirage.url}/templates/#{id}").and_return(mock_template)
+      expect(mirage.templates(1)).to eq(mock_template)
     end
 
 
@@ -104,9 +104,9 @@ describe Mirage::Client do
         endpoint, value, block = 'greeting', 'hello', Proc.new{}
 
         templates_mock = double('templates')
-        Templates.should_receive(:new).and_return(templates_mock)
+        expect(Templates).to receive(:new).and_return(templates_mock)
 
-      templates_mock.should_receive(:put).with(endpoint, value, &block)
+      expect(templates_mock).to receive(:put).with(endpoint, value, &block)
 
         mirage = Client.new
         mirage.put endpoint, value, &block
@@ -117,13 +117,13 @@ describe Mirage::Client do
   describe 'requests' do
     it 'should give access to requests' do
       mirage = Client.new
-      mirage.requests.instance_of?(Requests).should == true
+      expect(mirage.requests.instance_of?(Requests)).to eq(true)
     end
 
     it 'should find a request' do
       id = 1
       mirage = Client.new
-      Requests.should_receive(:get).with("#{mirage.url}/requests/#{id}")
+      expect(Requests).to receive(:get).with("#{mirage.url}/requests/#{id}")
       mirage.requests(id)
     end
   end
@@ -131,7 +131,7 @@ describe Mirage::Client do
   describe 'save' do
     it 'should save the current template setup of mirage' do
       mirage = Client.new
-      Client.should_receive(:put).with("#{mirage.url}/backup", :body => "")
+      expect(Client).to receive(:put).with("#{mirage.url}/backup", :body => "")
       mirage.save
     end
   end
@@ -139,7 +139,7 @@ describe Mirage::Client do
   describe 'revert' do
     it 'should revert the current template set' do
       mirage = Client.new
-      Client.should_receive(:put).with(mirage.url, :body => "")
+      expect(Client).to receive(:put).with(mirage.url, :body => "")
       mirage.revert
     end
   end
@@ -148,7 +148,7 @@ describe Mirage::Client do
     it 'should check if mirage is runing' do
       url = 'http://some_url'
 
-      Mirage.should_receive(:running?).with url
+      expect(Mirage).to receive(:running?).with url
       Client.new(url).running?
     end
   end
@@ -163,16 +163,16 @@ describe Mirage::Client do
     it 'should set a response' do
       client = Mirage.start
       response = client.templates.put("greeting", "hello")
-      response.id.should == 1
+      expect(response.id).to eq(1)
     end
 
     it 'should find mirage running' do
       Mirage.start
-      Mirage.running?.should == true
+      expect(Mirage.running?).to eq(true)
     end
 
     it 'should not find mirage running' do
-      Mirage.running?.should == false
+      expect(Mirage.running?).to eq(false)
     end
 
   end

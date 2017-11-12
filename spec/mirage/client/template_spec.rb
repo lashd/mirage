@@ -41,34 +41,34 @@ describe Mirage::Template do
               http_method: http_method
           }
       }
-      template_json.should_receive(:code).and_return 200
+      expect(template_json).to receive(:code).and_return 200
 
       template_url = "url"
-      Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return(template_json)
+      expect(Template).to receive(:backedup_get).with(template_url, :format => :json).and_return(template_json)
 
       template = Template.get(template_url)
-      template.body.should == body
-      template.endpoint.should == endpoint
-      template.id.should == id
+      expect(template.body).to eq(body)
+      expect(template.endpoint).to eq(endpoint)
+      expect(template.id).to eq(id)
 
-      template.default.should == default
-      template.delay.should == delay
-      template.content_type.should == content_type
-      template.status.should == status
-      template.headers.should == headers
+      expect(template.default).to eq(default)
+      expect(template.delay).to eq(delay)
+      expect(template.content_type).to eq(content_type)
+      expect(template.status).to eq(status)
+      expect(template.headers).to eq(headers)
 
-      template.required_parameters.should  == required_parameters
-      template.required_body_content.should == required_body_content
-      template.required_headers.should  == required_headers
-      template.http_method.should == http_method
-      template.url.should  == template_url
-      template.requests_url.should == requests_url
+      expect(template.required_parameters).to  eq(required_parameters)
+      expect(template.required_body_content).to eq(required_body_content)
+      expect(template.required_headers).to  eq(required_headers)
+      expect(template.http_method).to eq(http_method)
+      expect(template.url).to  eq(template_url)
+      expect(template.requests_url).to eq(requests_url)
     end
 
     it 'should raise an error if the template is not found' do
       template_url = 'url'
       response = double(code: 404)
-      Template.should_receive(:backedup_get).with(template_url, :format => :json).and_return response
+      expect(Template).to receive(:backedup_get).with(template_url, :format => :json).and_return response
       expect{Template.get(template_url)}.to raise_error Mirage::TemplateNotFound
     end
   end
@@ -91,19 +91,19 @@ describe Mirage::Template do
     it 'should create a template on mirage' do
       template = Template.new(endpoint,json)
 
-      template.should_receive(:to_json).and_return(json)
-      Template.should_receive(:put).with(endpoint, :body => json, :headers => {'content-type' => 'application/json'}).and_return(convert_keys_to_strings({:id => 1}))
+      expect(template).to receive(:to_json).and_return(json)
+      expect(Template).to receive(:put).with(endpoint, :body => json, :headers => {'content-type' => 'application/json'}).and_return(convert_keys_to_strings({:id => 1}))
       template.create
-      template.id.should == 1
+      expect(template.id).to eq(1)
     end
 
     it 'should have default values set' do
       template = Template.new(endpoint,json)
-      template.http_method.should == :get
-      template.status.should == 200
-      template.content_type.should == "text/plain"
-      template.default.should == false
-      template.delay.should == 0
+      expect(template.http_method).to eq(:get)
+      expect(template.status).to eq(200)
+      expect(template.content_type).to eq("text/plain")
+      expect(template.default).to eq(false)
+      expect(template.delay).to eq(0)
     end
   end
 
@@ -120,11 +120,11 @@ describe Mirage::Template do
       template.requests_url request_url
 
 
-      template.stub(:id).and_return(id)
+      allow(template).to receive(:id).and_return(id)
 
-      Template.should_receive(:delete).with(template_url)
+      expect(Template).to receive(:delete).with(template_url)
 
-      Mirage::Request.should_receive(:delete).with(request_url)
+      expect(Mirage::Requests).to receive(:delete).with(request_url)
       template.delete
     end
 
@@ -133,7 +133,7 @@ describe Mirage::Template do
   describe 'method missing' do
     it 'should delagate to the caller if it is set' do
       caller = Object.new
-      caller.should_receive(:some_method)
+      expect(caller).to receive(:some_method)
       template = Template.new('endpoint')
       template.caller_binding = caller
       template.some_method

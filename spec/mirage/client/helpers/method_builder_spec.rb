@@ -22,16 +22,16 @@ describe Helpers::MethodBuilder do
 
     it 'should set a value' do
       model.name(:joe)
-      model.name.should == :joe
+      expect(model.name).to eq(:joe)
     end
 
     it 'should chain' do
-      model.name(:joe).should == model
+      expect(model.name(:joe)).to eq(model)
     end
 
     it 'should work with booleans' do
       model.name(false)
-      model.name.should == false
+      expect(model.name).to eq(false)
     end
   end
 
@@ -42,7 +42,7 @@ describe Helpers::MethodBuilder do
       builder_methods :foo, :bar
     end
     model = model_class.new
-    model.respond_to?(:foo).should be_true
-    model.respond_to?(:bar).should be_true
+    expect(model.respond_to?(:foo)).to be_truthy
+    expect(model.respond_to?(:bar)).to be_truthy
   end
 end

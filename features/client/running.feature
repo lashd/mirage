@@ -10,6 +10,7 @@ Feature: How to check if Mirage is running
     require 'rubygems'
     require 'rspec/expectations'
     require 'mirage/client'
+    include RSpec::Matchers
     """
 
 
@@ -17,12 +18,12 @@ Feature: How to check if Mirage is running
     Given Mirage is not running
     Then I run
     """
-      Mirage.running?.should == false
+      expect(Mirage).to_not be_running
     """
     Given Mirage is running
     Then I run
     """
-      Mirage.running?.should == true
+      expect(Mirage).to be_running
     """
 
 
@@ -30,7 +31,7 @@ Feature: How to check if Mirage is running
     Given I run 'mirage start -p 9001'
     Then I run
     """
-      Mirage.running?(:port => 9001).should == true
+      expect(Mirage).to be_running(port: 9001)
     """
 
 
@@ -47,5 +48,5 @@ Feature: How to check if Mirage is running
     Then I run
     """
       client = Mirage::Client.new "http://localhost:9001"
-      client.running?.should == true
+      expect(client).to be_running
     """

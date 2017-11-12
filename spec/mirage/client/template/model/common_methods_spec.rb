@@ -10,7 +10,7 @@ describe 'CommonMethods' do
     model.new
   end
   it 'should provide methods for customising the model' do
-    instance.methods.should include(:content_type,
+    expect(instance.methods).to include(:content_type,
                                     :http_method,
                                     :default,
                                     :status,

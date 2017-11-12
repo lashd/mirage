@@ -13,21 +13,21 @@ describe "helpers" do
 
   describe 'converting raw parameter requirements' do
     it 'should split on split on the (:) to derive the required parameter and value' do
-      @helper.convert_raw_required_params(%w(name:leon)).should == {'name' => 'leon'}
+      expect(@helper.convert_raw_required_params(%w(name:leon))).to eq({'name' => 'leon'})
     end
 
     it 'should store regular expression matcher' do
-      @helper.convert_raw_required_params(%w(name:%r{.*eon})).should == {'name' => /.*eon/}
+      expect(@helper.convert_raw_required_params(%w(name:%r{.*eon}))).to eq({'name' => /.*eon/})
     end
   end
 
   describe 'converting raw body content requirements' do
     it 'should extract plan text requirements' do
-      @helper.convert_raw_required_body_content_requirements(%w(leon)).should == %w(leon)
+      expect(@helper.convert_raw_required_body_content_requirements(%w(leon))).to eq(%w(leon))
     end
 
     it 'should extract plan requirements in the form of a regexp' do
-      @helper.convert_raw_required_body_content_requirements(%w(%r{.*eon})).should == [/.*eon/]
+      expect(@helper.convert_raw_required_body_content_requirements(%w(%r{.*eon}))).to eq([/.*eon/])
     end
   end
 

@@ -23,7 +23,7 @@ RSpec.configure do |config|
     end
 
     before :each do
-      ChildProcess.stub(:windows?).and_return(true)
+      allow(ChildProcess).to receive(:windows?).and_return(true)
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.configure do |config|
     end
 
     before :each do
-      ChildProcess.stub(:windows?).and_return(false)
+      allow(ChildProcess).to receive(:windows?).and_return(false)
     end
   end
   shared_context :resources do
@@ -56,7 +56,7 @@ RSpec.configure do |config|
 
     def application_expectations &block
       @app_expectations = proc do |app|
-        app.stub(:dup).and_return(app)
+        allow(app).to receive(:dup).and_return(app)
         block.call app
       end
     end

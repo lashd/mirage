@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'json'
 require 'httparty'
-require 'hashie/mash'
+require 'hashie/mash_ext'
 
 require 'client/template/configuration'
 require 'client/template/model'

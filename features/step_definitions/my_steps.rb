@@ -77,7 +77,7 @@ When /^I send (GET|POST) to '(.*)' with parameters:$/ do |http_method, endpoint,
 end
 
 Given /^the following template template:$/ do |text|
-  @response_template = Hashie::Mash.new(JSON.parse(text))
+  @response_template = Mirage::Hashie::Mash.new(JSON.parse(text))
 end
 
 When /^'(.*)' is base64 encoded$/ do |template_component|
@@ -93,5 +93,5 @@ Given /^a template for '(.*)' has been set with a value of '(.*)'$/ do |endpoint
 end
 
 Given(/^the following Template JSON:$/) do |text|
-  @response_template = Hashie::Mash.new(JSON.parse(text))
+  @response_template = Mirage::Hashie::Mash.new(JSON.parse(text))
 end

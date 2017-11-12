@@ -23,10 +23,10 @@ describe Template::Configuration do
   end
 
   def assert_defaults configuration
-    configuration.http_method.should == :get
-    configuration.status.should == 200
-    configuration.delay.should == 0
-    configuration.default.should == false
-    configuration.content_type.should == "text/plain"
+    expect(configuration.http_method).to eq(:get)
+    expect(configuration.status).to eq(200)
+    expect(configuration.delay).to eq(0)
+    expect(configuration.default).to eq(false)
+    expect(configuration.content_type).to eq("text/plain")
   end
 end

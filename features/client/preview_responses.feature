@@ -8,6 +8,7 @@ Feature: Inspecting Templates
     require 'rubygems'
     require 'rspec/expectations'
     require 'mirage/client'
+    include RSpec::Matchers
     """
 
   Scenario: retrieving a Template
@@ -15,7 +16,7 @@ Feature: Inspecting Templates
 
     When I run
     """
-      Mirage::Client.new.templates(1).body.should == 'Hello'
+      expect(Mirage::Client.new.templates(1).body).to eq('Hello')
     """
 
     When GET is sent to '/requests/1'
@@ -28,9 +29,9 @@ Feature: Inspecting Templates
     Given I run
     """
     begin
-      Mirage::Client.new.templates(2).should == 'this should not have happened'
+      expect(Mirage::Client.new.templates(2)).to eq('this should not have happened')
       fail("Error should have been thrown")
     rescue Exception => e
-      e.is_a?(Mirage::TemplateNotFound).should == true
+      expect(e).to be_a(Mirage::TemplateNotFound)
     end
     """
