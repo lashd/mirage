@@ -16,7 +16,7 @@ module Mirage
         end
 
         synchronize do
-          REQUESTS[record.response_id] = request.dup
+          tracked_requests(record.response_id) << request.dup
         end
 
 

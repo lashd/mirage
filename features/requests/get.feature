@@ -32,5 +32,5 @@ Feature: Checking tracked requests
 
   Scenario: Getting request data for a template that has not yet served a response.
     Given GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then there should be '0' request tracked
 

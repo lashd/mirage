@@ -26,6 +26,10 @@ module Mirage
         mock_response.value(body, request, query_string)
       end
 
+      def tracked_requests response_id
+        REQUESTS[response_id] ||= []
+      end
+
 
     end
   end

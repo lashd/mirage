@@ -29,7 +29,10 @@ Feature: Clearing Templates
     When GET is sent to '/responses/greeting'
     Then a 404 should be returned
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
 
     When GET is sent to '/responses/leaving'
     Then a 200 should be returned
@@ -43,7 +46,10 @@ Feature: Clearing Templates
     Mirage::Client.new.requests(1).delete
     """
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
     When GET is sent to '/responses/greeting'
     Then a 200 should be returned
 
@@ -57,13 +63,19 @@ Feature: Clearing Templates
     Then a 404 should be returned
 
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
 
     And GET is sent to '/responses/leaving'
     Then a 404 should be returned
 
     When GET is sent to '/requests/2'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
 
 
   Scenario: Clearing all request data
@@ -72,7 +84,13 @@ Feature: Clearing Templates
     Mirage::Client.new.requests.delete_all
     """
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
 
     When GET is sent to '/requests/2'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """

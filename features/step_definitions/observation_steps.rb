@@ -63,6 +63,9 @@ end
 
 Then /^request data should have been retrieved$/ do
   request_data = JSON.parse(@response.body)
+  expect(request_data).to be_a(Array)
+  expect(request_data.size).to eq(1)
+  request_data = request_data.first
   request_data.include?('parameters').should == true
   request_data.include?('headers').should == true
   request_data.include?('body').should == true
@@ -99,4 +102,9 @@ end
 
 When(/^the content-type should be '(.*)'$/) do |content_type|
   @response.content_type.should == content_type
+end
+
+Then(/^there should be '(\d+)' request tracked$/) do |count|
+  requests = JSON.parse(@response.body)
+  expect(requests.size).to eq(count)
 end

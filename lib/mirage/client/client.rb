@@ -38,8 +38,8 @@ module Mirage
     end
 
     def requests id=nil
-      return Request.get "#{@url}/requests/#{id}" if id
-      Requests.new(@url)
+      return Requests.get "#{@url}/requests/#{id}" if id
+      Requests.new("#{@url}/requests")
     end
 
     def prime

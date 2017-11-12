@@ -6,6 +6,7 @@ describe "Mirage Server" do
   include_context :rack_test, :disable_sinatra_error_handling => true
   before :each do
     Mirage::MockResponse.delete_all
+    Mirage::Server::REQUESTS.clear
   end
 
 
@@ -136,8 +137,7 @@ describe "Mirage Server" do
 
       header "MYHEADER", "my_header_value"
       post("/responses/greeting?param=value", 'body')
-      request_data = JSON.parse(get("/requests/#{response_id}").body)
-
+      request_data = JSON.parse(get("/requests/#{response_id}").body)[0]
       request_data['parameters'].should == {'param' => 'value'}
       request_data['headers']["MYHEADER"].should == "my_header_value"
       request_data['body'].should == "body"

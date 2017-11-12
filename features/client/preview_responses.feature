@@ -19,7 +19,10 @@ Feature: Inspecting Templates
     """
 
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
 
   Scenario: retrieving a Template that does not exist
     Given I run

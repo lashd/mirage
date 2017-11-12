@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'childprocess'
 gem "thor"
-gem "ptools"
+gem "ptools", '= 1.2.2'
 gem "httparty"
 gem "haml"
 gem 'hashie'

@@ -123,7 +123,7 @@ describe Mirage::Client do
     it 'should find a request' do
       id = 1
       mirage = Client.new
-      Request.should_receive(:get).with("#{mirage.url}/requests/#{id}")
+      Requests.should_receive(:get).with("#{mirage.url}/requests/#{id}")
       mirage.requests(id)
     end
   end

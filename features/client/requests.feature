@@ -16,5 +16,5 @@ Feature: Retrieving tracked requests
       | name | leon  |
     Then I run
     """
-       Mirage::Client.new.requests(1).parameters.should == {'name' => 'leon'}
+       Mirage::Client.new.requests(1).first.parameters.should == {'name' => 'leon'}
     """

@@ -19,20 +19,22 @@ module Mirage
 
     get '/requests/:id' do
       content_type :json
-      tracked_request = REQUESTS[response_id]
-      if tracked_request
+      tracked_requests = tracked_requests(response_id)
+      response = []
+      if tracked_requests
+        tracked_requests.collect do |tracked_request|
+          tracked_request.body.rewind
+          body = tracked_request.body.read
 
-        tracked_request.body.rewind
-        body = tracked_request.body.read
+          parameters = tracked_request.params.dup.select { |key, value| key != body }
 
-        parameters = tracked_request.params.dup.select { |key, value| key != body }
-
-        {id: request.url,
-         request_url: tracked_request.url,
-         headers: extract_http_headers(tracked_request.env),
-         parameters: parameters,
-         body: body}.to_json
-
+          response << {id: request.url,
+           request_url: tracked_request.url,
+           headers: extract_http_headers(tracked_request.env),
+           parameters: parameters,
+           body: body}
+        end
+        response.to_json
       else
         404
       end

@@ -33,9 +33,15 @@ Feature: Deleting tracked requests
     And DELETE is sent to '/requests'
 
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
     When GET is sent to '/requests/2'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
 
 
 
@@ -43,6 +49,10 @@ Feature: Deleting tracked requests
     And DELETE is sent to '/requests/1'
 
     When GET is sent to '/requests/1'
-    Then a 404 should be returned
+    Then the following json should be returned:
+    """
+      []
+    """
     When GET is sent to '/requests/2'
-    Then a 200 should be returned
+    Then there should be '1' request tracked
+
