@@ -3,8 +3,23 @@ require 'wait_methods'
 
 module CommandLine
   include Mirage::WaitMethods
+  class Output
+    attr_reader :stdout, :stdin, :status
+
+    def initialize(stdout:, stdin:, status:)
+      @stdout = stdout
+      @stdin = stdin
+      @status = status
+    end
+  end
 
   def run command
+    command = if ENV['mode'] == 'regression' && ChildProcess.windows?
+                command.gsub(/^mirage/, MIRAGE_CMD)
+              else
+                "#{RUBY_CMD} ../bin/#{command}"
+              end
+
     output = Tempfile.new("child")
     Dir.chdir SCRATCH do
       process = ChildProcess.build(*("#{command}".split(' ')))
@@ -12,13 +27,15 @@ module CommandLine
       process.io.stdout = output
       process.io.stderr = output
       process.start
-      wait_until(:timeout_after => 30) { process.exited? }
+      wait_until(:timeout_after => 30) {process.exited?}
     end
-    File.read(output.path)
+    normalise(File.read(output.path))
   end
 
-  def normalise text
-    text.gsub(/[\n]/, ' ').gsub(/\s+/, ' ').strip
+  def run_ruby code
+    Dir.chdir SCRATCH do
+      system "#{RUBY_CMD} -I #{SOURCE_PATH} -e \"#{@code_snippet}\n#{escape_double_quotes(code)}\""
+    end
   end
 
   def write_to_file file_path, content
