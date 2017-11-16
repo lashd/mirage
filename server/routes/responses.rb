@@ -2,7 +2,7 @@ module Mirage
   class Server < Sinatra::Base
     %w(get post delete put options).each do |http_method|
       send(http_method, '/responses/*') do |name|
-        body, query_string = Rack::Utils.unescape(request.body.read.to_s), request.query_string
+        body, query_string = request.body.read.to_s, request.query_string
 
         options = {:body => body,
                    :http_method => http_method,

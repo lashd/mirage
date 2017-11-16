@@ -37,11 +37,11 @@ Given /^Mirage (is|is not) running$/ do |running|
 end
 
 Then /^the usage information should be displayed$/ do
-  @usage.each_line {|line| expect(@commandline_output).to include(line)}
+  @usage.each_line {|line| expect(commandline_output).to include(line)}
 end
 
 Then /^I should see '(.*?)' on the command line$/ do |content|
-  expect(@commandline_output).to include(content)
+  expect(commandline_output).to include(content)
 end
 
 Then /^'(.*)' should exist$/ do |path|

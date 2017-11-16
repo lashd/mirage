@@ -29,7 +29,11 @@ module CommandLine
       process.start
       wait_until(:timeout_after => 30) {process.exited?}
     end
-    normalise(File.read(output.path))
+    @commandline_output = normalise(File.read(output.path))
+  end
+
+  def commandline_output
+    @commandline_output
   end
 
   def run_ruby code

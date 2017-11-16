@@ -1,5 +1,5 @@
 Given /^I run '(.*)'$/ do |command|
-  @commandline_output = run(command)
+  run(command)
 end
 
 Given /^the file '(.*)' contains:$/ do |file_path, content|
