@@ -30,7 +30,7 @@ Feature: Retrieving
     """
       {
          "id": 1,
-         "endpoint": "greeting",
+         "endpoint": "/greeting",
          "requests_url": "http://localhost:7001/requests/1",
          "response":{
             "default":false,

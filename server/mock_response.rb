@@ -50,7 +50,7 @@ module Mirage
         options[:http_method].upcase!
         http_method = options[:http_method]
         default_responses = subdomains(options[:endpoint]).collect do |domain|
-          if (responses_for_domain = responses.fuzzy_find(domain))
+          if (responses_for_domain = responses.fuzzy_find(domain, http_method))
             responses_for_domain[http_method].find_all { |response| response.default? } if responses_for_domain[http_method]
           end
         end.flatten.compact
@@ -67,7 +67,7 @@ module Mirage
       end
 
       def find(options)
-        options[:response_set] = responses.fuzzy_find(options[:endpoint])
+        options[:response_set] = responses.fuzzy_find(options[:endpoint], options[:http_method])
         find_in_response_set(options) || raise(ServerResponseNotFound)
       end
 
@@ -209,7 +209,7 @@ module Mirage
           value = value.gsub("${#{pattern}}", parameter_match)
         end
 
-        [request_body, query_string].each do |string|
+        [request_body, query_string, request_parameters.url].each do |string|
           if (string_match = find_match(string, pattern))
             value = value.gsub("${#{pattern}}", string_match)
           end

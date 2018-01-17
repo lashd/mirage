@@ -7,7 +7,8 @@ describe Mirage::MockResponseSet do
   end
   describe '#fuzzy_find' do
 
-    let(:expected_greeting){'hello'}
+    let(:get_http_verb){'GET'}
+    let(:expected_greeting){{get_http_verb => 'hello'}}
     let(:greeting_key){'/greeting'}
 
     subject do
@@ -19,13 +20,13 @@ describe Mirage::MockResponseSet do
     context 'key is not a regex' do
       context 'input is the same' do
         it 'returns the stored value' do
-          expect(subject.fuzzy_find(greeting_key)).to eq(expected_greeting)
+          expect(subject.fuzzy_find(greeting_key, get_http_verb)).to eq(expected_greeting)
         end
       end
 
       context 'input is different' do
         it 'returns nil' do
-          expect(subject.fuzzy_find('/salutation')).to eq(nil)
+          expect(subject.fuzzy_find('/salutation',get_http_verb)).to eq(nil)
         end
 
       end
@@ -41,14 +42,14 @@ describe Mirage::MockResponseSet do
 
       context 'input is matches regex' do
         it 'returns the stored value' do
-          expect(subject.fuzzy_find(greeting_key)).to eq(expected_greeting)
+          expect(subject.fuzzy_find(greeting_key,get_http_verb)).to eq(expected_greeting)
         end
       end
 
       context 'input does not match regex' do
         it 'returns nil' do
           subject[%r{.*ting}] = expected_greeting
-          expect(subject.fuzzy_find('/salutation')).to eq(nil)
+          expect(subject.fuzzy_find('/salutation',get_http_verb)).to eq(nil)
         end
 
       end

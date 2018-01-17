@@ -15,11 +15,12 @@ module Mirage
 
     put '/templates/*' do |name|
       content_type :json
+      name = "/#{name}"
       mock_response = synchronize do
         MockResponse.new(name, JSON.parse(request.body.read))
       end
 
-      mock_response.requests_url = request.url.gsub("/templates/#{name}", "/requests/#{mock_response.response_id}")
+      mock_response.requests_url = request.url.gsub("/templates#{name}", "/requests/#{mock_response.response_id}")
       {:id => mock_response.response_id}.to_json
     end
 

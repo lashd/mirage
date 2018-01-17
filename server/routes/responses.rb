@@ -1,8 +1,10 @@
 module Mirage
   class Server < Sinatra::Base
-    %w(get post delete put options).each do |http_method|
+    # TODO write tests to check that all of these verbs are supported
+    %w(get post delete put options head).each do |http_method|
       send(http_method, '/responses/*') do |name|
         body, query_string = request.body.read.to_s, request.query_string
+        name = "/#{name}"
 
         options = {:body => body,
                    :http_method => http_method,

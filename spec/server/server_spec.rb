@@ -16,7 +16,7 @@ describe "Mirage Server" do
     end
 
     it 'should create a mock response with the supplied template spec' do
-      endpoint = 'greeting'
+      endpoint = '/greeting'
       spec = {"somekeys" => 'some_values'}
 
       expect(Mirage::MockResponse).to receive(:new).with(endpoint, spec).and_return(@mock_response)
@@ -50,7 +50,7 @@ describe "Mirage Server" do
 
   describe 'matching templates' do
     before :each do
-      @endpoint = "greeting"
+      @endpoint = "/greeting"
       @options = {:body => anything, :params => anything, :endpoint => @endpoint, :headers => anything, :http_method => anything}
     end
 
@@ -118,7 +118,7 @@ describe "Mirage Server" do
         response_body = "hello"
         response_id = JSON.parse(put('/templates/greeting', {:response => {:body => Base64.encode64(response_body)}}.to_json).body)['id']
         template = JSON.parse(get("/templates/#{response_id}").body)
-        expect(template).to eq(JSON.parse({:endpoint => "greeting",
+        expect(template).to eq(JSON.parse({:endpoint => "/greeting",
                                        :id => response_id,
                                        :requests_url => "http://example.org/requests/#{response_id}",
                                        :request => {:parameters => {}, :http_method => "get", :body_content => [], :headers => {}},
