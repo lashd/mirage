@@ -17,7 +17,7 @@ describe Mirage::Client do
       mirage_url = "http://url.for.mirage"
       Client.new(mirage_url).url.should == mirage_url
 
-      Client.new(:url => mirage_url).url.should == mirage_url
+      Client.new(:url => mirage_url, :port => 9001).url.should == mirage_url
     end
 
     it 'can be configured with a port refering to which port Mirage is running on on localhost' do
