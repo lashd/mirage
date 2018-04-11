@@ -12,10 +12,10 @@ module Mirage
     def initialize options={:url => "http://localhost:7001"}, &block
       if options.is_a?(String) && options =~ URI.regexp
         @url = options
-      elsif options.kind_of?(Hash) && options[:port]
-        @url = "http://localhost:#{options[:port]}"
       elsif options.kind_of?(Hash) && options[:url]
         @url = options[:url]
+      elsif options.kind_of?(Hash) && options[:port]
+        @url = "http://localhost:#{options[:port]}"
       else
         raise "specify a valid URL or port"
       end

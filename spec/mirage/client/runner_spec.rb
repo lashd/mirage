@@ -42,7 +42,37 @@ describe Mirage do
       @runner.should_receive(:invoke).with(:stop, [], :port => ports)
       Mirage.stop(:port => ports)
     end
+  end
 
+  describe '.running?' do
+    before(:each) do
+      HTTParty.stub(:get)
+    end
+
+    it 'should check running app if you do not pass params' do
+      url = 'http://localhost:7001'
+      HTTParty.should_receive(:get).with(url).and_return(true)
+      Mirage.running?
+    end
+
+    it 'should check running app if you pass url as string' do
+      url = 'http://my.url:9000'
+      HTTParty.should_receive(:get).with(url).and_return(true)
+      Mirage.running?(url)
+    end
+
+    it 'should check running app if you pass url in hash' do
+      url = 'http://my.url:9000'
+      HTTParty.should_receive(:get).with(url).and_return(true)
+      Mirage.running?({:url => url})
+    end
+
+    it 'should check running app if you pass port in hash' do
+      url = 'http://localhost:1234'
+      port = 1234
+      HTTParty.should_receive(:get).with(url).and_return(true)
+      Mirage.running?({:port => port})
+    end
   end
 
   describe Mirage::Runner do
@@ -133,6 +163,5 @@ describe Mirage do
       Mirage::Runner.should_receive(:new).and_return(runner)
       expect { runner.invoke(:stop, [], options) }.not_to raise_error
     end
-
   end
 end

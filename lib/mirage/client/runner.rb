@@ -42,12 +42,19 @@ module Mirage
     #   Mirage.running? :port => port -> boolean indicating whether Mirage is running on *locally* on the given port
     #   Mirage.running? url -> boolean indicating whether Mirage is running on the given URL
     def running? options_or_url = {:port => 7001}
-      url = options_or_url.kind_of?(Hash) ? "http://localhost:#{options_or_url[:port]}" : options_or_url
+      if options_or_url.kind_of?(Hash)
+        if options_or_url[:url]
+          url = options_or_url[:url]
+        else
+          url = "http://localhost:#{options_or_url[:port]}"
+        end
+      else
+        url = options_or_url
+      end
       HTTParty.get(url) and return true
     rescue Errno::ECONNREFUSED
       return false
     end
-
   end
 
   class Runner < Thor
