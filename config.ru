@@ -31,4 +31,4 @@ module Mirage
 end
 
 
-Mirage::Server.run! :server => 'webrick'
+run Mirage::Server

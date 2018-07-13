@@ -9,11 +9,11 @@ module Mirage
 
     attr_reader :url
 
-    def initialize options={:url => "http://localhost:7001"}, &block
+    def initialize options={:url => "http://127.0.0.1:7001"}, &block
       if options.is_a?(String) && options =~ URI.regexp
         @url = options
       elsif options.kind_of?(Hash) && options[:port]
-        @url = "http://localhost:#{options[:port]}"
+        @url = "http://127.0.0.1:#{options[:port]}"
       elsif options.kind_of?(Hash) && options[:url]
         @url = options[:url]
       else

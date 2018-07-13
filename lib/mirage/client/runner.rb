@@ -10,8 +10,8 @@ module Mirage
     # Example Usage:
     #
     #   Mirage.start :port => 9001 -> Configured MirageClient ready to use.
-    def start options={}
-      options={:port => 7001}.merge(options)
+    def start options = {}
+      options = {:port => 7001}.merge(options)
       Runner.new.invoke(:start, [], options)
       Mirage::Client.new(options)
     end
@@ -22,7 +22,7 @@ module Mirage
     #   Mirage.stop -> Will stop mirage if there is only instance running. Can be running on any port.
     #   Mirage.stop :port => port -> stop mirage on a given port
     #   Mirage.stop :port => [port1, port2...] -> stops multiple running instances of Mirage
-    def stop options={:port => []}
+    def stop options = {:port => []}
       options = {:port => :all} if options == :all
 
       if options[:port]
@@ -42,7 +42,7 @@ module Mirage
     #   Mirage.running? :port => port -> boolean indicating whether Mirage is running on *locally* on the given port
     #   Mirage.running? url -> boolean indicating whether Mirage is running on the given URL
     def running? options_or_url = {:port => 7001}
-      url = options_or_url.kind_of?(Hash) ? "http://localhost:#{options_or_url[:port]}" : options_or_url
+      url = options_or_url.kind_of?(Hash) ? "http://127.0.0.1:#{options_or_url[:port]}" : options_or_url
       HTTParty.get(url) and return true
     rescue Errno::ECONNREFUSED
       return false
@@ -78,27 +78,29 @@ module Mirage
       end
 
 
-      command = command.concat(options.to_a).flatten.collect { |arg| arg.to_s }
+      command = command.concat(options.to_a).flatten.collect {|arg| arg.to_s}
       ChildProcess.build(*command).start
 
-      wait_until(:timeout_after => 30) { Mirage.running?(options) }
+      wait_until(:timeout_after => 30) {Mirage.running?(options)}
 
       begin
         Mirage::Client.new(options).prime
       rescue Mirage::InternalServerException => e
         puts "WARN: #{e.message}"
       end
+
+
     end
 
     desc "stop", "Stops mirage"
     method_option :port, :aliases => "-p", :type => :array, :default => [], :banner => "[port_1 port_2|all]", :desc => "port(s) of mirage instance(s). ALL stops all running instances"
 
     def stop
-      ports = options[:port].collect{|port| port=~/\d+/ ? port.to_i : port}
+      ports = options[:port].collect {|port| port =~ /\d+/ ? port.to_i : port}
       process_ids = mirage_process_ids(ports)
       raise ClientError.new("Mirage is running on ports #{process_ids.keys.sort.join(", ")}. Please run mirage stop -p [PORT(s)] instead") if (process_ids.size > 1 && ports.empty?)
-      process_ids.values.each { |process_id| kill process_id }
-      wait_until { mirage_process_ids(options[:port]).empty? }
+      process_ids.values.each {|process_id| kill process_id}
+      wait_until {mirage_process_ids(options[:port]).empty?}
     end
 
   end

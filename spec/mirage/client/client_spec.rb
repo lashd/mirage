@@ -10,7 +10,7 @@ describe Mirage::Client do
 
   describe 'configuration' do
     it 'is configured to connect to local host port 7001 by default' do
-      expect(Client.new.url).to eq("http://localhost:7001")
+      expect(Client.new.url).to eq("http://127.0.0.1:7001")
     end
 
     it 'can be configured with a url pointing to Mirage' do
@@ -22,7 +22,7 @@ describe Mirage::Client do
 
     it 'can be configured with a port refering to which port Mirage is running on on localhost' do
       port = 9001
-      expect(Client.new(:port => port).url).to eq("http://localhost:#{port}")
+      expect(Client.new(:port => port).url).to eq("http://127.0.0.1:#{port}")
     end
 
     it 'raises an error if neither a port or url specified in the argument' do
@@ -74,7 +74,7 @@ describe Mirage::Client do
 
   it 'should prime mirage' do
     expect(Client).to receive(:put) do |url|
-      expect(url).to eq("http://localhost:7001/defaults")
+      expect(url).to eq("http://127.0.0.1:7001/defaults")
     end
     Client.new.prime
   end
