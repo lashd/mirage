@@ -31,7 +31,7 @@ Mirage is now configured using JSON. JSON is also used as the output format for 
 ##### 2: Wildcards are now supported in the URI.
 You can now specify wild cards in the URI matcher. This means that a url such as '/*/world' would match '/hello/world' :)
 ##### 3: Full Request Data now tracked
-You can now retrieve all data associated with a request that triggers a response. Previously only the the request body/query string was tracked.
+You can now retrieve all data associated with a request that triggers a response. Previously only the request body/query string was tracked.
 Now the full request, including HTTP headers are returned when querying '/requests/template_id'
 
 ##### 4. Parameters and body content matchers are now specified seperately
